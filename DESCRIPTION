@@ -12,3 +12,5 @@ RoxygenNote: 5.0.1
 Suggests: knitr,
     rmarkdown
 VignetteBuilder: knitr
+URL: http://github.com/masalmon/watchme
+BugReports: http://github.com/masalmon/watchme/issues
