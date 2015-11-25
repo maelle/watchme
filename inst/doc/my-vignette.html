@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+<title>Introduction</title>
+
+<script type="text/javascript">
+window.onload = function() {
+  var imgs = document.getElementsByTagName('img'), i, img;
+  for (i = 0; i < imgs.length; i++) {
+    img = imgs[i];
+    // center an image if it is the only element of its parent
+    if (img.parentElement.childElementCount === 1)
+      img.parentElement.style.textAlign = 'center';
+  }
+};
+</script>
+
+<!-- Styles for R syntax highlighter -->
+<style type="text/css">
+   pre .operator,
+   pre .paren {
+     color: rgb(104, 118, 135)
+   }
+
+   pre .literal {
+     color: #990073
+   }
+
+   pre .number {
+     color: #099;
+   }
+
+   pre .comment {
+     color: #998;
+     font-style: italic
+   }
+
+   pre .keyword {
+     color: #900;
+     font-weight: bold
+   }
+
+   pre .identifier {
+     color: rgb(0, 0, 0);
+   }
+
+   pre .string {
+     color: #d14;
+   }
+</style>
+
+<!-- R syntax highlighter -->
+<script type="text/javascript">
+var hljs=new function(){function m(p){return p.replace(/&/gm,"&amp;").replace(/</gm,"&lt;")}function f(r,q,p){return RegExp(q,"m"+(r.cI?"i":"")+(p?"g":""))}function b(r){for(var p=0;p<r.childNodes.length;p++){var q=r.childNodes[p];if(q.nodeName=="CODE"){return q}if(!(q.nodeType==3&&q.nodeValue.match(/\s+/))){break}}}function h(t,s){var p="";for(var r=0;r<t.childNodes.length;r++){if(t.childNodes[r].nodeType==3){var q=t.childNodes[r].nodeValue;if(s){q=q.replace(/\n/g,"")}p+=q}else{if(t.childNodes[r].nodeName=="BR"){p+="\n"}else{p+=h(t.childNodes[r])}}}if(/MSIE [678]/.test(navigator.userAgent)){p=p.replace(/\r/g,"\n")}return p}function a(s){var r=s.className.split(/\s+/);r=r.concat(s.parentNode.className.split(/\s+/));for(var q=0;q<r.length;q++){var p=r[q].replace(/^language-/,"");if(e[p]){return p}}}function c(q){var p=[];(function(s,t){for(var r=0;r<s.childNodes.length;r++){if(s.childNodes[r].nodeType==3){t+=s.childNodes[r].nodeValue.length}else{if(s.childNodes[r].nodeName=="BR"){t+=1}else{if(s.childNodes[r].nodeType==1){p.push({event:"start",offset:t,node:s.childNodes[r]});t=arguments.callee(s.childNodes[r],t);p.push({event:"stop",offset:t,node:s.childNodes[r]})}}}}return t})(q,0);return p}function k(y,w,x){var q=0;var z="";var s=[];function u(){if(y.length&&w.length){if(y[0].offset!=w[0].offset){return(y[0].offset<w[0].offset)?y:w}else{return w[0].event=="start"?y:w}}else{return y.length?y:w}}function t(D){var A="<"+D.nodeName.toLowerCase();for(var B=0;B<D.attributes.length;B++){var C=D.attributes[B];A+=" "+C.nodeName.toLowerCase();if(C.value!==undefined&&C.value!==false&&C.value!==null){A+='="'+m(C.value)+'"'}}return A+">"}while(y.length||w.length){var v=u().splice(0,1)[0];z+=m(x.substr(q,v.offset-q));q=v.offset;if(v.event=="start"){z+=t(v.node);s.push(v.node)}else{if(v.event=="stop"){var p,r=s.length;do{r--;p=s[r];z+=("</"+p.nodeName.toLowerCase()+">")}while(p!=v.node);s.splice(r,1);while(r<s.length){z+=t(s[r]);r++}}}}return z+m(x.substr(q))}function j(){function q(x,y,v){if(x.compiled){return}var u;var s=[];if(x.k){x.lR=f(y,x.l||hljs.IR,true);for(var w in x.k){if(!x.k.hasOwnProperty(w)){continue}if(x.k[w] instanceof Object){u=x.k[w]}else{u=x.k;w="keyword"}for(var r in u){if(!u.hasOwnProperty(r)){continue}x.k[r]=[w,u[r]];s.push(r)}}}if(!v){if(x.bWK){x.b="\\b("+s.join("|")+")\\s"}x.bR=f(y,x.b?x.b:"\\B|\\b");if(!x.e&&!x.eW){x.e="\\B|\\b"}if(x.e){x.eR=f(y,x.e)}}if(x.i){x.iR=f(y,x.i)}if(x.r===undefined){x.r=1}if(!x.c){x.c=[]}x.compiled=true;for(var t=0;t<x.c.length;t++){if(x.c[t]=="self"){x.c[t]=x}q(x.c[t],y,false)}if(x.starts){q(x.starts,y,false)}}for(var p in e){if(!e.hasOwnProperty(p)){continue}q(e[p].dM,e[p],true)}}function d(B,C){if(!j.called){j();j.called=true}function q(r,M){for(var L=0;L<M.c.length;L++){if((M.c[L].bR.exec(r)||[null])[0]==r){return M.c[L]}}}function v(L,r){if(D[L].e&&D[L].eR.test(r)){return 1}if(D[L].eW){var M=v(L-1,r);return M?M+1:0}return 0}function w(r,L){return L.i&&L.iR.test(r)}function K(N,O){var M=[];for(var L=0;L<N.c.length;L++){M.push(N.c[L].b)}var r=D.length-1;do{if(D[r].e){M.push(D[r].e)}r--}while(D[r+1].eW);if(N.i){M.push(N.i)}return f(O,M.join("|"),true)}function p(M,L){var N=D[D.length-1];if(!N.t){N.t=K(N,E)}N.t.lastIndex=L;var r=N.t.exec(M);return r?[M.substr(L,r.index-L),r[0],false]:[M.substr(L),"",true]}function z(N,r){var L=E.cI?r[0].toLowerCase():r[0];var M=N.k[L];if(M&&M instanceof Array){return M}return false}function F(L,P){L=m(L);if(!P.k){return L}var r="";var O=0;P.lR.lastIndex=0;var M=P.lR.exec(L);while(M){r+=L.substr(O,M.index-O);var N=z(P,M);if(N){x+=N[1];r+='<span class="'+N[0]+'">'+M[0]+"</span>"}else{r+=M[0]}O=P.lR.lastIndex;M=P.lR.exec(L)}return r+L.substr(O,L.length-O)}function J(L,M){if(M.sL&&e[M.sL]){var r=d(M.sL,L);x+=r.keyword_count;return r.value}else{return F(L,M)}}function I(M,r){var L=M.cN?'<span class="'+M.cN+'">':"";if(M.rB){y+=L;M.buffer=""}else{if(M.eB){y+=m(r)+L;M.buffer=""}else{y+=L;M.buffer=r}}D.push(M);A+=M.r}function G(N,M,Q){var R=D[D.length-1];if(Q){y+=J(R.buffer+N,R);return false}var P=q(M,R);if(P){y+=J(R.buffer+N,R);I(P,M);return P.rB}var L=v(D.length-1,M);if(L){var O=R.cN?"</span>":"";if(R.rE){y+=J(R.buffer+N,R)+O}else{if(R.eE){y+=J(R.buffer+N,R)+O+m(M)}else{y+=J(R.buffer+N+M,R)+O}}while(L>1){O=D[D.length-2].cN?"</span>":"";y+=O;L--;D.length--}var r=D[D.length-1];D.length--;D[D.length-1].buffer="";if(r.starts){I(r.starts,"")}return R.rE}if(w(M,R)){throw"Illegal"}}var E=e[B];var D=[E.dM];var A=0;var x=0;var y="";try{var s,u=0;E.dM.buffer="";do{s=p(C,u);var t=G(s[0],s[1],s[2]);u+=s[0].length;if(!t){u+=s[1].length}}while(!s[2]);if(D.length>1){throw"Illegal"}return{r:A,keyword_count:x,value:y}}catch(H){if(H=="Illegal"){return{r:0,keyword_count:0,value:m(C)}}else{throw H}}}function g(t){var p={keyword_count:0,r:0,value:m(t)};var r=p;for(var q in e){if(!e.hasOwnProperty(q)){continue}var s=d(q,t);s.language=q;if(s.keyword_count+s.r>r.keyword_count+r.r){r=s}if(s.keyword_count+s.r>p.keyword_count+p.r){r=p;p=s}}if(r.language){p.second_best=r}return p}function i(r,q,p){if(q){r=r.replace(/^((<[^>]+>|\t)+)/gm,function(t,w,v,u){return w.replace(/\t/g,q)})}if(p){r=r.replace(/\n/g,"<br>")}return r}function n(t,w,r){var x=h(t,r);var v=a(t);var y,s;if(v){y=d(v,x)}else{return}var q=c(t);if(q.length){s=document.createElement("pre");s.innerHTML=y.value;y.value=k(q,c(s),x)}y.value=i(y.value,w,r);var u=t.className;if(!u.match("(\\s|^)(language-)?"+v+"(\\s|$)")){u=u?(u+" "+v):v}if(/MSIE [678]/.test(navigator.userAgent)&&t.tagName=="CODE"&&t.parentNode.tagName=="PRE"){s=t.parentNode;var p=document.createElement("div");p.innerHTML="<pre><code>"+y.value+"</code></pre>";t=p.firstChild.firstChild;p.firstChild.cN=s.cN;s.parentNode.replaceChild(p.firstChild,s)}else{t.innerHTML=y.value}t.className=u;t.result={language:v,kw:y.keyword_count,re:y.r};if(y.second_best){t.second_best={language:y.second_best.language,kw:y.second_best.keyword_count,re:y.second_best.r}}}function o(){if(o.called){return}o.called=true;var r=document.getElementsByTagName("pre");for(var p=0;p<r.length;p++){var q=b(r[p]);if(q){n(q,hljs.tabReplace)}}}function l(){if(window.addEventListener){window.addEventListener("DOMContentLoaded",o,false);window.addEventListener("load",o,false)}else{if(window.attachEvent){window.attachEvent("onload",o)}else{window.onload=o}}}var e={};this.LANGUAGES=e;this.highlight=d;this.highlightAuto=g;this.fixMarkup=i;this.highlightBlock=n;this.initHighlighting=o;this.initHighlightingOnLoad=l;this.IR="[a-zA-Z][a-zA-Z0-9_]*";this.UIR="[a-zA-Z_][a-zA-Z0-9_]*";this.NR="\\b\\d+(\\.\\d+)?";this.CNR="\\b(0[xX][a-fA-F0-9]+|(\\d+(\\.\\d*)?|\\.\\d+)([eE][-+]?\\d+)?)";this.BNR="\\b(0b[01]+)";this.RSR="!|!=|!==|%|%=|&|&&|&=|\\*|\\*=|\\+|\\+=|,|\\.|-|-=|/|/=|:|;|<|<<|<<=|<=|=|==|===|>|>=|>>|>>=|>>>|>>>=|\\?|\\[|\\{|\\(|\\^|\\^=|\\||\\|=|\\|\\||~";this.ER="(?![\\s\\S])";this.BE={b:"\\\\.",r:0};this.ASM={cN:"string",b:"'",e:"'",i:"\\n",c:[this.BE],r:0};this.QSM={cN:"string",b:'"',e:'"',i:"\\n",c:[this.BE],r:0};this.CLCM={cN:"comment",b:"//",e:"$"};this.CBLCLM={cN:"comment",b:"/\\*",e:"\\*/"};this.HCM={cN:"comment",b:"#",e:"$"};this.NM={cN:"number",b:this.NR,r:0};this.CNM={cN:"number",b:this.CNR,r:0};this.BNM={cN:"number",b:this.BNR,r:0};this.inherit=function(r,s){var p={};for(var q in r){p[q]=r[q]}if(s){for(var q in s){p[q]=s[q]}}return p}}();hljs.LANGUAGES.cpp=function(){var a={keyword:{"false":1,"int":1,"float":1,"while":1,"private":1,"char":1,"catch":1,"export":1,virtual:1,operator:2,sizeof:2,dynamic_cast:2,typedef:2,const_cast:2,"const":1,struct:1,"for":1,static_cast:2,union:1,namespace:1,unsigned:1,"long":1,"throw":1,"volatile":2,"static":1,"protected":1,bool:1,template:1,mutable:1,"if":1,"public":1,friend:2,"do":1,"return":1,"goto":1,auto:1,"void":2,"enum":1,"else":1,"break":1,"new":1,extern:1,using:1,"true":1,"class":1,asm:1,"case":1,typeid:1,"short":1,reinterpret_cast:2,"default":1,"double":1,register:1,explicit:1,signed:1,typename:1,"try":1,"this":1,"switch":1,"continue":1,wchar_t:1,inline:1,"delete":1,alignof:1,char16_t:1,char32_t:1,constexpr:1,decltype:1,noexcept:1,nullptr:1,static_assert:1,thread_local:1,restrict:1,_Bool:1,complex:1},built_in:{std:1,string:1,cin:1,cout:1,cerr:1,clog:1,stringstream:1,istringstream:1,ostringstream:1,auto_ptr:1,deque:1,list:1,queue:1,stack:1,vector:1,map:1,set:1,bitset:1,multiset:1,multimap:1,unordered_set:1,unordered_map:1,unordered_multiset:1,unordered_multimap:1,array:1,shared_ptr:1}};return{dM:{k:a,i:"</",c:[hljs.CLCM,hljs.CBLCLM,hljs.QSM,{cN:"string",b:"'\\\\?.",e:"'",i:"."},{cN:"number",b:"\\b(\\d+(\\.\\d*)?|\\.\\d+)(u|U|l|L|ul|UL|f|F)"},hljs.CNM,{cN:"preprocessor",b:"#",e:"$"},{cN:"stl_container",b:"\\b(deque|list|queue|stack|vector|map|set|bitset|multiset|multimap|unordered_map|unordered_set|unordered_multiset|unordered_multimap|array)\\s*<",e:">",k:a,r:10,c:["self"]}]}}}();hljs.LANGUAGES.r={dM:{c:[hljs.HCM,{cN:"number",b:"\\b0[xX][0-9a-fA-F]+[Li]?\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\b\\d+(?:[eE][+\\-]?\\d*)?L\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\b\\d+\\.(?!\\d)(?:i\\b)?",e:hljs.IMMEDIATE_RE,r:1},{cN:"number",b:"\\b\\d+(?:\\.\\d*)?(?:[eE][+\\-]?\\d*)?i?\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\.\\d+(?:[eE][+\\-]?\\d*)?i?\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"keyword",b:"(?:tryCatch|library|setGeneric|setGroupGeneric)\\b",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\.\\.\\.",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\.\\.\\d+(?![\\w.])",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\b(?:function)",e:hljs.IMMEDIATE_RE,r:2},{cN:"keyword",b:"(?:if|in|break|next|repeat|else|for|return|switch|while|try|stop|warning|require|attach|detach|source|setMethod|setClass)\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"literal",b:"(?:NA|NA_integer_|NA_real_|NA_character_|NA_complex_)\\b",e:hljs.IMMEDIATE_RE,r:10},{cN:"literal",b:"(?:NULL|TRUE|FALSE|T|F|Inf|NaN)\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"identifier",b:"[a-zA-Z.][a-zA-Z0-9._]*\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"operator",b:"<\\-(?!\\s*\\d)",e:hljs.IMMEDIATE_RE,r:2},{cN:"operator",b:"\\->|<\\-",e:hljs.IMMEDIATE_RE,r:1},{cN:"operator",b:"%%|~",e:hljs.IMMEDIATE_RE},{cN:"operator",b:">=|<=|==|!=|\\|\\||&&|=|\\+|\\-|\\*|/|\\^|>|<|!|&|\\||\\$|:",e:hljs.IMMEDIATE_RE,r:0},{cN:"operator",b:"%",e:"%",i:"\\n",r:1},{cN:"identifier",b:"`",e:"`",r:0},{cN:"string",b:'"',e:'"',c:[hljs.BE],r:0},{cN:"string",b:"'",e:"'",c:[hljs.BE],r:0},{cN:"paren",b:"[[({\\])}]",e:hljs.IMMEDIATE_RE,r:0}]}};
+hljs.initHighlightingOnLoad();
+</script>
+
+
+
+<style type="text/css">
+body, td {
+   font-family: sans-serif;
+   background-color: white;
+   font-size: 13px;
+}
+
+body {
+  max-width: 800px;
+  margin: auto;
+  padding: 1em;
+  line-height: 20px;
+}
+
+tt, code, pre {
+   font-family: 'DejaVu Sans Mono', 'Droid Sans Mono', 'Lucida Console', Consolas, Monaco, monospace;
+}
+
+h1 {
+   font-size:2.2em;
+}
+
+h2 {
+   font-size:1.8em;
+}
+
+h3 {
+   font-size:1.4em;
+}
+
+h4 {
+   font-size:1.0em;
+}
+
+h5 {
+   font-size:0.9em;
+}
+
+h6 {
+   font-size:0.8em;
+}
+
+a:visited {
+   color: rgb(50%, 0%, 50%);
+}
+
+pre, img {
+  max-width: 100%;
+}
+pre {
+  overflow-x: auto;
+}
+pre code {
+   display: block; padding: 0.5em;
+}
+
+code {
+  font-size: 92%;
+  border: 1px solid #ccc;
+}
+
+code[class] {
+  background-color: #F8F8F8;
+}
+
+table, td, th {
+  border: none;
+}
+
+blockquote {
+   color:#666666;
+   margin:0;
+   padding-left: 1em;
+   border-left: 0.5em #EEE solid;
+}
+
+hr {
+   height: 0px;
+   border-bottom: none;
+   border-top-width: thin;
+   border-top-style: dotted;
+   border-top-color: #999999;
+}
+
+@media print {
+   * {
+      background: transparent !important;
+      color: black !important;
+      filter:none !important;
+      -ms-filter: none !important;
+   }
+
+   body {
+      font-size:12pt;
+      max-width:100%;
+   }
+
+   a, a:visited {
+      text-decoration: underline;
+   }
+
+   hr {
+      visibility: hidden;
+      page-break-before: always;
+   }
+
+   pre, blockquote {
+      padding-right: 1em;
+      page-break-inside: avoid;
+   }
+
+   tr, img {
+      page-break-inside: avoid;
+   }
+
+   img {
+      max-width: 100% !important;
+   }
+
+   @page :left {
+      margin: 15mm 20mm 15mm 10mm;
+   }
+
+   @page :right {
+      margin: 15mm 10mm 15mm 20mm;
+   }
+
+   p, h2, h3 {
+      orphans: 3; widows: 3;
+   }
+
+   h2, h3 {
+      page-break-after: avoid;
+   }
+}
+</style>
+
+
+
+</head>
+
+<body>
+<h1>Introduction</h1>
+
+<p>This package aims at supporting robust and reproducible analysis of annotation results of wearable camera images. The workflow is as follows: </p>
+
+<ul>
+<li><p>participants of a study wear a camera that automatically produces pictures;</p></li>
+<li><p>these pictures are then annotated by coders using a list of annotations;</p></li>
+<li><p>the results of these annotations are then used to e.g. reconstruct the sequence of activities of a person during the day, or link it to pollution exposure.</p></li>
+</ul>
+
+<p>This R package supports the last step. How to calculate interrater reliability? How to plot the data? These are the processes that we want to code in the package, so that scientists from different projects can produce consistent results and get ideas from other projects. Every suggestion to expand the package is more than welcome, such as bug reports, if nicely written.</p>
+
+<h1>Data structure</h1>
+
+<p>The structure of data in the package is adapted to data produced using the Doherty Sensecam Browser for annotation (see <a href="https://sensecambrowser.codeplex.com/">https://sensecambrowser.codeplex.com/</a>). However, input functions could be adapted for other formats.</p>
+
+<p>The data needed for using the package are:</p>
+
+<ul>
+<li>A list of possible annotation, called dicoCoding. It contains three columns Code, Meaning, Group. The Code is the unique X-digit identifier of an activity. The Meaning, preferably in a single word such as washingYourTeeth, explains the code. The Group allows to group activities into meaningful categories, i.e. washingYourTeeth and washingYourHands could be in the hygiene Group whereas eatingRealFood and snackingOnCheapChocolate could be in the eating Group. </li>
+</ul>
+
+<pre><code class="r">pathDicoCoding &lt;-  system.file(&quot;extdata&quot;, &quot;dicoCoding_pinocchio.csv&quot;, package = &quot;watchme&quot;)
+sepDicoCoding &lt;- &quot;;&quot;
+dicoCoding &lt;- read.table(pathDicoCoding, sep=sepDicoCoding, header=TRUE)
+head(dicoCoding)
+</code></pre>
+
+<pre><code>##   Code            Meaning Group
+## 1  01A BiomassCookingUnit     1
+## 2  01B           LPGStove     1
+## 3  01C   OtherCookingUnit     1
+## 4  02B    PresenceKitchen     1
+## 5  02A    FoodPreparation     1
+## 6  03A             Eating     1
+</code></pre>
+
+<ul>
+<li>A table of coding results. The columns are name,  image_path, image_time, annotation, as provided by a SQL query of the Doherty database. The column name is a repetition of the participant name. The column image_path indicates the path to the picture, or its name. It only needs to be unique for each picture. The column image_time gives the date and time at which the picture was taken. The column annotation gives the code(s) associated with the picture. They can be pasted one after another, since we will use grepl() for finding the unique X-digit identifiers, or they can be on separate lines, since all codes for one picture identified by one picture_name will be merged.</li>
+</ul>
+
+<pre><code class="r">library(&quot;dplyr&quot;)
+pathResults &lt;- system.file(&quot;extdata&quot;, &quot;image_level_pinocchio.csv&quot;, package = &quot;watchme&quot;)
+sepResults &lt;- &quot;,&quot;
+codingResults &lt;- read.table(pathResults, sep=sepResults, header=TRUE)
+codingResults &lt;- dplyr::tbl_df(codingResults)
+print(codingResults)
+</code></pre>
+
+<pre><code>## Source: local data frame [981 x 4]
+## 
+##         name
+##       (fctr)
+## 1  pinocchio
+## 2  pinocchio
+## 3  pinocchio
+## 4  pinocchio
+## 5  pinocchio
+## 6  pinocchio
+## 7  pinocchio
+## 8  pinocchio
+## 9  pinocchio
+## 10 pinocchio
+## ..       ...
+## Variables not shown: image_path (fctr), image_time (fctr), annotation
+##   (fctr)
+</code></pre>
+
+<h1>From input data to <code>wearableCamImages</code> objects</h1>
+
+<p>Using both these inputs, we create an object of the S4 class <code>wearableCamImages</code> on which operations will be performed.</p>
+
+<p>The object has the following slots:</p>
+
+<ul>
+<li><p><code>participantID</code> which is extracted from the name column in the coding results. However, this slot can be changed manually.</p></li>
+<li><p><code>imagePath</code> which is a vector of <code>character</code> giving the path to or the name of the picture.</p></li>
+<li><p><code>timeDate</code> which is a vector of <code>POSIXct</code> giving the date and time at which the picture was taken. It is generated using the <code>lubridate</code> package. </p></li>
+<li><p><code>codes</code> which is a vector of <code>character</code> giving all codes associated with an image, separated by commas.</p></li>
+<li><p><code>codesBinaryVariables</code> which is a <code>data.frame</code> of boolean. Each column corresponds to a code, and each line corresponds to a picture. Each cell at line i and at column j thus indicates whether the code j was attributed to the image i.</p></li>
+<li><p><code>dicoCoding</code> which is the list of annotations whose structure was previously presented. It is very important to have it stored in the same object as the coding results, since it explains the meaning of the results. Without <code>dicoCoding</code>, results do not make any sense. Likewise, it is important for comparable <code>wearableCamImages</code> objects to have the same <code>dicoCoding</code>, because comparing coding results obtained with different lists of annotations would not make any sense.</p></li>
+</ul>
+
+<p>The function used to create a <code>wearableCamImages</code> object is called <code>convertInput</code>.</p>
+
+<p>For finding both inputs and interpreting them the <code>convertInput</code> function needs to know the paths to each file, <code>pathResults</code> and <code>pathDicoCoding</code> and the separator used in each of them, <code>sepResults</code> and <code>sepDicoCoding</code>. For the file with coding results, it is important to say whether date are given in the &ldquo;ymd&rdquo; (year, month, day, no matter the separator) or &ldquo;dmy&rdquo; (day, month, year, no matter the separator), the default being &ldquo;ymd&rdquo;.</p>
+
+<p>Below we illustrate the use of <code>convertInput</code>.</p>
+
+<pre><code class="r">library(&quot;watchme&quot;)
+pathResults &lt;- system.file(&quot;extdata&quot;, &quot;image_level_pinocchio.csv&quot;, package = &quot;watchme&quot;)
+sepResults &lt;- &quot;,&quot;
+pathDicoCoding &lt;-  system.file(&quot;extdata&quot;, &quot;dicoCoding_pinocchio.csv&quot;, package = &quot;watchme&quot;)
+sepDicoCoding &lt;- &quot;;&quot;
+wearableCamImagesObject &lt;- convertInput(pathResults=pathResults, sepResults=sepResults,
+              pathDicoCoding=pathDicoCoding, sepDicoCoding=sepDicoCoding)
+class(wearableCamImagesObject)
+</code></pre>
+
+<pre><code>## [1] &quot;wearableCamImages&quot;
+## attr(,&quot;package&quot;)
+## [1] &quot;watchme&quot;
+</code></pre>
+
+<h1>From <code>wearableCamImages</code> to table of events</h1>
+
+<p>Using the annotations from the images, when can easily deduce a sequence of events. For instance having two subsequent pictures of washingYourTeeth taken at respectively t1 and t2 would be interpreted as having a washingYourTeeth event from t1 to t2. The <code>toEventLevel</code> allows the conversion from a <code>wearableCamImages</code> object to a table (<code>dplyr</code> class <code>tbl_df</code>) with</p>
+
+<ul>
+<li><p>event index from 1 to the number of events</p></li>
+<li><p>start time (<code>POSIXt</code>), </p></li>
+<li><p>end time (<code>POSIXt</code>), </p></li>
+<li><p>eventCode (<code>character</code>),</p></li>
+<li><p>startPicture and endPicture,</p></li>
+<li><p>noOfPictures in the event.</p></li>
+</ul>
+
+<p>If pictures have several codes, then there can be synchronous events.</p>
+
+<p>The function <code>toEventLevel</code> takes two arguments: the <code>wearableCamImages</code> object and a minimal duration for the events, in pictures, which is called <code>minDuration</code>. Below are two examples of use using a dummy <code>wearableCamImages</code> object that we have put in the package.</p>
+
+<pre><code class="r">data(&quot;dummyWearableCamImages&quot;)
+eventTable &lt;- toEventLevel(wearableCamImagesObject=dummyWearableCamImages)
+eventTable
+</code></pre>
+
+<pre><code>## Source: local data frame [66 x 9]
+## 
+##    eventIndex           startTime             endTime eventCode
+##         (dbl)              (time)              (time)    (fctr)
+## 1           1 2015-06-03 09:37:53 2015-06-03 09:37:53       01A
+## 2           2 2015-06-04 06:16:37 2015-06-04 06:16:37       01A
+## 3           3 2015-06-04 06:42:46 2015-06-04 06:43:24       01A
+## 4           4 2015-06-04 07:01:41 2015-06-04 07:02:14       01A
+## 5           5 2015-06-04 07:03:37 2015-06-04 07:04:51       01A
+## 6           6 2015-06-04 07:06:09 2015-06-04 07:09:14       01A
+## 7           7 2015-06-04 07:11:13 2015-06-04 07:11:13       01A
+## 8           8 2015-06-04 07:17:27 2015-06-04 07:17:27       01A
+## 9           9 2015-06-04 06:16:00 2015-06-04 06:16:00       01B
+## 10         10 2015-06-04 06:26:13 2015-06-04 06:29:03       01B
+## ..        ...                 ...                 ...       ...
+## Variables not shown: noOfPictures (dbl), activity (fctr), group (fctr),
+##   startPicture (int), endPicture (dbl)
+</code></pre>
+
+<pre><code class="r">eventTable2 &lt;- toEventLevel(wearableCamImagesObject=dummyWearableCamImages, minDuration = 2)
+eventTable2
+</code></pre>
+
+<pre><code>## Source: local data frame [29 x 9]
+## 
+##    eventIndex           startTime             endTime eventCode
+##         (dbl)              (time)              (time)    (fctr)
+## 1           3 2015-06-04 06:42:46 2015-06-04 06:43:24       01A
+## 2           4 2015-06-04 07:01:41 2015-06-04 07:02:14       01A
+## 3           5 2015-06-04 07:03:37 2015-06-04 07:04:51       01A
+## 4           6 2015-06-04 07:06:09 2015-06-04 07:09:14       01A
+## 5          10 2015-06-04 06:26:13 2015-06-04 06:29:03       01B
+## 6          11 2015-06-04 06:31:28 2015-06-04 06:34:16       01B
+## 7          14 2015-06-04 08:10:19 2015-06-04 08:11:36       01B
+## 8          19 2015-06-04 06:13:30 2015-06-04 06:16:00       02B
+## 9          21 2015-06-04 06:22:22 2015-06-04 06:23:00       02B
+## 10         22 2015-06-04 06:25:01 2015-06-04 06:35:26       02B
+## ..        ...                 ...                 ...       ...
+## Variables not shown: noOfPictures (dbl), activity (fctr), group (fctr),
+##   startPicture (int), endPicture (dbl)
+</code></pre>
+
+<h1>Plotting a table of events</h1>
+
+<p>The package provides a function using the R <code>ggplot2</code> package for plotting sequences of events. It is quite basic now but could get fancier, maybe even use interactive graphs libraries such as <code>plotly</code> or <code>rCharts</code>. The function is called <code>plotSequence</code> and has the following arguments:</p>
+
+<ul>
+<li><p><code>eventTable</code> which is the table of events to be plotted. It can have been generated by <code>toEventLevel</code>, otherwise it simply needs to be a <code>tbl_df</code> object with the right column names. It can also have been generated by <code>bindCoders</code> and therefore have a column with the coder name.</p></li>
+<li><p><code>doNotUseCode</code> which is a vector of codes that one does not want to plot. This would allow the user to e.g. not show the snackingOnCheapChocolate events by providing its unique X-digit identifier. </p></li>
+<li><p><code>xAxis</code> which allows one to choose whether the events should be plotted against the indices of the pictures, or time. It should thus be &ldquo;time&rdquo; or &ldquo;picture&rdquo;. The default is &ldquo;time&rdquo;.</p></li>
+<li><p><code>facettingGroup</code> is a Boolean that indicates whether one wants to have several facets each corresponding to a group of codes. Thus eating and hygiene could get their own facet.</p></li>
+<li><p><code>facettingCoder</code> is a Boolean that indicates whether one wants to have several facets each corresponding to a coder. If you provide a <code>eventTable</code> with a column for the coder names, it is advised to set this to TRUE, otherwise you&#39;re plotting several intepretations of the pictures on the same graph, with the same colours.</p></li>
+<li><p><code>dicoCoding</code> is an optional argument but is strongly advised. If you provide dicoCoding, then the same colour will always be attributed to each code. If you plot several <code>eventTable</code>s, part of which e.g. do not have washingYourTeeth, you still want to always see the same colour for washingYourHands.</p></li>
+<li><p><code>cbbPaletteYes</code> is a makeshift argument now. In the case in which you provide a dicoCoding with less than 7 activities, you can set this to TRUE and get a colour-blind palette, that is less pink-purple than the default palette.</p></li>
+</ul>
+
+<p>It returns a <code>ggplot</code> object.</p>
+
+<p>Below are several examples.</p>
+
+<pre><code class="r">data(&quot;dummyWearableCamImages&quot;)
+library(&quot;ggplot2&quot;)
+eventTable &lt;- toEventLevel(wearableCamImagesObject=dummyWearableCamImages)
+plotSequence(eventTable)
+</code></pre>
+
+<p><img src="data:image/png;base64,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" alt="plot of chunk unnamed-chunk-5"/> </p>
+
+<pre><code class="r">plotSequence(eventTable, xAxis=&quot;picture&quot;, facettingGroup=TRUE)
+</code></pre>
+
+<p><img src="data:image/png;base64,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" alt="plot of chunk unnamed-chunk-5"/> </p>
+
+<p>For plotting results from more than one coder, one has to start by creating a table of events containing all the results using the <code>bindCoders</code>function that takes a list of <code>wearableCamImages</code> objects as input, as well as a <code>minDuration</code> for events (in pictures).</p>
+
+<pre><code class="r">eventTableCoders &lt;- bindCoders(list(dummyWearableCamImages, dummyWearableCamImages), minDuration = 1)
+plotSequence(eventTableCoders, facettingGroup = TRUE, facettingCoder = TRUE,
+dicoCoding=dummyWearableCamImages@dicoCoding)
+</code></pre>
+
+<p><img src="data:image/png;base64,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" alt="plot of chunk unnamed-chunk-6"/> </p>
+
+<h1>Calculating interrater reliability</h1>
+
+<p>An important aspect of coding images is having a list of annotations that provides consistent results acrossed (trained) coders, or raters. Therefore one needs to check and report interrater reliability. Nowadays the state of the art is to use Cohen&#39;s kappa for codes attributed to pictures, even if they are not independent (Aiden Doherty&#39;s personal communication). In the package we provide a function for calculating interrater reliability (or IRR) this way, which is called <code>irrWatchme</code>. It uses functions of the R <code>irr</code> package. It allows using several possibilities for defining what codes are to be compared:</p>
+
+<ul>
+<li><p>one could compare the global annotations of all files, i.e. all codes at the same time. For instance compare washingYourTeeth; readingABook to washingYourTeeh; readingAMagazine for picture 1 between coder A and coder B. This is the default option.</p></li>
+<li><p>one could merge all codes from a group for each picture. So we would compare eatingBadFood; drinkingWater to eatingBadFood even if the complete annotation are eatingBadFood, drinkingWater; readingABook and eatingBadFood; readingABook. For this one needs to set the <code>byCode</code> argument to TRUE.</p></li>
+<li><p>one could look separately at each code using binary variables. For instance for washingYourTeeth comparing TRUE to TRUE and for readingABook TRUE to FALSE. For this one needs to set the <code>byGroup</code> argument to TRUE but the <code>byCode</code> argument to FALSE.</p></li>
+</ul>
+
+<p>In the case in which wants to compare results provided by more than two coders, another choice to be made is whether all coders are to be compared together using Fleiss Kappa, or one to one using Cohen&#39;s kappa. This is set with the <code>oneToOne</code> Boolean argument.</p>
+
+<p>The comparison one wants to make depends on the context of the calculation of the IRR. When developping a new list of annotations one wants to see interrater reliability for each code, later when may want to report a single figure for the whole list of annotations.</p>
+
+<p>Below are a few examples for two coders to be compared. Note that here the two coders are the same person with the same coding results so it&#39;s not that interesting.</p>
+
+<p>The default is to compare all annotations together.</p>
+
+<pre><code class="r">library(&quot;xtable&quot;)
+data(&quot;dummyWearableCamImages&quot;)
+listWC &lt;- list(dummyWearableCamImages, dummyWearableCamImages)
+namesList &lt;- c(&quot;Cain&quot;, &quot;Abel&quot;)
+irrWatchme(listWC, namesList=namesList)
+</code></pre>
+
+<pre><code>## Source: local data frame [1 x 8]
+## 
+##                                             method pictures agreedOn
+##                                             (fctr)    (int)    (int)
+## 1 Cohen&#39;s Kappa for 2 Raters (Weights: unweighted)      956      956
+## Variables not shown: raters (int), ratersNames (fctr), Kappa (dbl), z
+##   (dbl), pValue (dbl)
+</code></pre>
+
+<p>Here we compare annotations by group of codes. One gets a list of as many tables as there are groups.</p>
+
+<pre><code class="r">irrWatchme(listWC, namesList=c(&quot;Cain&quot;, &quot;Abel&quot;), oneToOne=TRUE, byGroup=TRUE)
+</code></pre>
+
+<pre><code>## $`1`
+## Source: local data frame [1 x 8]
+## 
+##                                             method pictures agreedOn
+##                                             (fctr)    (int)    (int)
+## 1 Cohen&#39;s Kappa for 2 Raters (Weights: unweighted)      956      956
+## Variables not shown: raters (int), ratersNames (fctr), Kappa (dbl), z
+##   (dbl), pValue (dbl)
+## 
+## $`99`
+## Source: local data frame [1 x 8]
+## 
+##                                             method pictures agreedOn
+##                                             (fctr)    (int)    (int)
+## 1 Cohen&#39;s Kappa for 2 Raters (Weights: unweighted)      956      956
+## Variables not shown: raters (int), ratersNames (fctr), Kappa (dbl), z
+##   (dbl), pValue (dbl)
+</code></pre>
+
+<p>Here we compare annotations by code. One gets a list of as many tables as there are codes.</p>
+
+<pre><code class="r">irrWatchme(listWC, namesList=c(&quot;Cain&quot;, &quot;Abel&quot;), oneToOne=TRUE, byCode=TRUE)
+</code></pre>
+
+<pre><code>## $`01A`
+## Source: local data frame [1 x 10]
+## 
+##                                             method pictures agreedOn
+##                                             (fctr)    (int)    (int)
+## 1 Cohen&#39;s Kappa for 2 Raters (Weights: unweighted)      956      956
+## Variables not shown: rater1YesRater2No (int), rater1NoRater2Yes (int),
+##   raters (int), ratersNames (fctr), Kappa (dbl), z (dbl), pValue (dbl)
+## 
+## $`01B`
+## Source: local data frame [1 x 10]
+## 
+##                                             method pictures agreedOn
+##                                             (fctr)    (int)    (int)
+## 1 Cohen&#39;s Kappa for 2 Raters (Weights: unweighted)      956      956
+## Variables not shown: rater1YesRater2No (int), rater1NoRater2Yes (int),
+##   raters (int), ratersNames (fctr), Kappa (dbl), z (dbl), pValue (dbl)
+## 
+## $`01C`
+## Source: local data frame [1 x 10]
+## 
+##                                             method pictures agreedOn
+##                                             (fctr)    (int)    (int)
+## 1 Cohen&#39;s Kappa for 2 Raters (Weights: unweighted)      956      956
+## Variables not shown: rater1YesRater2No (int), rater1NoRater2Yes (int),
+##   raters (int), ratersNames (fctr), Kappa (dbl), z (dbl), pValue (dbl)
+## 
+## $`02B`
+## Source: local data frame [1 x 10]
+## 
+##                                             method pictures agreedOn
+##                                             (fctr)    (int)    (int)
+## 1 Cohen&#39;s Kappa for 2 Raters (Weights: unweighted)      956      956
+## Variables not shown: rater1YesRater2No (int), rater1NoRater2Yes (int),
+##   raters (int), ratersNames (fctr), Kappa (dbl), z (dbl), pValue (dbl)
+## 
+## $`02A`
+## Source: local data frame [1 x 10]
+## 
+##                                             method pictures agreedOn
+##                                             (fctr)    (int)    (int)
+## 1 Cohen&#39;s Kappa for 2 Raters (Weights: unweighted)      956      956
+## Variables not shown: rater1YesRater2No (int), rater1NoRater2Yes (int),
+##   raters (int), ratersNames (fctr), Kappa (dbl), z (dbl), pValue (dbl)
+## 
+## $`03A`
+## Source: local data frame [1 x 10]
+## 
+##                                             method pictures agreedOn
+##                                             (fctr)    (int)    (int)
+## 1 Cohen&#39;s Kappa for 2 Raters (Weights: unweighted)      956      956
+## Variables not shown: rater1YesRater2No (int), rater1NoRater2Yes (int),
+##   raters (int), ratersNames (fctr), Kappa (dbl), z (dbl), pValue (dbl)
+## 
+## $`01.`
+## Source: local data frame [1 x 10]
+## 
+##                                             method pictures agreedOn
+##                                             (fctr)    (int)    (int)
+## 1 Cohen&#39;s Kappa for 2 Raters (Weights: unweighted)      956      956
+## Variables not shown: rater1YesRater2No (int), rater1NoRater2Yes (int),
+##   raters (int), ratersNames (fctr), Kappa (dbl), z (dbl), pValue (dbl)
+</code></pre>
+
+<p>And then for more than two coders. If we do the comparison one by one, the resulting table has as many lines as there are possible pairs of coders. Here we compare all annotations together but even when comparing more than two coders you can do it by group of codes or by code.</p>
+
+<pre><code class="r">listWC2 &lt;- list(dummyWearableCamImages, dummyWearableCamImages, dummyWearableCamImages)
+namesList &lt;- c(&quot;Riri&quot;, &quot;Fifi&quot;, &quot;Loulou&quot;)
+irrWatchme(listWC2, namesList=namesList)
+</code></pre>
+
+<pre><code>## Source: local data frame [1 x 8]
+## 
+##                       method pictures agreedOn raters        ratersNames
+##                       (fctr)    (int)    (int)  (int)             (fctr)
+## 1 Fleiss&#39; Kappa for m Raters      956      956      3 Riri, Fifi, Loulou
+## Variables not shown: Kappa (dbl), z (dbl), pValue (dbl)
+</code></pre>
+
+<pre><code class="r">irrWatchme(listWC2, namesList=namesList, oneToOne=TRUE)
+</code></pre>
+
+<pre><code>## Source: local data frame [3 x 8]
+## 
+##                                             method pictures agreedOn
+##                                             (fctr)    (int)    (int)
+## 1 Cohen&#39;s Kappa for 2 Raters (Weights: unweighted)      956      956
+## 2 Cohen&#39;s Kappa for 2 Raters (Weights: unweighted)      956      956
+## 3 Cohen&#39;s Kappa for 2 Raters (Weights: unweighted)      956      956
+## Variables not shown: rater1 (fctr), rater2 (fctr), Kappa (dbl), z (dbl),
+##   pValue (dbl)
+</code></pre>
+
+<h1>Conclusion</h1>
+
+<p>The package is meant to be improved and expanded as the CHAI project goes on. We want our code to be:</p>
+
+<ul>
+<li><p>reproducible, which is why we publish it as a R package.</p></li>
+<li><p>robust, which is why we added tests using the <code>testthat</code> package, and which is why we need to hear bug reports.</p></li>
+<li><p>well documented. So if you have remarks about the documentation and this vignette, do not hesitate to contact us!</p></li>
+<li><p>a work in progress, using your suggestions about needed functionalities.</p></li>
+<li><p>the reference for analysing such a data not because we&#39;re over-ambitious, but because we think that the field of wearable camera images analysis will gain for having a platform for exchangig code.</p></li>
+</ul>
+
+<p>So please do participate in the development of this R package! :-)</p>
+
+</body>
+
+</html>

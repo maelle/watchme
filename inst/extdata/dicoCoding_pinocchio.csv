@@ -1,0 +1,8 @@
+Code;Meaning;Group
+01A;BiomassCookingUnit;1
+01B;LPGStove;1
+01C;OtherCookingUnit;1
+02B;PresenceKitchen;1
+02A;FoodPreparation;1
+03A;Eating;1
+01.;Cooking;99

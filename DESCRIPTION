@@ -1,0 +1,14 @@
+Package: watchme
+Type: Package
+Title: What the Package Does (Title Case)
+Version: 0.1
+Date: 2015-11-17
+Author: M. Salmon
+Maintainer: Who to complain to <maelle.salmon@yahoo.se>
+Description: More about what it does (maybe more than one line)
+License: GPL (version 2 or later)
+LazyData: TRUE
+RoxygenNote: 5.0.1
+Suggests: knitr,
+    rmarkdown
+VignetteBuilder: knitr
