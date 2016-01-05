@@ -1,7 +1,7 @@
 #' Creates a table with events from the image level annotation information.
 #'
-#' @import dplyr
-#' @import lubridate
+#' @importFrom  dplyr tbl_df filter
+#' @importFrom lubridate ymd_hms
 #' @param wearableCamImagesObject the werableCamImagesObject contining the image level annotation information
 #' (and the dico coding, of course)
 #' @param minDuration the minimal number of images for defining an event. Default is 1.

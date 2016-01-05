@@ -15,7 +15,7 @@ and contains different names.}
 
 \item{oneToOne}{a boolean indicating whether Cohen's kappa should be calculated for each possible
 pair of coders in case of more than 2 coders,
-instead of Fleiss’s Kappa for all coders at the same time.}
+instead of Fleiss's Kappa for all coders at the same time.}
 
 \item{byGroup}{boolean indicating whether the IRR should be calculated for each group of codes separately.}
 
@@ -32,15 +32,15 @@ If there are only two raters the called function is \code{kappa2}, unweighted.
 Calculates interrater reliability using the irr package.
 }
 \examples{
-data("dummyWearableCamImages")
+data('dummyWearableCamImages')
 listWC <- list(dummyWearableCamImages, dummyWearableCamImages)
-namesList <- c("Cain", "Abel")
+namesList <- c('Cain', 'Abel')
 irrWatchme(listWC, namesList=namesList)
 listWC2 <- list(dummyWearableCamImages, dummyWearableCamImages, dummyWearableCamImages)
-namesList <- c("Riri", "Fifi", "Loulou")
+namesList <- c('Riri', 'Fifi', 'Loulou')
 irrWatchme(listWC2, namesList=namesList)
 irrWatchme(listWC2, namesList=namesList, oneToOne=TRUE)
-irrWatchme(listWC, namesList=c("Cain", "Abel"), oneToOne=TRUE, byCode=TRUE)
-irrWatchme(listWC, namesList=c("Cain", "Abel"), oneToOne=TRUE, byGroup=TRUE)
+irrWatchme(listWC, namesList=c('Cain', 'Abel'), oneToOne=TRUE, byCode=TRUE)
+irrWatchme(listWC, namesList=c('Cain', 'Abel'), oneToOne=TRUE, byGroup=TRUE)
 }
 

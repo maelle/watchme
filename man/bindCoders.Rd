@@ -11,8 +11,9 @@ bindCoders(wearableCamImagesList, namesList = NULL, minDuration = 1)
 \item{wearableCamImagesList}{a list of \code{wearableCamImages} objects.}
 
 \item{namesList}{(optional) a list of names for the coders. It must be the same length as wearableCamImagesList
-and contains different names.
- @param minDuration the minimal number of images for defining an event. Default is 1.}
+and contains different names.}
+
+\item{minDuration}{the minimal number of images for defining an event. Default is 1.}
 }
 \value{
 A \code{tbl_df} with event index, start time (POSIXt),
@@ -23,7 +24,7 @@ Creates a table with events from the image level annotation information,
  with an additional columns with the names of the coders.
 }
 \examples{
-data("dummyWearableCamImages")
+data('dummyWearableCamImages')
 bindCoders(list(dummyWearableCamImages, dummyWearableCamImages), minDuration = 1)
 }
 

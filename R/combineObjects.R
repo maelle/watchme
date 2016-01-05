@@ -1,7 +1,6 @@
 #' Allows to merge several \code{wearableCamImages} objects,
 #' i.e. for looking at coding results of one rater.
 #'
-#' @import lubridate
 #' @param wearableCamImagesList a list of 2 \code{wearableCamImages} objects.
 #' @return A list of \code{wearableCamImages} objects.
 #' @examples

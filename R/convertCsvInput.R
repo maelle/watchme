@@ -1,6 +1,6 @@
 #' Creates a wearableCamImages object from information read in a csv file.
 #'
-#' @import lubridate
+#' @importFrom lubridate ymd_hms mdy_hms
 #' @param pathResults the path to the file with coding results
 #' @param sepResults the separator in the file with coding results
 #' @param pathDicoCoding the path to the file with the list of annotations
@@ -37,11 +37,11 @@ convertInput <- function(pathResults, sepResults,
   imagePath <- unique(as.character(resultsCoding$image_path))
 
   if(formatDate=="ymd"){
-    timeDate <- ymd_hms(as.character(resultsCoding$image_time))[!duplicated(as.character(resultsCoding$image_path))]
+    timeDate <- lubridate::ymd_hms(as.character(resultsCoding$image_time))[!duplicated(as.character(resultsCoding$image_path))]
   }
 
   if(formatDate=="mdy"){
-    timeDate <- mdy_hms(as.character(resultsCoding$image_time))[!duplicated(as.character(resultsCoding$image_path))]
+    timeDate <- lubridate::mdy_hms(as.character(resultsCoding$image_time))[!duplicated(as.character(resultsCoding$image_path))]
   }
 
 

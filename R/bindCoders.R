@@ -1,23 +1,24 @@
 #' Creates a table with events from the image level annotation information,
 #'  with an additional columns with the names of the coders.
 #'
+#' @importFrom dplyr tbl_df
 #' @param wearableCamImagesList a list of \code{wearableCamImages} objects.
 #' @param namesList (optional) a list of names for the coders. It must be the same length as wearableCamImagesList
 #' and contains different names.
-#'  @param minDuration the minimal number of images for defining an event. Default is 1.
+#' @param minDuration the minimal number of images for defining an event. Default is 1.
 #' @return  A \code{tbl_df} with event index, start time (POSIXt),
 #' end time (POSIXt), annotation (character) and coder name.
 #' @examples
-#' data("dummyWearableCamImages")
+#' data('dummyWearableCamImages')
 #' bindCoders(list(dummyWearableCamImages, dummyWearableCamImages), minDuration = 1)
 
 #' @export
 bindCoders <- function(wearableCamImagesList, namesList=NULL, minDuration=1){
-  if(length(wearableCamImagesList)==1){stop("Don't bother using this function if you only have one wearableCamImages object.")}
+  if(length(wearableCamImagesList)==1){stop('Do not bother using this function if you only have one wearableCamImages object.')}
 
   if (!is.null(namesList)){
-    if(length(namesList)!=length(wearableCamImagesList)){stop("Not as many names as wearableCamImages objects")}
-    if(length(levels(factor(namesList)))!=length(namesList)){stop("Please provide unique names for the coders")}
+    if(length(namesList)!=length(wearableCamImagesList)){stop('Not as many names as wearableCamImages objects')}
+    if(length(levels(factor(namesList)))!=length(namesList)){stop('Please provide unique names for the coders')}
   }
 
   if(is.null(namesList)){

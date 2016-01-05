@@ -1,6 +1,6 @@
 #' An S4 class to store information about images and their code.
-#' @name wearableCamImages
-#' @rdname wearableCamImages
+#' @name wearableCamImages-class
+#' @rdname wearableCamImages-class
 #'
 #' @slot participantID Name or ID number of the participant (character)
 #' @slot imagePath Path or name of the image in order to be able to identify duplicates (character)
