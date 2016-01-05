@@ -14,3 +14,5 @@ Suggests: knitr,
 VignetteBuilder: knitr
 URL: http://github.com/masalmon/watchme
 BugReports: http://github.com/masalmon/watchme/issues
+Depends: dplyr, ggplot2, irr, lubridate
+
