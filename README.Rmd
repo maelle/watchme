@@ -6,6 +6,17 @@ output:
   md_document:
     variant: markdown_github
 ---
+
+[![Build Status](https://travis-ci.org/masalmon/watchme.svg)](https://travis-ci.org/masalmon/watchme)
+
+# Installation
+
+```{r, eval=FALSE}
+library("devtools")
+install_github("masalmon/watchme", build_vignettes=TRUE)
+
+```
+
 # Introduction
 
 This package aims at supporting robust and reproducible analysis of annotation results of wearable camera images. The workflow is as follows: 

@@ -1,3 +1,13 @@
+[![Build Status](https://travis-ci.org/masalmon/watchme.svg)](https://travis-ci.org/masalmon/watchme)
+
+Installation
+============
+
+``` r
+library("devtools")
+install_github("masalmon/watchme", build_vignettes=TRUE)
+```
+
 Introduction
 ============
 
@@ -202,13 +212,13 @@ eventTable <- toEventLevel(wearableCamImagesObject=dummyWearableCamImages)
 plotSequence(eventTable)
 ```
 
-![](README_files/figure-markdown_github/unnamed-chunk-5-1.png)
+![](README_files/figure-markdown_github/unnamed-chunk-6-1.png)
 
 ``` r
 plotSequence(eventTable, xAxis="picture", facettingGroup=TRUE)
 ```
 
-![](README_files/figure-markdown_github/unnamed-chunk-5-2.png)
+![](README_files/figure-markdown_github/unnamed-chunk-6-2.png)
 
 For plotting results from more than one coder, one has to start by creating a table of events containing all the results using the `bindCoders`function that takes a list of `wearableCamImages` objects as input, as well as a `minDuration` for events (in pictures).
 
@@ -218,7 +228,7 @@ plotSequence(eventTableCoders, facettingGroup = TRUE, facettingCoder = TRUE,
 dicoCoding=dummyWearableCamImages@dicoCoding)
 ```
 
-![](README_files/figure-markdown_github/unnamed-chunk-6-1.png)
+![](README_files/figure-markdown_github/unnamed-chunk-7-1.png)
 
 Calculating interrater reliability
 ==================================
