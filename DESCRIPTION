@@ -10,7 +10,8 @@ License: GPL (version 2 or later)
 LazyData: TRUE
 RoxygenNote: 5.0.1
 Suggests: knitr,
-    rmarkdown
+    rmarkdown,
+    testthat
 VignetteBuilder: knitr
 URL: http://github.com/masalmon/watchme
 BugReports: http://github.com/masalmon/watchme/issues
