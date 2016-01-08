@@ -157,6 +157,22 @@ test_that("irrWatchme uses namesList well", {
                          namesList=c("theOnlyOne", "theOnlyOne")),
               throws_error("Please provide unique names for the coders"))
 
+  expect_that(irrWatchme(list(dummyWearableCamImages, dummyWearableCamImages)),
+                         is_a("tbl_df"))
+
+})
+
+test_that("irrWatchme checks comparability",{
+  data("dummyWearableCamImages")
+  dummyWearableCamImages2 <- dummyWearableCamImages
+  dummyWearableCamImages2@codes <- dummyWearableCamImages@codes[1:10]
+  expect_error(irrWatchme(list(dummyWearableCamImages, dummyWearableCamImages2)),
+               "There should be the same number of pictures in each wearableCamImages object!")
+
+  dummyWearableCamImages2 <- dummyWearableCamImages
+  dummyWearableCamImages2@dicoCoding <- dummyWearableCamImages@dicoCoding[1:6,]
+  expect_error(irrWatchme(list(dummyWearableCamImages, dummyWearableCamImages2)),
+               "All wearableCamImages objects should have the same dicoCoding!")
 })
 
 test_that("irrWatchme outputs the right type of results depending on the options",{
@@ -206,7 +222,9 @@ test_that("irrWatchme outputs the right type of results depending on the options
   expect_that(as.character(output[[1]]$method), equals("Cohen's Kappa for 2 Raters (Weights: unweighted)"))
 })
 
-
+test_that("irrWachme outputs an error if there is only one file",{
+  expect_error(irrWatchme(list(dummyWearableCamImages)), "Do not bother using this function if you only have one wearableCamImages object.")
+})
 #################################################################################################
 context("combineObjects")
 #################################################################################################

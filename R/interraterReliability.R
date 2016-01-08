@@ -59,6 +59,9 @@ irrWatchme <- function(wearableCamImagesList, namesList=NULL, oneToOne=FALSE, by
   nElements <- nrow(dicoRef)*ncol(dicoRef)
   dicoCodings <- lapply(wearableCamImagesList, getDicoCoding)
 
+  if(length(unique(lapply(dicoCodings,nrow)))!=1){stop('All wearableCamImages objects should have the same dicoCoding!')}
+  if(length(unique(lapply(dicoCodings,ncol)))!=1){stop('All wearableCamImages objects should have the same dicoCoding!')}
+
   compareDicos <- function(x){
     return( sum(x==dicoRef)==nElements)
   }
