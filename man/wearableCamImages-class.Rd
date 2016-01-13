@@ -17,7 +17,7 @@ An S4 class to store information about images and their code.
 
 \item{\code{timeDate}}{Time and date of each image (POSIXt)}
 
-\item{\code{codes}}{annotation(s) given to this image (character), e.g. separated by ";".}
+\item{\code{codes}}{annotation(s) given to this image (character), e.g. separated by ';'.}
 
 \item{\code{codesBinaryVariables}}{table of boolean, indicating if a given code was given to a given picture. \code{codes} is a condensed
 form of this slot.}

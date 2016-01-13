@@ -8,4 +8,4 @@
 #' of such data, from calculating interrater reliability to using the activity data as covariate.
 #'
 "_PACKAGE"
-#> [1] "_PACKAGE"
+# > [1] '_PACKAGE' 

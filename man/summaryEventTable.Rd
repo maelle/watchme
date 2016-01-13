@@ -16,8 +16,8 @@ A data table with the (sub)category, the number of identified events, the averag
 Creates a table with summary statistics for event of each (sub)category.
 }
 \examples{
-data("dummyWearableCamImages")
-library("ggplot2")
+data('dummyWearableCamImages')
+library('ggplot2')
 eventTable <- toEventLevel(wearableCamImagesObject=dummyWearableCamImages)
 summaryEventTable(eventTable)
 }

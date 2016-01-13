@@ -18,7 +18,7 @@ Allows to merge several \code{wearableCamImages} objects,
 i.e. for looking at coding results of one rater.
 }
 \examples{
-data("dummyWearableCamImages")
+data('dummyWearableCamImages')
 wearableCamImagesList <- list(dummyWearableCamImages, dummyWearableCamImages)
 correctedList <- combineObjects(wearableCamImagesList)
 }

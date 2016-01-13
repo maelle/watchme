@@ -16,7 +16,7 @@ convertInput(pathResults, sepResults, pathDicoCoding, sepDicoCoding,
 
 \item{sepDicoCoding}{the separator in the file with the list of annotations}
 
-\item{formatDate}{either "ymd" or "dmy".}
+\item{formatDate}{either 'ymd' or 'dmy'.}
 }
 \value{
 A \code{wearableCamImages} object.
@@ -32,10 +32,10 @@ instead of having to re-format all your existing data,
 which we could even add to the package.
 }
 \examples{
-pathResults <- system.file("extdata", "image_level_pinocchio.csv", package = "watchme")
-sepResults <- ","
-pathDicoCoding <-  system.file("extdata", "dicoCoding_pinocchio.csv", package = "watchme")
-sepDicoCoding <- ";"
+pathResults <- system.file('extdata', 'image_level_pinocchio.csv', package = 'watchme')
+sepResults <- ','
+pathDicoCoding <-  system.file('extdata', 'dicoCoding_pinocchio.csv', package = 'watchme')
+sepDicoCoding <- ';'
 wearableCamImagesObject <- convertInput(pathResults=pathResults, sepResults=sepResults,
               pathDicoCoding=pathDicoCoding, sepDicoCoding=sepDicoCoding)
 class(wearableCamImagesObject)

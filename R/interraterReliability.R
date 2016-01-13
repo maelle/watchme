@@ -86,80 +86,80 @@ irrWatchme <- function(wearableCamImagesList, namesList=NULL,
     }
 
   # Easy, simply compares the equality of anotations
-  if ( !byGroup & !byCode){
-  # create the table for comparing
-  dat <- NULL
-  for (i in 1:length(wearableCamImagesList)){
-    dat <- cbind(dat, wearableCamImagesList[[i]]@codes)
-  }
-
-  dat <- as.data.frame(dat)
-  names(dat) <- namesList
-
-  if (length(wearableCamImagesList) == 2){
-    results <- irr::kappa2(dat, "unweighted")
-    tableResults <- data.frame(method=results$method,
-                               pictures=results$subjects,
-                               agreedOn=sum(dat[,1] == dat[,2]),
-                               raters=results$raters,
-                               ratersNames=
-                                 paste(namesList[[1]], "and",
-                                       namesList[[2]], sep=" "),
-                               Kappa=results$value,
-                               z=results$statistic,
-                               pValue=results$p.value)
-    tableResults <- dplyr::tbl_df(tableResults)
-  }
-
-  if (length(wearableCamImagesList) > 2 & !oneToOne){
-
-    results <- irr::kappam.fleiss(dat)
-
-    lengthOfUnique <- function(x){
-      return(length(unique(x)))
+    if ( !byGroup & !byCode){
+    # create the table for comparing
+    dat <- NULL
+    for (i in 1:length(wearableCamImagesList)){
+      dat <- cbind(dat, wearableCamImagesList[[i]]@codes)
     }
 
-    agreedOn <- sum(apply(dat, 1, lengthOfUnique) == 1)
+    dat <- as.data.frame(dat)
+    names(dat) <- namesList
 
-
-    tableResults <- data.frame(method=results$method,
-                               pictures=results$subjects,
-                               agreedOn=agreedOn,
-                               raters=results$raters,
-                               ratersNames=toString(namesList),
-                               Kappa=results$value,
-                               z=results$statistic,
-                               pValue=results$p.value)
-    tableResults <- dplyr::tbl_df(tableResults)
-  }
-
-  if (length(wearableCamImagesList) > 2 & oneToOne){
-
-    pairs <- as.data.frame(t(combn(namesList, 2)))
-    names(pairs) <- c("rater1", "rater2")
-
-    tableResults <- NULL
-    for (i in 1:nrow(pairs)){
-      rater1 <- pairs$rater1[i]
-      rater2 <- pairs$rater2[i]
-
-      results <- irr::kappa2(dat[, c(rater1, rater2)], "unweighted")
-      temp <- data.frame(method=results$method,
-                         pictures=results$subjects,
-                         agreedOn=sum(
-                           dat[,rater1] == dat[,rater2]),
-                         rater1=rater1,
-                         rater2=rater2,
-                         Kappa=results$value,
-                         z=results$statistic,
-                         pValue=results$p.value)
-      tableResults <- rbind(tableResults, temp)
+    if (length(wearableCamImagesList) == 2){
+      results <- irr::kappa2(dat, "unweighted")
+      tableResults <- data.frame(method=results$method,
+                                 pictures=results$subjects,
+                                 agreedOn=sum(dat[,1] == dat[,2]),
+                                 raters=results$raters,
+                                 ratersNames=
+                                   paste(namesList[[1]], "and",
+                                         namesList[[2]], sep=" "),
+                                 Kappa=results$value,
+                                 z=results$statistic,
+                                 pValue=results$p.value)
+      tableResults <- dplyr::tbl_df(tableResults)
     }
 
-    tableResults <- dplyr::tbl_df(tableResults)
-  }
+    if (length(wearableCamImagesList) > 2 & !oneToOne){
 
-  return(tableResults)
+      results <- irr::kappam.fleiss(dat)
+
+      lengthOfUnique <- function(x){
+        return(length(unique(x)))
+      }
+
+      agreedOn <- sum(apply(dat, 1, lengthOfUnique) == 1)
+
+
+      tableResults <- data.frame(method=results$method,
+                                 pictures=results$subjects,
+                                 agreedOn=agreedOn,
+                                 raters=results$raters,
+                                 ratersNames=toString(namesList),
+                                 Kappa=results$value,
+                                 z=results$statistic,
+                                 pValue=results$p.value)
+      tableResults <- dplyr::tbl_df(tableResults)
+    }
+
+    if (length(wearableCamImagesList) > 2 & oneToOne){
+
+      pairs <- as.data.frame(t(combn(namesList, 2)))
+      names(pairs) <- c("rater1", "rater2")
+
+      tableResults <- NULL
+      for (i in 1:nrow(pairs)){
+        rater1 <- pairs$rater1[i]
+        rater2 <- pairs$rater2[i]
+
+        results <- irr::kappa2(dat[, c(rater1, rater2)], "unweighted")
+        temp <- data.frame(method=results$method,
+                           pictures=results$subjects,
+                           agreedOn=sum(
+                             dat[,rater1] == dat[,rater2]),
+                           rater1=rater1,
+                           rater2=rater2,
+                           Kappa=results$value,
+                           z=results$statistic,
+                           pValue=results$p.value)
+        tableResults <- rbind(tableResults, temp)
+      }
+
+      tableResults <- dplyr::tbl_df(tableResults)
+    }
+
+
 }
 
 
@@ -356,9 +356,9 @@ irrWatchme <- function(wearableCamImagesList, namesList=NULL,
       }
 
     }
-    return(listResults)
+    tableResults <- listResults
   }
 
-
+  return(tableResults)
 
 }

@@ -14,7 +14,7 @@ plotSequence(eventTable, doNotUseCode = NULL, xAxis = "time",
 \item{doNotUseCode}{a vector of codes that you do not want to see on the graph, e.g. if you have both codes
 for categories and subcategories you may want to not plot categories.}
 
-\item{xAxis}{either "time" or "picture" index as x axis variable.}
+\item{xAxis}{either 'time' or 'picture' index as x axis variable.}
 
 \item{facettingGroup}{boolean indicating whether there should be one plot per group of activities
 (as defined in the dicoCoding)}
@@ -33,11 +33,11 @@ A \code{ggplot2} graph.
 Creates a table with events from the image level annotation information.
 }
 \examples{
-data("dummyWearableCamImages")
-library("ggplot2")
+data('dummyWearableCamImages')
+library('ggplot2')
 eventTable <- toEventLevel(wearableCamImagesObject=dummyWearableCamImages)
 plotSequence(eventTable)
-plotSequence(eventTable, xAxis="picture", facettingGroup=TRUE)
+plotSequence(eventTable, xAxis='picture', facettingGroup=TRUE)
 eventTableCoders <- bindCoders(list(dummyWearableCamImages, dummyWearableCamImages), minDuration = 1)
 plotSequence(eventTableCoders, facettingGroup = TRUE, facettingCoder = TRUE,
 dicoCoding=dummyWearableCamImages@dicoCoding)

@@ -19,7 +19,7 @@ A \code{tbl_df} with event index, start time (POSIXt), end time (POSIXt) and eve
 Creates a table with events from the image level annotation information.
 }
 \examples{
-data("dummyWearableCamImages")
+data('dummyWearableCamImages')
 eventTable <- toEventLevel(wearableCamImagesObject=dummyWearableCamImages)
 eventTable
 eventTable2 <- toEventLevel(wearableCamImagesObject=dummyWearableCamImages, minDuration = 2)
