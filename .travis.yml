@@ -12,5 +12,4 @@ notifications:
 
 after_success:
   - Rscript -e 'library(covr); codecov()'
-  - Rscript -e 'lintr::lint_package()'
 

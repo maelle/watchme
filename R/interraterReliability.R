@@ -32,20 +32,20 @@ irrWatchme <- function(wearableCamImagesList, namesList=NULL,
 
   # Some checks for the namesList which is not a list but a vector.
 
-  if(length(wearableCamImagesList) == 1){
+  if (length(wearableCamImagesList) == 1){
     stop("Do not bother using this function if you only have one wearableCamImages object.")# nolint
     }
 
   if (!is.null(namesList)){
-    if(length(namesList) != length(wearableCamImagesList)){
+    if (length(namesList) != length(wearableCamImagesList)){
       stop("Not as many names as wearableCamImages objects")
       }
-    if(length(levels(factor(namesList))) != length(namesList)){
+    if (length(levels(factor(namesList))) != length(namesList)){
       stop("Please provide unique names for the coders")
       }
   }
 
-  if(is.null(namesList)){
+  if (is.null(namesList)){
     namesList <- as.character(1:length(wearableCamImagesList))
   }
 
@@ -69,10 +69,10 @@ irrWatchme <- function(wearableCamImagesList, namesList=NULL,
   nElements <- nrow(dicoRef) * ncol(dicoRef)
   dicoCodings <- lapply(wearableCamImagesList, getDicoCoding)
 
-  if(length(unique(lapply(dicoCodings,nrow))) != 1){
+  if (length(unique(lapply(dicoCodings,nrow))) != 1){
     stop("All wearableCamImages objects should have the same dicoCoding!")# nolint
     }
-  if(length(unique(lapply(dicoCodings,ncol))) != 1){
+  if (length(unique(lapply(dicoCodings,ncol))) != 1){
     stop("All wearableCamImages objects should have the same dicoCoding!")# nolint
     }
 
@@ -86,7 +86,7 @@ irrWatchme <- function(wearableCamImagesList, namesList=NULL,
     }
 
   # Easy, simply compares the equality of anotations
-  if( !byGroup & !byCode){
+  if ( !byGroup & !byCode){
   # create the table for comparing
   dat <- NULL
   for (i in 1:length(wearableCamImagesList)){
@@ -267,7 +267,7 @@ irrWatchme <- function(wearableCamImagesList, namesList=NULL,
       }
     }
 
-    if(byCode){
+    if (byCode){
 
       for (j in 1:ncol(wearableCamImagesList[[1]]@codesBinaryVariables)){
         code <- names(wearableCamImagesList[[1]]@codesBinaryVariables)[j]

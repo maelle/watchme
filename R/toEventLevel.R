@@ -46,7 +46,7 @@ toEventLevel <- function(wearableCamImagesObject, minDuration = 1){
 
     for (line in 1:length(resultsCoding)){
 
-      if(grepl(possibleCode, resultsCoding[line])){
+      if (grepl(possibleCode, resultsCoding[line])){
 
       eventCounter <- eventCounter + 1
 

@@ -27,21 +27,21 @@ convertInput <- function(pathResults, sepResults,
                           pathDicoCoding, sepDicoCoding,
                          formatDate="ymd"){
 
-  formatDate <- match.arg(formatDate, c("ymd","mdy"))
+  formatDate <- match.arg(formatDate, c("ymd", "mdy"))
 
   dicoCoding <- read.csv(pathDicoCoding, sep=sepDicoCoding, header=TRUE)
   resultsCoding <- read.csv(pathResults, sep=sepResults, header=TRUE)
-  participantID <- as.character(resultsCoding[1,1])
+  participantID <- as.character(resultsCoding[1, 1])
 
 
   imagePath <- unique(as.character(resultsCoding$"image_path"))
 
-  if(formatDate == "ymd"){
+  if (formatDate == "ymd"){
     timeDate <- lubridate::ymd_hms(as.character(resultsCoding$"image_time"))[
       !duplicated(as.character(resultsCoding$"image_path"))]
   }
 
-  if(formatDate == "mdy"){
+  if (formatDate == "mdy"){
     timeDate <- lubridate::mdy_hms(as.character(resultsCoding$"image_time"))[
       !duplicated(as.character(resultsCoding$"image_path"))]
   }
@@ -69,28 +69,28 @@ convertInput <- function(pathResults, sepResults,
 
   for (j in 1:ncol(temp)){
     for (i in 1:nrow(temp)){
-      if (temp[i,j]){
-        temp[i,j] <- names(temp)[j]
+      if (temp[i, j]){
+        temp[i, j] <- names(temp)[j]
         }
       else {
-        temp[i,j] <- ""
+        temp[i, j] <- ""
         }
     }
   }
 
   codes <- rep("", nrow(temp))
   for (i in 1:nrow(temp)){
-    codes[i] <- toString(temp[i,])
+    codes[i] <- toString(temp[i, ])
   }
 
 
   wearableCamImagesObject <- new("wearableCamImages",
-                                 dicoCoding=dicoCoding,
-                                 imagePath=imagePath,
-                                 timeDate=timeDate,
-                                 codes=codes,
-                                 codesBinaryVariables=codesBinaryVariables,
-                                 participantID=participantID)
+                                 dicoCoding = dicoCoding,
+                                 imagePath = imagePath,
+                                 timeDate = timeDate,
+                                 codes = codes,
+                                 codesBinaryVariables = codesBinaryVariables,
+                                 participantID = participantID)
 
   return(wearableCamImagesObject)
 }

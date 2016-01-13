@@ -45,12 +45,12 @@ combineObjects <- function(wearableCamImagesList){
   }
 
   wearableCamImagesObject <- new("wearableCamImages",
-                                 dicoCoding=dicoCoding,
-                                 imagePath=imagePath,
-                                 timeDate=timeDate[2:length(timeDate)],
-                                 codes=codes,
-                                 codesBinaryVariables=codesBinaryVariables,
-                                 participantID=participantID)
+                                 dicoCoding = dicoCoding,
+                                 imagePath = imagePath,
+                                 timeDate = timeDate[2:length(timeDate)],
+                                 codes = codes,
+                                 codesBinaryVariables = codesBinaryVariables,
+                                 participantID = participantID)
 
   return(wearableCamImagesObject)
 }

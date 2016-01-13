@@ -50,8 +50,8 @@ plotSequence <- function(eventTable, doNotUseCode = NULL,
                        alpha = 1)
   }
 
-  if(!is.null(dicoCoding)){
-    if(cbbPaletteYes){
+  if (!is.null(dicoCoding)){
+    if (cbbPaletteYes){
       p <- p + scale_fill_manual(drop=TRUE,
                                  limits = levels(dicoCoding$Meaning),
                                  values=cbbPalette) +
@@ -73,15 +73,15 @@ plotSequence <- function(eventTable, doNotUseCode = NULL,
           panel.grid.minor.y=element_blank(),
           panel.grid.major.y=element_blank())
 
-  if(facettingGroup & !facettingCoder){
+  if (facettingGroup & !facettingCoder){
     p <- p + facet_grid(group ~ .)
   }
 
-  if(!facettingGroup & facettingCoder){
+  if (!facettingGroup & facettingCoder){
     p <- p + facet_grid(coder ~ .)
   }
 
-  if(facettingGroup & facettingCoder){
+  if (facettingGroup & facettingCoder){
     p <- p + facet_grid(coder ~ group)
     }
 

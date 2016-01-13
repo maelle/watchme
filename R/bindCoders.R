@@ -14,21 +14,21 @@
 
 #' @export
 bindCoders <- function(wearableCamImagesList, namesList=NULL, minDuration=1){
-  if(length(wearableCamImagesList) == 1){
+  if (length(wearableCamImagesList) == 1){
     stop("Do not bother using this function if you only
          have one wearableCamImages object.")
     }
 
   if (!is.null(namesList)){
-    if(length(namesList) != length(wearableCamImagesList)){
+    if (length(namesList) != length(wearableCamImagesList)){
       stop("Not as many names as wearableCamImages objects")
       }
-    if(length(levels(factor(namesList))) != length(namesList)){
+    if (length(levels(factor(namesList))) != length(namesList)){
       stop("Please provide unique names for the coders")
       }
   }
 
-  if(is.null(namesList)){
+  if (is.null(namesList)){
     namesList <- as.character(1:length(wearableCamImagesList))
   }
 
