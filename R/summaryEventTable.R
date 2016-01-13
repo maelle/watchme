@@ -18,12 +18,12 @@ summaryEventTable <- function(eventTable){
   meanDuration <- NULL
 
   for(code in levels(eventTable$eventCode)){
-    subtable <- dplyr::filter(eventTable, eventCode==code)
+    subtable <- dplyr::filter(eventTable, eventCode == code)# nolint
 
     eventMeaning <- c(eventMeaning,as.character(subtable$activity[1]))
     noOfEvents <- c(noOfEvents,nrow(subtable))
     meanNoOfPictures <- c(meanNoOfPictures,mean(subtable$noOfPictures))
-    meanDuration <- c(meanDuration,mean(subtable$endTime-subtable$startTime))
+    meanDuration <- c(meanDuration,mean(subtable$endTime - subtable$startTime))
 
 
   }
@@ -32,7 +32,8 @@ summaryEventTable <- function(eventTable){
                              round(meanNoOfPictures, digits=2),
                              round(meanDuration, digits=2))
 
-  names(summaryTable) <- c("activity", "noOfEvents", "meanNoOfPictures", "meanDuration")
+  names(summaryTable) <- c("activity", "noOfEvents",
+                           "meanNoOfPictures", "meanDuration")
   summaryTable <- dplyr::tbl_df(summaryTable)
   return(summaryTable)
 

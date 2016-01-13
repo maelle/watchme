@@ -15,14 +15,16 @@ combineObjects <- function(wearableCamImagesList){
     return(x@dicoCoding)
   }
   dicoRef <- getDicoCoding(wearableCamImagesList[[1]])
-  nElements <- nrow(dicoRef)*ncol(dicoRef)
+  nElements <- nrow(dicoRef) * ncol(dicoRef)
   dicoCodings <- lapply(wearableCamImagesList, getDicoCoding)
 
   compareDicos <- function(x){
-    return( sum(x==dicoRef)==nElements)
+    return( sum(x == dicoRef) == nElements)
   }
 
-  if (any(lapply(dicoCodings, compareDicos)==FALSE)){stop("All wearableCamImages objects should have the same dicoCoding!")}
+  if (any(lapply(dicoCodings, compareDicos) == FALSE)){
+    stop("All wearableCamImages objects should have the same dicoCoding!")
+    }
 
   dicoCoding <- wearableCamImagesList[[1]]@dicoCoding
 
@@ -36,7 +38,9 @@ combineObjects <- function(wearableCamImagesList){
     imagePath <- c(imagePath, wearableCamImagesList[[i]]@imagePath)
     timeDate <- c(timeDate, wearableCamImagesList[[i]]@timeDate)
     codes <- c(codes, wearableCamImagesList[[i]]@codes)
-    codesBinaryVariables <- rbind(codesBinaryVariables, wearableCamImagesList[[i]]@codesBinaryVariables)
+    codesBinaryVariables <- rbind(codesBinaryVariables,
+                                  wearableCamImagesList[[i]]@
+                                    codesBinaryVariables)
     participantID <- c(participantID, wearableCamImagesList[[i]]@participantID)
   }
 

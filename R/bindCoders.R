@@ -14,11 +14,18 @@
 
 #' @export
 bindCoders <- function(wearableCamImagesList, namesList=NULL, minDuration=1){
-  if(length(wearableCamImagesList)==1){stop('Do not bother using this function if you only have one wearableCamImages object.')}
+  if(length(wearableCamImagesList) == 1){
+    stop("Do not bother using this function if you only
+         have one wearableCamImages object.")
+    }
 
   if (!is.null(namesList)){
-    if(length(namesList)!=length(wearableCamImagesList)){stop('Not as many names as wearableCamImages objects')}
-    if(length(levels(factor(namesList)))!=length(namesList)){stop('Please provide unique names for the coders')}
+    if(length(namesList) != length(wearableCamImagesList)){
+      stop("Not as many names as wearableCamImages objects")
+      }
+    if(length(levels(factor(namesList))) != length(namesList)){
+      stop("Please provide unique names for the coders")
+      }
   }
 
   if(is.null(namesList)){
@@ -29,7 +36,8 @@ bindCoders <- function(wearableCamImagesList, namesList=NULL, minDuration=1){
 
   for (i in 1:length(wearableCamImagesList)){
 
-    temp <- toEventLevel(wearableCamImagesList[[i]], minDuration = minDuration)
+    temp <- toEventLevel(wearableCamImagesList[[i]],
+                         minDuration = minDuration)
 
     mergedTable <- rbind(mergedTable,
                          cbind(temp,

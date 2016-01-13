@@ -234,3 +234,11 @@ test_that("combineObjects outputs a wearableCameraImages object", {
   wearableCamImagesObject <- combineObjects(wearableCamImagesList)
   expect_that(wearableCamImagesObject, is_a("wearableCamImages"))
 })
+
+#################################################################################################
+if (requireNamespace("lintr", quietly = TRUE)) {
+  context("lints")
+  test_that("Package Style", {
+    lintr::expect_lint_free()
+  })
+}

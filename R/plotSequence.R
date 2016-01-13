@@ -27,22 +27,24 @@ plotSequence <- function(eventTable, doNotUseCode = NULL,
                          facettingCoder=FALSE, dicoCoding=NULL,
                          cbbPaletteYes=TRUE){
 
-  if (!"coder"%in%names(eventTable)&facettingCoder==TRUE){
-    stop("You can't facet by coder if you do not have several coders")}
+  if (!"coder" %in% names(eventTable) & facettingCoder == TRUE){
+    stop("You can't facet by coder if you do not have several coders")
+    }
 
   # The palette with black:
-  cbbPalette <- c("#000000", "#E69F00", "#56B4E9", "#009E73", "#0072B2", "#D55E00", "#CC79A7")
+  cbbPalette <- c("#000000", "#E69F00", "#56B4E9", "#009E73",
+                  "#0072B2", "#D55E00", "#CC79A7")
 
 
-  p <- ggplot(eventTable[!eventTable$eventCode%in%doNotUseCode,])
+  p <- ggplot(eventTable[!eventTable$eventCode %in% doNotUseCode,])
 
-  if (xAxis=="time"){
+  if (xAxis == "time"){
    p <- p + geom_rect(aes(xmin = startTime, xmax = endTime,
                   ymin = 0, ymax = 2, fill=activity, colour=activity),
               alpha = 1)
   }
 
-  if (xAxis=="picture"){
+  if (xAxis == "picture"){
     p <- p + geom_rect(aes(xmin = startPicture, xmax = endPicture,
                            ymin = 0, ymax = 2, fill=activity, colour=activity),
                        alpha = 1)
@@ -52,14 +54,14 @@ plotSequence <- function(eventTable, doNotUseCode = NULL,
     if(cbbPaletteYes){
       p <- p + scale_fill_manual(drop=TRUE,
                                  limits = levels(dicoCoding$Meaning),
-                                 values=cbbPalette)+
+                                 values=cbbPalette) +
         scale_colour_manual(drop=TRUE,
                             limits = levels(dicoCoding$Meaning),
                             values=cbbPalette)
     }
    else{
      p <- p + scale_fill_manual(drop=TRUE,
-                                limits = levels(dicoCoding$Meaning))+
+                                limits = levels(dicoCoding$Meaning)) +
        scale_colour_manual(drop=TRUE,
                            limits = levels(dicoCoding$Meaning))
    }
@@ -71,9 +73,17 @@ plotSequence <- function(eventTable, doNotUseCode = NULL,
           panel.grid.minor.y=element_blank(),
           panel.grid.major.y=element_blank())
 
-    if(facettingGroup & !facettingCoder){p <- p + facet_grid(group ~ .) }
-  if(!facettingGroup & facettingCoder){p <- p + facet_grid(coder ~ .) }
-  if(facettingGroup & facettingCoder){p <- p + facet_grid(coder ~ group) }
+  if(facettingGroup & !facettingCoder){
+    p <- p + facet_grid(group ~ .)
+  }
+
+  if(!facettingGroup & facettingCoder){
+    p <- p + facet_grid(coder ~ .)
+  }
+
+  if(facettingGroup & facettingCoder){
+    p <- p + facet_grid(coder ~ group)
+    }
 
   return(p)
 

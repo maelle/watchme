@@ -34,20 +34,23 @@ convertInput <- function(pathResults, sepResults,
   participantID <- as.character(resultsCoding[1,1])
 
 
-  imagePath <- unique(as.character(resultsCoding$image_path))
+  imagePath <- unique(as.character(resultsCoding$"image_path"))
 
-  if(formatDate=="ymd"){
-    timeDate <- lubridate::ymd_hms(as.character(resultsCoding$image_time))[!duplicated(as.character(resultsCoding$image_path))]
+  if(formatDate == "ymd"){
+    timeDate <- lubridate::ymd_hms(as.character(resultsCoding$"image_time"))[
+      !duplicated(as.character(resultsCoding$"image_path"))]
   }
 
-  if(formatDate=="mdy"){
-    timeDate <- lubridate::mdy_hms(as.character(resultsCoding$image_time))[!duplicated(as.character(resultsCoding$image_path))]
+  if(formatDate == "mdy"){
+    timeDate <- lubridate::mdy_hms(as.character(resultsCoding$"image_time"))[
+      !duplicated(as.character(resultsCoding$"image_path"))]
   }
 
 
   codeResults <- rep("", length(imagePath))
   for(i in 1:length(imagePath)){
-    codeResults[i] <- toString(as.character(resultsCoding$annotation[as.character(resultsCoding$image_path)==imagePath[i]]))
+    codeResults[i] <- toString(as.character(resultsCoding$annotation[
+      as.character(resultsCoding$"image_path") == imagePath[i]]))
   }
 
 
@@ -66,8 +69,12 @@ convertInput <- function(pathResults, sepResults,
 
   for (j in 1:ncol(temp)){
     for (i in 1:nrow(temp)){
-      if(temp[i,j]){temp[i,j] <- names(temp)[j]}
-      else {temp[i,j] <- ""}
+      if (temp[i,j]){
+        temp[i,j] <- names(temp)[j]
+        }
+      else {
+        temp[i,j] <- ""
+        }
     }
   }
 

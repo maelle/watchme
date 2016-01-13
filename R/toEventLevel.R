@@ -56,16 +56,19 @@ toEventLevel <- function(wearableCamImagesObject, minDuration = 1){
       startPicture <- c(startPicture, line)
 
       lineFirstDifferent <- min(which(!grepl(possibleCode,
-                                       resultsCoding[line+1:length(resultsCoding)])))+ line
+                                       resultsCoding[line + 1:length(
+                                         resultsCoding)]))) + line
 
-      resultsCoding[line:(lineFirstDifferent-1)] <- gsub(possibleCode, "", resultsCoding[line:(lineFirstDifferent-1)])
+      resultsCoding[line:(lineFirstDifferent - 1)] <-
+        gsub(possibleCode, "",
+             resultsCoding[line:(lineFirstDifferent - 1)])
 
-      endTime <- c(endTime, as.character(timeDate[lineFirstDifferent-1]))
-      endPicture <- c(endPicture, lineFirstDifferent-1)
+      endTime <- c(endTime, as.character(timeDate[lineFirstDifferent - 1]))
+      endPicture <- c(endPicture, lineFirstDifferent - 1)
 
       eventCode <- c(eventCode, possibleCode)
 
-      noOfPictures <- c(noOfPictures, lineFirstDifferent-line)
+      noOfPictures <- c(noOfPictures, lineFirstDifferent - line)
 
     }
   }
@@ -73,8 +76,10 @@ toEventLevel <- function(wearableCamImagesObject, minDuration = 1){
   activity <- rep("NA", length(eventCode))
   group <- rep("NA", length(eventCode))
   for (i in 1:length(activity)){
-    activity[i] <- as.character(dicoCoding$Meaning[dicoCoding$Code==eventCode[i]])
-    group[i] <- as.character(dicoCoding$Group[dicoCoding$Code==eventCode[i]])
+    activity[i] <- as.character(dicoCoding$Meaning[
+      dicoCoding$Code == eventCode[i]])
+    group[i] <- as.character(dicoCoding$Group[
+      dicoCoding$Code == eventCode[i]])
   }
 
 
