@@ -126,7 +126,7 @@ outputDifferences <- function(wearableCamImagesList, namesList=NULL){
     uniqueImages <- unique(tableImages$imageTime)
     for (image in uniqueImages){
       vectorImage <- paste0(tableImages[tableImages$imageTime ==
-                                          image, 2:(nCoders+1)])
+                                          image, 2:(nCoders + 1)])
       vectorImage <- gsub("c\\(", "", vectorImage)
       vectorImage <- gsub("\"", "", vectorImage)
       vectorImage <- gsub("\\)", "", vectorImage)
