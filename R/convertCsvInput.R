@@ -1,6 +1,7 @@
 #' Creates a wearableCamImages object from information read in a csv file.
 #'
 #' @importFrom lubridate ymd_hms mdy_hms
+#' @importFrom data.table like
 #' @param pathResults the path to the file with coding results
 #' @param sepResults the separator in the file with coding results
 #' @param pathDicoCoding the path to the file with the list of annotations
@@ -25,14 +26,29 @@
 #' @export
 convertInput <- function(pathResults, sepResults,
                          pathDicoCoding, sepDicoCoding, formatDate = "ymd") {
-    formatDate <- match.arg(formatDate, c("ymd", "mdy"))
+
+    # Get dico coding
     dicoCoding <- read.csv(pathDicoCoding, sep = sepDicoCoding, header = TRUE)
     dicoCoding$Code <- tolower(dicoCoding$Code)
     dicoCoding$Meaning <- tolower(dicoCoding$Meaning)
     dicoCoding$Group <- tolower(dicoCoding$Group)
-    resultsCoding <- read.csv(pathResults, sep = sepResults, header = TRUE)
+
+    # open results
+    resultsCoding <- read.table(pathResults, sep = sepResults,
+                                header = TRUE, quote = "\'")
+
+    # When it comes from XnView MP, wrong names
+    if(names(resultsCoding)[1] %like% "X.Filename"){
+      names(resultsCoding) <- c("image_path",
+                                "image_time",
+                                "annotation")
+    }
+    # well participantID will not always make sense
     participantID <- as.character(resultsCoding[1, 1])
     imagePath <- unique(as.character(resultsCoding$"image_path"))
+
+    # convert time date
+    formatDate <- match.arg(formatDate, c("ymd", "mdy"))
     if (formatDate == "ymd") {
         timeDate <- lubridate::ymd_hms(
           as.character(resultsCoding$"image_time"))[
@@ -43,6 +59,7 @@ convertInput <- function(pathResults, sepResults,
           as.character(resultsCoding$"image_time"))[
           !duplicated(as.character(resultsCoding$"image_path"))]
     }
+    # Find all codes
     codeResults <- rep("", length(imagePath))
     for (i in 1:length(imagePath)) {
         codeResults[i] <- tolower(

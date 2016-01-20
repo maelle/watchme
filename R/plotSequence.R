@@ -30,7 +30,7 @@ plotSequence <- function(eventTable, doNotUseCode = NULL, xAxis = "time",
     }
     # The palette with black:
     cbbPalette <- c("#000000", "#E69F00", "#56B4E9", "#009E73",
-                    "#0072B2", "#D55E00", "#CC79A7")
+                    "#0072B2", "#D55E00", "#CC79A7", "#F0E442")
     p <- ggplot(eventTable[!eventTable$eventCode %in% doNotUseCode, ])
     if (xAxis == "time") {
         p <- p + geom_rect(aes(xmin = startTime, xmax = endTime,
