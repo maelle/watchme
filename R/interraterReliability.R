@@ -1,5 +1,6 @@
 #' Calculates interrater reliability using the irr package.
 #' @importFrom irr kappa2 kappam.fleiss
+#' @importFrom dplyr tbl_df
 #' @param wearableCamImagesList a list of \code{wearableCamImages} objects.
 #' @param namesList (optional) a vector of names for the coders. It must be the same length as wearableCamImagesList
 #' and contains different names.

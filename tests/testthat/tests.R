@@ -236,6 +236,48 @@ test_that("combineObjects outputs a wearableCameraImages object", {
 })
 
 #################################################################################################
+context("outputDifferences")
+#################################################################################################
+test_that("outputDifferences uses namesList well", {
+  data("dummyWearableCamImages")
+
+  expect_that(outputDifferences(list(dummyWearableCamImages, dummyWearableCamImages), namesList="theOnlyOne"),
+              throws_error("Not as many names as wearableCamImages objects"))
+
+  expect_that(outputDifferences(list(dummyWearableCamImages, dummyWearableCamImages),
+                         namesList=c("theOnlyOne", "theOnlyOne")),
+              throws_error("Please provide unique names for the coders"))
+
+
+
+})
+
+test_that("outputDifferences checks comparability",{
+  data("dummyWearableCamImages")
+  dummyWearableCamImages2 <- dummyWearableCamImages
+  dummyWearableCamImages2@codes <- dummyWearableCamImages@codes[1:10]
+  expect_error(outputDifferences(list(dummyWearableCamImages, dummyWearableCamImages2)),
+               "There should be the same number of pictures in each wearableCamImages object!")
+
+  dummyWearableCamImages2 <- dummyWearableCamImages
+  dummyWearableCamImages2@dicoCoding <- dummyWearableCamImages@dicoCoding[1:6,]
+  expect_error(outputDifferences(list(dummyWearableCamImages, dummyWearableCamImages2)),
+               "All wearableCamImages objects should have the same dicoCoding!")
+})
+
+test_that("outputDifferences gives no difference if equal",{
+  expect_that(outputDifferences(list(dummyWearableCamImages, dummyWearableCamImages)),
+              is_null())
+})
+
+test_that("outputDifferences gives differences if there are some",{
+  dummyWearableCamImages2 <- dummyWearableCamImages
+  dummyWearableCamImages2@codesBinaryVariables[8,] <- rep(FALSE,7)
+  expect_that(outputDifferences(list(dummyWearableCamImages, dummyWearableCamImages2)),
+              is_a("tbl_df"))
+})
+
+#################################################################################################
 if (requireNamespace("lintr", quietly = TRUE)) {
   context("lints")
   test_that("Package Style", {
@@ -243,3 +285,4 @@ if (requireNamespace("lintr", quietly = TRUE)) {
     lintr::expect_lint_free()
   })
 }
+
