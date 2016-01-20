@@ -273,6 +273,7 @@ test_that("outputDifferences gives no difference if equal",{
 test_that("outputDifferences gives differences if there are some",{
   dummyWearableCamImages2 <- dummyWearableCamImages
   dummyWearableCamImages2@codesBinaryVariables[8,] <- rep(FALSE,7)
+  skip_on_appveyor()
   expect_that(outputDifferences(list(dummyWearableCamImages, dummyWearableCamImages2)),
               is_a("tbl_df"))
 })
