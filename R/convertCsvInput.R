@@ -27,6 +27,9 @@ convertInput <- function(pathResults, sepResults,
                          pathDicoCoding, sepDicoCoding, formatDate = "ymd") {
     formatDate <- match.arg(formatDate, c("ymd", "mdy"))
     dicoCoding <- read.csv(pathDicoCoding, sep = sepDicoCoding, header = TRUE)
+    dicoCoding$Code <- tolower(dicoCoding$Code)
+    dicoCoding$Meaning <- tolower(dicoCoding$Meaning)
+    dicoCoding$Group <- tolower(dicoCoding$Group)
     resultsCoding <- read.csv(pathResults, sep = sepResults, header = TRUE)
     participantID <- as.character(resultsCoding[1, 1])
     imagePath <- unique(as.character(resultsCoding$"image_path"))
@@ -42,8 +45,9 @@ convertInput <- function(pathResults, sepResults,
     }
     codeResults <- rep("", length(imagePath))
     for (i in 1:length(imagePath)) {
-        codeResults[i] <- toString(as.character(resultsCoding$annotation[
-          as.character(resultsCoding$"image_path") == imagePath[i]]))
+        codeResults[i] <- tolower(
+          toString(as.character(resultsCoding$annotation[
+          as.character(resultsCoding$"image_path") == imagePath[i]])))
     }
     temp <- NULL
     namesTemp <- NULL
