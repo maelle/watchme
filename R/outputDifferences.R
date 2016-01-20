@@ -119,9 +119,27 @@ outputDifferences <- function(wearableCamImagesList, namesList=NULL){
   }
 
   if(!is.null(tableImages)){
-    tableImages <- cbind(disagreement=1:nrow(tableImages),
-                         tableImages)
     tableImages <- dplyr::tbl_df(tableImages)
+    tableImages <- arrange(tableImages,
+                           imageTime)
+    tableImagesFinal <- NULL
+    uniqueImages <- unique(tableImages$imageTime)
+    for (image in uniqueImages){
+      vectorImage <- paste0(tableImages[tableImages$imageTime ==
+                                          image, 2:(nCoders+1)])
+      vectorImage <- gsub("c\\(", "", vectorImage)
+      vectorImage <- gsub("\"", "", vectorImage)
+      vectorImage <- gsub("\\)", "", vectorImage)
+      vectorImage <- gsub(",", "", vectorImage)
+      tableImagesFinal <- rbind(tableImagesFinal,
+                                vectorImage)
+    }
+    tableImages <- dplyr::tbl_df(tableImagesFinal)
+    names(tableImages) <- namesList
+     tableImages <- dplyr::mutate(tableImages,
+                                  imageTime = as.character(uniqueImages))
+     tableImages <- dplyr::select(tableImages,
+                                  imageTime, everything())
   }
 
 
