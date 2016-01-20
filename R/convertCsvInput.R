@@ -7,6 +7,7 @@
 #' @param pathDicoCoding the path to the file with the list of annotations
 #' @param sepDicoCoding the separator in the file with the list of annotations
 #' @param formatDate either 'ymd' or 'dmy'.
+#' @param quoteSign the quote argument of read.table for the results, default is "\'"
 #' @return A \code{wearableCamImages} object.
 #' @details
 #' Please check the format that both files should have by looking at the provided
@@ -24,7 +25,7 @@
 #' class(wearableCamImagesObject)
 
 #' @export
-convertInput <- function(pathResults, sepResults,
+convertInput <- function(pathResults, sepResults, quoteSign = "\'",
                          pathDicoCoding, sepDicoCoding, formatDate = "ymd") {
 
     # Get dico coding
@@ -35,10 +36,13 @@ convertInput <- function(pathResults, sepResults,
 
     # open results
     resultsCoding <- read.table(pathResults, sep = sepResults,
-                                header = TRUE, quote = "\'")
+                                header = TRUE, quote = quoteSign)
+    if(ncol(resultsCoding) != 4){
+      resultsCoding <- resultsCoding[,1:3]
+    }
 
     # When it comes from XnView MP, wrong names
-    if(names(resultsCoding)[1] %like% "X.Filename"){
+    if(names(resultsCoding)[1] %like% "Filename"){
       names(resultsCoding) <- c("image_path",
                                 "image_time",
                                 "annotation")

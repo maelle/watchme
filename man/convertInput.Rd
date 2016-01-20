@@ -4,13 +4,15 @@
 \alias{convertInput}
 \title{Creates a wearableCamImages object from information read in a csv file.}
 \usage{
-convertInput(pathResults, sepResults, pathDicoCoding, sepDicoCoding,
-  formatDate = "ymd")
+convertInput(pathResults, sepResults, quoteSign = "'", pathDicoCoding,
+  sepDicoCoding, formatDate = "ymd")
 }
 \arguments{
 \item{pathResults}{the path to the file with coding results}
 
 \item{sepResults}{the separator in the file with coding results}
+
+\item{quoteSign}{the quote argument of read.table for the results, default is "\'"}
 
 \item{pathDicoCoding}{the path to the file with the list of annotations}
 

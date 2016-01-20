@@ -1,6 +1,7 @@
 #' Creates a table with events from the image level annotation information.
 #'
 #' @import ggplot2
+#' @import RColorBrewer
 #' @param eventTable a table of events created with the\code{toEventLevel} function (or having the same structure).
 #' @param doNotUseCode a vector of codes that you do not want to see on the graph, e.g. if you have both codes
 #' for categories and subcategories you may want to not plot categories.
@@ -25,6 +26,9 @@
 plotSequence <- function(eventTable, doNotUseCode = NULL, xAxis = "time",
                          facettingGroup = FALSE, facettingCoder = FALSE,
     dicoCoding = NULL, cbbPaletteYes = TRUE) {
+
+  dicoCoding$Meaning <- as.factor(dicoCoding$Meaning)
+
     if (!"coder" %in% names(eventTable) & facettingCoder == TRUE) {
         stop("You can't facet by coder if you do not have several coders")
     }
@@ -52,10 +56,14 @@ plotSequence <- function(eventTable, doNotUseCode = NULL, xAxis = "time",
               scale_colour_manual(drop = TRUE,
                 limits = levels(dicoCoding$Meaning), values = cbbPalette)
         } else {
+          colourCount <- length(unique(dicoCoding$Meaning))
+          getPalette <- colorRampPalette(brewer.pal(9, "Set1"))
+          colValues <- getPalette(colourCount)
+
             p <- p + scale_fill_manual(drop = TRUE,
-                                       limits = levels(dicoCoding$Meaning)) +
+                                       values=colValues) +
               scale_colour_manual(drop = TRUE,
-                limits = levels(dicoCoding$Meaning))
+                                  values=colValues)
         }
     }
     p <- p + theme(axis.line.y = element_blank(),
