@@ -18,6 +18,16 @@ test_that("convertInput outputs a wearableCameraImages object", {
 
 })
 
+test_that("convertInput works with XnView outputs as well", {
+  pathResults <- system.file("extdata", "sample_IO_02.csv", package = "watchme")
+  sepResults <- "\t"
+  pathDicoCoding <-  system.file("extdata", "dico_coding_2016_01_IO.csv", package = "watchme")
+  sepDicoCoding <- ";"
+  wearableCamImagesObject <- convertInput(pathResults=pathResults, sepResults=sepResults,
+                                          pathDicoCoding=pathDicoCoding, sepDicoCoding=sepDicoCoding)
+  expect_that(wearableCamImagesObject, is_a("wearableCamImages"))
+})
+
 
 
 #################################################################################################
@@ -77,6 +87,12 @@ test_that("summaryEventTable outputs columns with the right classes", {
 #################################################################################################
 context("bindCoders")
 #################################################################################################
+test_that("bindCoders want at least two coders",{
+  data("IO1")
+  expect_error(bindCoders(list(IO1)),
+               "Do not bother using this function if you only have one wearableCamImages object.")
+})
+
 test_that("bindCoders outputs a data table", {
   data("IO1")
   data("IO2")
@@ -246,6 +262,15 @@ test_that("irrWachme outputs an error if there is only one file",{
 #################################################################################################
 context("combineObjects")
 #################################################################################################
+test_that("combineObjects wants the same dicoCoding", {
+  data("dummyWearableCamImages")
+  dummyWearableCamImages2 <- dummyWearableCamImages
+  dummyWearableCamImages2@dicoCoding <- dummyWearableCamImages@dicoCoding[1:6,]
+  wearableCamImagesList <- list(dummyWearableCamImages, dummyWearableCamImages2)
+  expect_error(combineObjects(wearableCamImagesList),
+               "All wearableCamImages objects should have the same dicoCoding!")
+})
+
 test_that("combineObjects outputs a wearableCameraImages object", {
   data("dummyWearableCamImages")
   wearableCamImagesList <- list(dummyWearableCamImages, dummyWearableCamImages)
@@ -268,6 +293,12 @@ test_that("outputDifferences uses namesList well", {
 
 
 
+})
+
+test_that("outputDifferences wants at least two objects", {
+  data("IO1")
+  expect_error(outputDifferences(list(IO1)),
+               "Do not bother using this function if you only have one wearableCamImages object.")
 })
 
 test_that("outputDifferences checks comparability",{

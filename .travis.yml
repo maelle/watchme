@@ -4,6 +4,7 @@ sudo: true
 r_github_packages:
   - jimhester/covr
   - jimhester/lintr
+  - hadley/dplyr
 
 notifications:
     email:

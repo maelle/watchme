@@ -10,19 +10,32 @@
 
 #' @export
 combineObjects <- function(wearableCamImagesList) {
-    # check that all objects used the same dicoCoding
-    getDicoCoding <- function(x) {
-        return(x@dicoCoding)
-    }
-    dicoRef <- getDicoCoding(wearableCamImagesList[[1]])
-    nElements <- nrow(dicoRef) * ncol(dicoRef)
-    dicoCodings <- lapply(wearableCamImagesList, getDicoCoding)
-    compareDicos <- function(x) {
-        return(sum(x == dicoRef) == nElements)
-    }
-    if (any(lapply(dicoCodings, compareDicos) == FALSE)) {
-        stop("All wearableCamImages objects should have the same dicoCoding!")
-    }
+  # check that all objects used the same dicoCoding
+  getDicoCoding <- function(x){
+    return(x@dicoCoding)
+  }
+  dicoRef <- getDicoCoding(wearableCamImagesList[[1]])
+  nElements <- nrow(dicoRef) * ncol(dicoRef)
+  dicoCodings <- lapply(wearableCamImagesList, getDicoCoding)
+
+  if (length(unique(lapply(dicoCodings,nrow))) != 1){
+    stop("All wearableCamImages objects should have the same dicoCoding!")# nolint
+  }
+  if (length(unique(lapply(dicoCodings,ncol))) != 1){
+    stop("All wearableCamImages objects should have the same dicoCoding!")# nolint
+  }
+
+  compareDicos <- function(x){
+    return( sum(x == dicoRef) == nElements)
+  }
+
+  if (any(lapply(dicoCodings, compareDicos) == FALSE)){
+    stop("All wearableCamImages objects
+         should have the same dicoCoding!")
+  }
+
+
+
     dicoCoding <- wearableCamImagesList[[1]]@dicoCoding
     imagePath <- NULL
     timeDate <- as.POSIXct(NA)
