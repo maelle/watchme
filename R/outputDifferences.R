@@ -118,9 +118,11 @@ outputDifferences <- function(wearableCamImagesList, namesList=NULL){
 
   }
 
+  # One line per picture with all codes for each coder
+
   if(!is.null(tableImages)){
     tableImages <- dplyr::tbl_df(tableImages)
-    tableImages <- arrange(tableImages,
+    tableImages <- dplyr::arrange(tableImages,
                            imageTime)
     tableImagesFinal <- NULL
     uniqueImages <- unique(tableImages$imageTime)
