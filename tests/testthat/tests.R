@@ -78,8 +78,9 @@ test_that("summaryEventTable outputs columns with the right classes", {
 context("bindCoders")
 #################################################################################################
 test_that("bindCoders outputs a data table", {
-  data("dummyWearableCamImages")
-  output <- bindCoders(list(dummyWearableCamImages, dummyWearableCamImages), minDuration = 1)
+  data("IO1")
+  data("IO2")
+  output <- bindCoders(list(IO1, IO2), minDuration = 1)
   expect_that(output, is_a("tbl_df"))
 
 })
@@ -115,10 +116,11 @@ test_that("plotSequence defines the x-axis as it should", {
 
 
 test_that("plotSequence does facetting as it should", {
-  data("dummyWearableCamImages")
+  data("IO1")
+  data("IO2")
 
   # no facetting
-  eventTable <- toEventLevel(wearableCamImagesObject=dummyWearableCamImages)
+  eventTable <- toEventLevel(wearableCamImagesObject=IO1)
   p <- plotSequence(eventTable)
   expect_that(p$facet, is_a("null"))
 
@@ -127,7 +129,7 @@ test_that("plotSequence does facetting as it should", {
   expect_that(names(p$facet$rows), equals("group"))
   expect_that(toString(names(p$facet$cols)), equals(""))
 
-  eventTableCoders <- bindCoders(list(dummyWearableCamImages, dummyWearableCamImages), minDuration = 1)
+  eventTableCoders <- bindCoders(list(IO1, IO2), minDuration = 1)
   # facetting only for the coder
   p <- plotSequence(eventTableCoders, facettingGroup = FALSE, facettingCoder = TRUE)
   expect_that(names(p$facet$rows), equals("coder"))
@@ -148,16 +150,17 @@ test_that("plotSequence does facetting as it should", {
 context("irrWatchme")
 #################################################################################################
 test_that("irrWatchme uses namesList well", {
-  data("dummyWearableCamImages")
+  data("IO1")
+  data("IO2")
 
-  expect_that(irrWatchme(list(dummyWearableCamImages, dummyWearableCamImages), namesList="theOnlyOne"),
+  expect_that(irrWatchme(list(IO1, IO2), namesList="theOnlyOne"),
               throws_error("Not as many names as wearableCamImages objects"))
 
-  expect_that(irrWatchme(list(dummyWearableCamImages, dummyWearableCamImages),
+  expect_that(irrWatchme(list(IO1, IO2),
                          namesList=c("theOnlyOne", "theOnlyOne")),
               throws_error("Please provide unique names for the coders"))
 
-  expect_that(irrWatchme(list(dummyWearableCamImages, dummyWearableCamImages)),
+  expect_that(irrWatchme(list(IO1, IO2)),
                          is_a("tbl_df"))
 
 })
@@ -176,9 +179,10 @@ test_that("irrWatchme checks comparability",{
 })
 
 test_that("irrWatchme outputs the right type of results depending on the options",{
-  data("dummyWearableCamImages")
+  data("IO1")
+  data("IO2")
 
-  listWC <- list(dummyWearableCamImages, dummyWearableCamImages)
+  listWC <- list(IO1, IO2)
   namesList <- c("Cain", "Abel")
 
   output <- irrWatchme(listWC, namesList=namesList)
@@ -189,7 +193,7 @@ test_that("irrWatchme outputs the right type of results depending on the options
                                        "z" , "pValue"  )))
   expect_that(as.character(output$method), equals("Cohen's Kappa for 2 Raters (Weights: unweighted)"))
 
-  listWC2 <- list(dummyWearableCamImages, dummyWearableCamImages, dummyWearableCamImages)
+  listWC2 <- list(IO1, IO2, IO2)
   namesList <- c("Riri", "Fifi", "Loulou")
   output <- irrWatchme(listWC2, namesList=namesList)
   expect_that(output, is_a("tbl_df"))
@@ -207,7 +211,7 @@ test_that("irrWatchme outputs the right type of results depending on the options
 
   output <- irrWatchme(listWC, namesList=c("Cain", "Abel"), byCode=TRUE)
   expect_that(output, is_a("list"))
-  expect_that(length(output), equals(ncol(dummyWearableCamImages@codesBinaryVariables)))
+  expect_that(length(output), equals(ncol(IO1@codesBinaryVariables)))
   expect_that(dim(output[[1]]), equals(c(1,10)))
 #   expect_that(names(output[[1]]), equals(c( "method", "pictures", "agreedOn", "raters", "ratersNames", "Kappa",
 #                                        "z" , "pValue"  )))
@@ -215,7 +219,7 @@ test_that("irrWatchme outputs the right type of results depending on the options
 
   output <- irrWatchme(listWC, namesList=c("Cain", "Abel"), byGroup=TRUE)
   expect_that(output, is_a("list"))
-  expect_that(length(output), equals(length(levels(factor(dummyWearableCamImages@dicoCoding$Group)))))
+  expect_that(length(output), equals(length(levels(factor(IO1@dicoCoding$Group)))))
   expect_that(dim(output[[1]]), equals(c(1,8)))
   expect_that(names(output[[1]]), equals(c( "method", "pictures", "agreedOn", "raters", "ratersNames", "Kappa",
                                             "z" , "pValue"  )))
@@ -271,27 +275,10 @@ test_that("outputDifferences gives no difference if equal",{
 })
 
 test_that("outputDifferences gives differences if there are some",{
-  pathCoder2 <- system.file("extdata", "sample_IO_02.csv", package = "watchme")
-  pathCoder4 <- system.file("extdata", "sample_IO_04.csv", package = "watchme")
-  pathCoders <- c(pathCoder2, pathCoder4)
-  pathDicoCoding <- system.file("extdata", "dico_coding_2016_01_IO.csv", package = "watchme")
-  coders <- c(pathCoder2, pathCoder4)
-  listObjects <- list()
-  for(i in 1:length(coders)){
-    coder <- coders[i]
-    # create the objects
-    file <- pathCoders[i]
-    sepResults <- "\t"
-    quoteSign <- "\'"
-    watchmeObject <- convertInput(pathResults=file,
-                                  sepResults=sepResults,
-                                  quoteSign=quoteSign,
-                                  pathDicoCoding=pathDicoCoding,
-                                  sepDicoCoding=";",
-                                  formatDate="ymd")
-    listObjects[[i]] <- watchmeObject
-  }
-  namesList <- c("coder2", "coder4")
+  data(IO1)
+  data(IO2)
+  listObjects <- list(IO1, IO2)
+  namesList <- c("coder1", "coder2")
   skip_on_appveyor()
   expect_that(outputDifferences(listObjects, namesList),
               is_a("tbl_df"))

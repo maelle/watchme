@@ -91,11 +91,18 @@ irrWatchme <- function(wearableCamImagesList, namesList=NULL,
     # create the table for comparing
     dat <- NULL
     for (i in 1:length(wearableCamImagesList)){
-      dat <- cbind(dat, wearableCamImagesList[[i]]@codes)
+      dat <- cbind(dat, as.factor(wearableCamImagesList[[i]]@codes))
     }
 
     dat <- as.data.frame(dat)
+    dat <- dplyr::tbl_df(dat)
+     # make sure the levels are the same
+    # even if one coder has not used one code
     names(dat) <- namesList
+    for (i in 1:length(wearableCamImagesList)){
+      levelsAll <- unique(unlist(lapply(dat, levels)))
+      setattr(dat[,i], "levels", levelsAll)
+    }
 
     if (length(wearableCamImagesList) == 2){
       results <- irr::kappa2(dat, "unweighted")
@@ -193,12 +200,19 @@ irrWatchme <- function(wearableCamImagesList, namesList=NULL,
             codes[i] <- toString(temp[i,])
           }
 
-         dat <- cbind(dat, codes)
+         dat <- cbind(dat, as.factor(codes))
          namesDat <- c(namesDat, namesList[object])
         }
         dat <- as.data.frame(dat)
         names(dat) <- namesDat
         dat <- tbl_df(dat)
+
+        # make sure levels are the same
+        for (i in 1:length(wearableCamImagesList)){
+          levelsAll <- unique(unlist(lapply(dat, levels)))
+          setattr(dat[,i], "levels", levelsAll)
+        }
+
         if (length(wearableCamImagesList) == 2){
           results <- irr::kappa2(dat, "unweighted")
           tableResults <- data.frame(method=results$method,
