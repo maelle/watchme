@@ -271,11 +271,29 @@ test_that("outputDifferences gives no difference if equal",{
 })
 
 test_that("outputDifferences gives differences if there are some",{
-  dummyWearableCamImages2 <- dummyWearableCamImages
-  dummyWearableCamImages2@codesBinaryVariables[8,] <- rep(FALSE,7)
+  pathCoder2 <- system.file("extdata", "sample_IO_02.csv", package = "watchme")
+  pathCoder4 <- system.file("extdata", "sample_IO_04.csv", package = "watchme")
+  pathCoders <- c(pathCoder2, pathCoder4)
+  pathDicoCoding <- system.file("extdata", "dico_coding_2016_01_IO.csv", package = "watchme")
+  coders <- c(pathCoder2, pathCoder4)
+  listObjects <- list()
+  for(i in 1:length(coders)){
+    coder <- coders[i]
+    # create the objects
+    file <- pathCoders[i]
+    sepResults <- "\t"
+    quoteSign <- "\'"
+    watchmeObject <- convertInput(pathResults=file,
+                                  sepResults=sepResults,
+                                  quoteSign=quoteSign,
+                                  pathDicoCoding=pathDicoCoding,
+                                  sepDicoCoding=";",
+                                  formatDate="ymd")
+    listObjects[[i]] <- watchmeObject
+  }
+  namesList <- c("coder2", "coder4")
   skip_on_appveyor()
-  print(outputDifferences(list(dummyWearableCamImages, dummyWearableCamImages2)))
-  expect_that(outputDifferences(list(dummyWearableCamImages, dummyWearableCamImages2)),
+  expect_that(outputDifferences(listObjects, namesList),
               is_a("tbl_df"))
 })
 
