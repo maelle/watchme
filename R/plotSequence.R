@@ -17,11 +17,14 @@
 #' data('dummyWearableCamImages')
 #' library('ggplot2')
 #' eventTable <- toEventLevel(wearableCamImagesObject=dummyWearableCamImages)
-#' plotSequence(eventTable)
-#' plotSequence(eventTable, xAxis='picture', facettingGroup=TRUE)
-#' eventTableCoders <- bindCoders(list(dummyWearableCamImages, dummyWearableCamImages), minDuration = 1)
+#' plotSequence(eventTable, dicoCoding = dummyWearableCamImages@dicoCoding)
+#' plotSequence(eventTable, xAxis='picture', facettingGroup=TRUE,
+#' dicoCoding = dummyWearableCamImages@dicoCoding)
+#' data("IO1")
+#' data("IO2)
+#' eventTableCoders <- bindCoders(list(IO1, IO2), minDuration = 1)
 #' plotSequence(eventTableCoders, facettingGroup = TRUE, facettingCoder = TRUE,
-#' dicoCoding=dummyWearableCamImages@dicoCoding)
+#' dicoCoding=IO1@dicoCoding)
 #' @export
 plotSequence <- function(eventTable, doNotUseCode = NULL, xAxis = "time",
                          facettingGroup = FALSE, facettingCoder = FALSE,

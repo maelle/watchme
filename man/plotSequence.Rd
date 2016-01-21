@@ -32,14 +32,4 @@ A \code{ggplot2} graph.
 \description{
 Creates a table with events from the image level annotation information.
 }
-\examples{
-data('dummyWearableCamImages')
-library('ggplot2')
-eventTable <- toEventLevel(wearableCamImagesObject=dummyWearableCamImages)
-plotSequence(eventTable)
-plotSequence(eventTable, xAxis='picture', facettingGroup=TRUE)
-eventTableCoders <- bindCoders(list(dummyWearableCamImages, dummyWearableCamImages), minDuration = 1)
-plotSequence(eventTableCoders, facettingGroup = TRUE, facettingCoder = TRUE,
-dicoCoding=dummyWearableCamImages@dicoCoding)
-}
 
