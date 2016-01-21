@@ -27,6 +27,10 @@ plotSequence <- function(eventTable, doNotUseCode = NULL, xAxis = "time",
                          facettingGroup = FALSE, facettingCoder = FALSE,
     dicoCoding = NULL, cbbPaletteYes = TRUE) {
 
+  if(is.null(dicoCoding)){
+    stop("Provide a dicoCoding.")
+  }
+
   dicoCoding$Meaning <- as.factor(dicoCoding$Meaning)
 
     if (!"coder" %in% names(eventTable) & facettingCoder == TRUE) {

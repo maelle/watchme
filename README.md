@@ -24,26 +24,27 @@ This R package supports the last step. How to calculate interrater reliability? 
 Data structure
 ==============
 
-The structure of data in the package is adapted to data produced using the Doherty Sensecam Browser for annotation (see <https://sensecambrowser.codeplex.com/>). However, input functions could be adapted for other formats.
+The structure of data in the package is adapted to data produced using the Doherty Sensecam Browser for annotation (see <https://sensecambrowser.codeplex.com/>) and works with data produced using the XnView MP software. However, input functions could be adapted for other formats.
 
 The data needed for using the package are:
 
--   A list of possible annotation, called dicoCoding. It contains three columns Code, Meaning, Group. The Code is the unique X-digit identifier of an activity. The Meaning, preferably in a single word such as washingYourTeeth, explains the code. The Group allows to group activities into meaningful categories, i.e. washingYourTeeth and washingYourHands could be in the hygiene Group whereas eatingRealFood and snackingOnCheapChocolate could be in the eating Group.
+-   A list of possible annotation, called dicoCoding. It contains three columns Code, Meaning, Group. The Code is the unique X-digit identifier of an activity. The Meaning, preferably in a single word such as washingYourTeeth, explains the code. The Group allows to group activities into meaningful categories, i.e. washingYourTeeth and washingYourHands could be in the hygiene Group whereas eatingRealFood and snackingOnCheapChocolate could be in the eating Group. If you do not use abbreviations or code, Code and Meaning can be equal.
 
 ``` r
 pathDicoCoding <-  system.file("extdata", "dicoCoding_pinocchio.csv", package = "watchme")
 sepDicoCoding <- ";"
 dicoCoding <- read.table(pathDicoCoding, sep=sepDicoCoding, header=TRUE)
-head(dicoCoding)
+kable(head(dicoCoding))
 ```
 
-    ##   Code            Meaning Group
-    ## 1  01A BiomassCookingUnit     1
-    ## 2  01B           LPGStove     1
-    ## 3  01C   OtherCookingUnit     1
-    ## 4  02B    PresenceKitchen     1
-    ## 5  02A    FoodPreparation     1
-    ## 6  03A             Eating     1
+| Code | Meaning            |  Group|
+|:-----|:-------------------|------:|
+| 01A  | BiomassCookingUnit |      1|
+| 01B  | LPGStove           |      1|
+| 01C  | OtherCookingUnit   |      1|
+| 02B  | PresenceKitchen    |      1|
+| 02A  | FoodPreparation    |      1|
+| 03A  | Eating             |      1|
 
 -   A table of coding results. The columns are name, image\_path, image\_time, annotation, as provided by a SQL query of the Doherty database. The column name is a repetition of the participant name. The column image\_path indicates the path to the picture, or its name. It only needs to be unique for each picture. The column image\_time gives the date and time at which the picture was taken. The column annotation gives the code(s) associated with the picture. They can be pasted one after another, since we will use grepl() for finding the unique X-digit identifiers, or they can be on separate lines, since all codes for one picture identified by one picture\_name will be merged.
 
@@ -53,26 +54,20 @@ pathResults <- system.file("extdata", "image_level_pinocchio.csv", package = "wa
 sepResults <- ","
 codingResults <- read.table(pathResults, sep=sepResults, header=TRUE)
 codingResults <- dplyr::tbl_df(codingResults)
-print(codingResults)
+kable(head(codingResults, n=9))
 ```
 
-    ## Source: local data frame [981 x 4]
-    ## 
-    ##         name
-    ##       (fctr)
-    ## 1  pinocchio
-    ## 2  pinocchio
-    ## 3  pinocchio
-    ## 4  pinocchio
-    ## 5  pinocchio
-    ## 6  pinocchio
-    ## 7  pinocchio
-    ## 8  pinocchio
-    ## 9  pinocchio
-    ## 10 pinocchio
-    ## ..       ...
-    ## Variables not shown: image_path (fctr), image_time (fctr), annotation
-    ##   (fctr).
+| name      | image\_path                                                                               | image\_time         | annotation         |
+|:----------|:------------------------------------------------------------------------------------------|:--------------------|:-------------------|
+| pinocchio |                                                                                           | 1991-01-23 08:02:00 |                    |
+| pinocchio | C:3\_33456\_01\_030615\_AG\_C015-06-04 08-36-32\\B00000000\_21I6LW\_20150603\_084228E.JPG | 2015-06-03 08:42:28 |                    |
+| pinocchio | C:3\_33456\_01\_030615\_AG\_C015-06-04 08-36-32\\B00000001\_21I6LW\_20150603\_084228E.JPG | 2015-06-03 08:42:28 |                    |
+| pinocchio | C:3\_33456\_01\_030615\_AG\_C015-06-04 08-36-32\\B00000002\_21I6LW\_20150603\_084236E.JPG | 2015-06-03 08:42:36 |                    |
+| pinocchio | C:3\_33456\_01\_030615\_AG\_C015-06-04 08-36-32\\B00000003\_21I6LW\_20150603\_084313E.JPG | 2015-06-03 08:43:13 |                    |
+| pinocchio | C:3\_33456\_01\_030615\_AG\_C015-06-04 08-36-32\\B00000004\_21I6LW\_20150603\_084349E.JPG | 2015-06-03 08:43:49 |                    |
+| pinocchio | C:3\_33456\_01\_030615\_AG\_C015-06-04 08-36-32\\B00000005\_21I6LW\_20150603\_084429E.JPG | 2015-06-03 08:44:29 |                    |
+| pinocchio | C:3\_33456\_01\_030615\_AG\_C015-06-04 08-36-32\\B00000006\_21I6LW\_20150603\_084509E.JPG | 2015-06-03 08:45:09 | 01.CK;02B. Kitchen |
+| pinocchio | C:3\_33456\_01\_030615\_AG\_C015-06-04 08-36-32\\B00000007\_21I6LW\_20150603\_084624E.JPG | 2015-06-03 08:46:24 |                    |
 
 From input data to `wearableCamImages` objects
 ==============================================
@@ -138,49 +133,31 @@ The function `toEventLevel` takes two arguments: the `wearableCamImages` object 
 ``` r
 data("dummyWearableCamImages")
 eventTable <- toEventLevel(wearableCamImagesObject=dummyWearableCamImages)
-eventTable
+kable(head(eventTable))
 ```
 
-    ## Source: local data frame [66 x 9]
-    ## 
-    ##    eventIndex           startTime             endTime eventCode
-    ##         (dbl)              (time)              (time)    (fctr)
-    ## 1           1 2015-06-03 09:37:53 2015-06-03 09:37:53       01A
-    ## 2           2 2015-06-04 06:16:37 2015-06-04 06:16:37       01A
-    ## 3           3 2015-06-04 06:42:46 2015-06-04 06:43:24       01A
-    ## 4           4 2015-06-04 07:01:41 2015-06-04 07:02:14       01A
-    ## 5           5 2015-06-04 07:03:37 2015-06-04 07:04:51       01A
-    ## 6           6 2015-06-04 07:06:09 2015-06-04 07:09:14       01A
-    ## 7           7 2015-06-04 07:11:13 2015-06-04 07:11:13       01A
-    ## 8           8 2015-06-04 07:17:27 2015-06-04 07:17:27       01A
-    ## 9           9 2015-06-04 06:16:00 2015-06-04 06:16:00       01B
-    ## 10         10 2015-06-04 06:26:13 2015-06-04 06:29:03       01B
-    ## ..        ...                 ...                 ...       ...
-    ## Variables not shown: noOfPictures (dbl), activity (fctr), group (fctr),
-    ##   startPicture (int), endPicture (dbl).
+|  eventIndex| startTime           | endTime             | eventCode |  noOfPictures| activity           | group |  startPicture|  endPicture|
+|-----------:|:--------------------|:--------------------|:----------|-------------:|:-------------------|:------|-------------:|-----------:|
+|           1| 2015-06-03 09:37:53 | 2015-06-03 09:37:53 | 01A       |             1| BiomassCookingUnit | 1     |            83|          83|
+|           2| 2015-06-04 06:16:37 | 2015-06-04 06:16:37 | 01A       |             1| BiomassCookingUnit | 1     |           806|         806|
+|           3| 2015-06-04 06:42:46 | 2015-06-04 06:43:24 | 01A       |             2| BiomassCookingUnit | 1     |           841|         842|
+|           4| 2015-06-04 07:01:41 | 2015-06-04 07:02:14 | 01A       |             2| BiomassCookingUnit | 1     |           863|         864|
+|           5| 2015-06-04 07:03:37 | 2015-06-04 07:04:51 | 01A       |             3| BiomassCookingUnit | 1     |           866|         868|
+|           6| 2015-06-04 07:06:09 | 2015-06-04 07:09:14 | 01A       |             6| BiomassCookingUnit | 1     |           870|         875|
 
 ``` r
 eventTable2 <- toEventLevel(wearableCamImagesObject=dummyWearableCamImages, minDuration = 2)
-eventTable2
+kable(head(eventTable2))
 ```
 
-    ## Source: local data frame [29 x 9]
-    ## 
-    ##    eventIndex           startTime             endTime eventCode
-    ##         (dbl)              (time)              (time)    (fctr)
-    ## 1           3 2015-06-04 06:42:46 2015-06-04 06:43:24       01A
-    ## 2           4 2015-06-04 07:01:41 2015-06-04 07:02:14       01A
-    ## 3           5 2015-06-04 07:03:37 2015-06-04 07:04:51       01A
-    ## 4           6 2015-06-04 07:06:09 2015-06-04 07:09:14       01A
-    ## 5          10 2015-06-04 06:26:13 2015-06-04 06:29:03       01B
-    ## 6          11 2015-06-04 06:31:28 2015-06-04 06:34:16       01B
-    ## 7          14 2015-06-04 08:10:19 2015-06-04 08:11:36       01B
-    ## 8          19 2015-06-04 06:13:30 2015-06-04 06:16:00       02B
-    ## 9          21 2015-06-04 06:22:22 2015-06-04 06:23:00       02B
-    ## 10         22 2015-06-04 06:25:01 2015-06-04 06:35:26       02B
-    ## ..        ...                 ...                 ...       ...
-    ## Variables not shown: noOfPictures (dbl), activity (fctr), group (fctr),
-    ##   startPicture (int), endPicture (dbl).
+|  eventIndex| startTime           | endTime             | eventCode |  noOfPictures| activity           | group |  startPicture|  endPicture|
+|-----------:|:--------------------|:--------------------|:----------|-------------:|:-------------------|:------|-------------:|-----------:|
+|           3| 2015-06-04 06:42:46 | 2015-06-04 06:43:24 | 01A       |             2| BiomassCookingUnit | 1     |           841|         842|
+|           4| 2015-06-04 07:01:41 | 2015-06-04 07:02:14 | 01A       |             2| BiomassCookingUnit | 1     |           863|         864|
+|           5| 2015-06-04 07:03:37 | 2015-06-04 07:04:51 | 01A       |             3| BiomassCookingUnit | 1     |           866|         868|
+|           6| 2015-06-04 07:06:09 | 2015-06-04 07:09:14 | 01A       |             6| BiomassCookingUnit | 1     |           870|         875|
+|          10| 2015-06-04 06:26:13 | 2015-06-04 06:29:03 | 01B       |             4| LPGStove           | 1     |           818|         821|
+|          11| 2015-06-04 06:31:28 | 2015-06-04 06:34:16 | 01B       |             5| LPGStove           | 1     |           824|         828|
 
 Plotting a table of events
 ==========================
@@ -209,30 +186,65 @@ Below are several examples.
 data("dummyWearableCamImages")
 library("ggplot2")
 eventTable <- toEventLevel(wearableCamImagesObject=dummyWearableCamImages)
-plotSequence(eventTable)
-```
-
-![](README_files/figure-markdown_github/unnamed-chunk-6-1.png)
-
-``` r
-plotSequence(eventTable, xAxis="picture", facettingGroup=TRUE)
-```
-
-![](README_files/figure-markdown_github/unnamed-chunk-6-2.png)
-For plotting results from more than one coder, one has to start by creating a table of events containing all the results using the `bindCoders`function that takes a list of `wearableCamImages` objects as input, as well as a `minDuration` for events (in pictures).
-
-``` r
-eventTableCoders <- bindCoders(list(dummyWearableCamImages, dummyWearableCamImages), minDuration = 1)
-plotSequence(eventTableCoders, facettingGroup = TRUE, facettingCoder = TRUE,
-dicoCoding=dummyWearableCamImages@dicoCoding)
+plotSequence(eventTable, dicoCoding = dummyWearableCamImages@dicoCoding)
 ```
 
 ![](README_files/figure-markdown_github/unnamed-chunk-7-1.png)
 
+``` r
+plotSequence(eventTable, xAxis="picture", facettingGroup=TRUE, 
+             cbbPaletteYes = FALSE, dicoCoding = dummyWearableCamImages@dicoCoding)
+```
+
+![](README_files/figure-markdown_github/unnamed-chunk-7-2.png)
+For plotting results from more than one coder, one has to start by creating a table of events containing all the results using the `bindCoders`function that takes a list of `wearableCamImages` objects as input, as well as a `minDuration` for events (in pictures).
+
+``` r
+data("IO1")
+data("IO2")
+eventTableCoders <- bindCoders(list(IO1, IO2), minDuration = 1)
+plotSequence(eventTableCoders, facettingGroup = TRUE, facettingCoder = TRUE,
+             dicoCoding=IO1@dicoCoding)
+```
+
+![](README_files/figure-markdown_github/unnamed-chunk-8-1.png)
+
 Calculating interrater reliability
 ==================================
 
-An important aspect of coding images is having a list of annotations that provides consistent results acrossed (trained) coders, or raters. Therefore one needs to check and report interrater reliability. Nowadays the state of the art is to use Cohen's kappa for codes attributed to pictures, even if they are not independent (Aiden Doherty's personal communication). In the package we provide a function for calculating interrater reliability (or IRR) this way, which is called `irrWatchme`. It uses functions of the R `irr` package. It allows using several possibilities for defining what codes are to be compared:
+An important aspect of coding images is having a list of annotations that provides consistent results acrossed (trained) coders, or raters. Therefore one needs to check and report interrater reliability.
+
+Simply look at disagreements
+----------------------------
+
+In the package there is a function for getting the times and codes of pictures for which coders disagree, which might be useful for exploring differences when e.g. training coders.
+
+``` r
+data("IO1")
+data("IO2")
+listWC <- list(IO1, IO2)
+namesList <- c("Cain", "Abel")
+differences <- outputDifferences(listWC, namesList)
+kable(differences[1:10,])
+```
+
+| imageTime           | Cain        | Abel     |
+|:--------------------|:------------|:---------|
+| 2015-06-12 12:23:40 | indoors     | outdoors |
+| 2015-06-12 12:24:59 | mixed       | outdoors |
+| 2015-06-12 12:25:34 | mixed       | outdoors |
+| 2015-06-12 13:08:17 | mixed       | outdoors |
+| 2015-06-12 13:10:01 | outdoors    | indoors  |
+| 2015-06-12 15:19:45 | non codable | indoors  |
+| 2015-06-12 15:23:47 | mixed       | outdoors |
+| 2015-06-12 15:24:23 | mixed       | outdoors |
+| 2015-06-12 15:24:55 | mixed       | outdoors |
+| 2015-06-12 16:06:08 | indoors     | outdoors |
+
+Assess interrater reliability
+-----------------------------
+
+Nowadays the state of the art is to use Cohen's kappa for codes attributed to pictures, even if they are not independent (Aiden Doherty's personal communication). In the package we provide a function for calculating interrater reliability (or IRR) this way, which is called `irrWatchme`. It uses functions of the R `irr` package. It allows using several possibilities for defining what codes are to be compared:
 
 -   one could compare the global annotations of all files, i.e. all codes at the same time. For instance compare washingYourTeeth; readingABook to washingYourTeeh; readingAMagazine for picture 1 between coder A and coder B. This is the default option.
 
@@ -244,147 +256,104 @@ In the case in which wants to compare results provided by more than two coders, 
 
 The comparison one wants to make depends on the context of the calculation of the IRR. When developping a new list of annotations one wants to see interrater reliability for each code, later when may want to report a single figure for the whole list of annotations.
 
-Below are a few examples for two coders to be compared. Note that here the two coders are the same person with the same coding results so it's not that interesting.
+Below are a few examples for two coders to be compared.
 
 The default is to compare all annotations together.
 
 ``` r
 library("xtable")
-data("dummyWearableCamImages")
-listWC <- list(dummyWearableCamImages, dummyWearableCamImages)
+data("IO1")
+data("IO2")
+listWC <- list(IO1, IO2)
 namesList <- c("Cain", "Abel")
-irrWatchme(listWC, namesList=namesList)
+IRR <- irrWatchme(listWC, namesList=namesList)
+kable(IRR)
 ```
 
-    ## Source: local data frame [1 x 8]
-    ## 
-    ##                                             method pictures agreedOn
-    ##                                             (fctr)    (int)    (int)
-    ## 1 Cohen's Kappa for 2 Raters (Weights: unweighted)      956      956
-    ## Variables not shown: raters (int), ratersNames (fctr), Kappa (dbl), z
-    ##   (dbl), pValue (dbl).
+| method                                           |  pictures|  agreedOn|  raters| ratersNames   |       Kappa|          z|  pValue|
+|:-------------------------------------------------|---------:|---------:|-------:|:--------------|-----------:|----------:|-------:|
+| Cohen's Kappa for 2 Raters (Weights: unweighted) |      1263|        28|       2| Cain and Abel |  -0.0422707|  -16.95465|       0|
 
 Here we compare annotations by group of codes. One gets a list of as many tables as there are groups.
 
 ``` r
-irrWatchme(listWC, namesList=c("Cain", "Abel"), oneToOne=TRUE, byGroup=TRUE)
+IRR <- irrWatchme(listWC, namesList=c("Cain", "Abel"), oneToOne=TRUE, byGroup=TRUE)
+lapply(IRR, kable)
 ```
 
-    ## $`1`
-    ## Source: local data frame [1 x 8]
-    ## 
-    ##                                             method pictures agreedOn
-    ##                                             (fctr)    (int)    (int)
-    ## 1 Cohen's Kappa for 2 Raters (Weights: unweighted)      956      956
-    ## Variables not shown: raters (int), ratersNames (fctr), Kappa (dbl), z
-    ##   (dbl), pValue (dbl).
-    ## 
-    ## $`99`
-    ## Source: local data frame [1 x 8]
-    ## 
-    ##                                             method pictures agreedOn
-    ##                                             (fctr)    (int)    (int)
-    ## 1 Cohen's Kappa for 2 Raters (Weights: unweighted)      956      956
-    ## Variables not shown: raters (int), ratersNames (fctr), Kappa (dbl), z
-    ##   (dbl), pValue (dbl).
+$`indoor outdoor`
+
+| method                                           |  pictures|  agreedOn|  raters| ratersNames   |       Kappa|          z|  pValue|
+|:-------------------------------------------------|---------:|---------:|-------:|:--------------|-----------:|----------:|-------:|
+| Cohen's Kappa for 2 Raters (Weights: unweighted) |      1263|        28|       2| Cain and Abel |  -0.0422707|  -16.95465|       0|
+
+$`non codable`
+
+| method                                           |  pictures|  agreedOn|  raters| ratersNames   |       Kappa|          z|  pValue|
+|:-------------------------------------------------|---------:|---------:|-------:|:--------------|-----------:|----------:|-------:|
+| Cohen's Kappa for 2 Raters (Weights: unweighted) |      1263|        28|       2| Cain and Abel |  -0.0422707|  -16.95465|       0|
 
 Here we compare annotations by code. One gets a list of as many tables as there are codes.
 
 ``` r
-irrWatchme(listWC, namesList=c("Cain", "Abel"), oneToOne=TRUE, byCode=TRUE)
+IRR <- irrWatchme(listWC, namesList=c("Cain", "Abel"), oneToOne=TRUE, byCode=TRUE)
+lapply(IRR, kable)
 ```
 
-    ## $`01A`
-    ## Source: local data frame [1 x 10]
-    ## 
-    ##                                             method pictures agreedOn
-    ##                                             (fctr)    (int)    (int)
-    ## 1 Cohen's Kappa for 2 Raters (Weights: unweighted)      956      956
-    ## Variables not shown: rater1YesRater2No (int), rater1NoRater2Yes (int),
-    ##   raters (int), ratersNames (fctr), Kappa (dbl), z (dbl), pValue (dbl).
-    ## 
-    ## $`01B`
-    ## Source: local data frame [1 x 10]
-    ## 
-    ##                                             method pictures agreedOn
-    ##                                             (fctr)    (int)    (int)
-    ## 1 Cohen's Kappa for 2 Raters (Weights: unweighted)      956      956
-    ## Variables not shown: rater1YesRater2No (int), rater1NoRater2Yes (int),
-    ##   raters (int), ratersNames (fctr), Kappa (dbl), z (dbl), pValue (dbl).
-    ## 
-    ## $`01C`
-    ## Source: local data frame [1 x 10]
-    ## 
-    ##                                             method pictures agreedOn
-    ##                                             (fctr)    (int)    (int)
-    ## 1 Cohen's Kappa for 2 Raters (Weights: unweighted)      956      956
-    ## Variables not shown: rater1YesRater2No (int), rater1NoRater2Yes (int),
-    ##   raters (int), ratersNames (fctr), Kappa (dbl), z (dbl), pValue (dbl).
-    ## 
-    ## $`02B`
-    ## Source: local data frame [1 x 10]
-    ## 
-    ##                                             method pictures agreedOn
-    ##                                             (fctr)    (int)    (int)
-    ## 1 Cohen's Kappa for 2 Raters (Weights: unweighted)      956      956
-    ## Variables not shown: rater1YesRater2No (int), rater1NoRater2Yes (int),
-    ##   raters (int), ratersNames (fctr), Kappa (dbl), z (dbl), pValue (dbl).
-    ## 
-    ## $`02A`
-    ## Source: local data frame [1 x 10]
-    ## 
-    ##                                             method pictures agreedOn
-    ##                                             (fctr)    (int)    (int)
-    ## 1 Cohen's Kappa for 2 Raters (Weights: unweighted)      956      956
-    ## Variables not shown: rater1YesRater2No (int), rater1NoRater2Yes (int),
-    ##   raters (int), ratersNames (fctr), Kappa (dbl), z (dbl), pValue (dbl).
-    ## 
-    ## $`03A`
-    ## Source: local data frame [1 x 10]
-    ## 
-    ##                                             method pictures agreedOn
-    ##                                             (fctr)    (int)    (int)
-    ## 1 Cohen's Kappa for 2 Raters (Weights: unweighted)      956      956
-    ## Variables not shown: rater1YesRater2No (int), rater1NoRater2Yes (int),
-    ##   raters (int), ratersNames (fctr), Kappa (dbl), z (dbl), pValue (dbl).
-    ## 
-    ## $`01.`
-    ## Source: local data frame [1 x 10]
-    ## 
-    ##                                             method pictures agreedOn
-    ##                                             (fctr)    (int)    (int)
-    ## 1 Cohen's Kappa for 2 Raters (Weights: unweighted)      956      956
-    ## Variables not shown: rater1YesRater2No (int), rater1NoRater2Yes (int),
-    ##   raters (int), ratersNames (fctr), Kappa (dbl), z (dbl), pValue (dbl).
+$indoors
+
+| method                                           |  pictures|  agreedOn|  rater1YesRater2No|  rater1NoRater2Yes|  raters| ratersNames   |      Kappa|         z|  pValue|
+|:-------------------------------------------------|---------:|---------:|------------------:|------------------:|-------:|:--------------|----------:|---------:|-------:|
+| Cohen's Kappa for 2 Raters (Weights: unweighted) |      1263|      1251|                  9|                  3|       2| Cain and Abel |  0.9430487|  33.52833|       0|
+
+$outdoors
+
+| method                                           |  pictures|  agreedOn|  rater1YesRater2No|  rater1NoRater2Yes|  raters| ratersNames   |      Kappa|        z|  pValue|
+|:-------------------------------------------------|---------:|---------:|------------------:|------------------:|-------:|:--------------|----------:|--------:|-------:|
+| Cohen's Kappa for 2 Raters (Weights: unweighted) |      1263|      1232|                  1|                 30|       2| Cain and Abel |  0.8296414|  29.8661|       0|
+
+$`in vehicle`
+
+| method                                           |  pictures|  agreedOn|  rater1YesRater2No|  rater1NoRater2Yes|  raters| ratersNames   |  Kappa|    z|  pValue|
+|:-------------------------------------------------|---------:|---------:|------------------:|------------------:|-------:|:--------------|------:|----:|-------:|
+| Cohen's Kappa for 2 Raters (Weights: unweighted) |      1263|      1263|                  0|                  0|       2| Cain and Abel |    NaN|  NaN|     NaN|
+
+$mixed
+
+| method                                           |  pictures|  agreedOn|  rater1YesRater2No|  rater1NoRater2Yes|  raters| ratersNames   |  Kappa|    z|  pValue|
+|:-------------------------------------------------|---------:|---------:|------------------:|------------------:|-------:|:--------------|------:|----:|-------:|
+| Cohen's Kappa for 2 Raters (Weights: unweighted) |      1263|      1241|                 22|                  0|       2| Cain and Abel |      0|  NaN|     NaN|
+
+$`non codable`
+
+| method                                           |  pictures|  agreedOn|  rater1YesRater2No|  rater1NoRater2Yes|  raters| ratersNames   |      Kappa|         z|  pValue|
+|:-------------------------------------------------|---------:|---------:|------------------:|------------------:|-------:|:--------------|----------:|---------:|-------:|
+| Cohen's Kappa for 2 Raters (Weights: unweighted) |      1263|      1262|                  1|                  0|       2| Cain and Abel |  0.9226814|  32.88936|       0|
 
 And then for more than two coders. If we do the comparison one by one, the resulting table has as many lines as there are possible pairs of coders. Here we compare all annotations together but even when comparing more than two coders you can do it by group of codes or by code.
 
 ``` r
-listWC2 <- list(dummyWearableCamImages, dummyWearableCamImages, dummyWearableCamImages)
+data("IO3")
+listWC2 <- list(IO1, IO2, IO3)
 namesList <- c("Riri", "Fifi", "Loulou")
-irrWatchme(listWC2, namesList=namesList)
+IRR <- irrWatchme(listWC2, namesList=namesList)
+kable(IRR)
 ```
 
-    ## Source: local data frame [1 x 8]
-    ## 
-    ##                       method pictures agreedOn raters        ratersNames
-    ##                       (fctr)    (int)    (int)  (int)             (fctr)
-    ## 1 Fleiss' Kappa for m Raters      956      956      3 Riri, Fifi, Loulou
-    ## Variables not shown: Kappa (dbl), z (dbl), pValue (dbl).
+| method                     |  pictures|  agreedOn|  raters| ratersNames        |       Kappa|          z|  pValue|
+|:---------------------------|---------:|---------:|-------:|:-------------------|-----------:|----------:|-------:|
+| Fleiss' Kappa for m Raters |      1263|        19|       3| Riri, Fifi, Loulou |  -0.2875235|  -20.28196|       0|
 
 ``` r
-irrWatchme(listWC2, namesList=namesList, oneToOne=TRUE)
+IRR2 <- irrWatchme(listWC2, namesList=namesList, oneToOne=TRUE)
+kable(IRR2)
 ```
 
-    ## Source: local data frame [3 x 8]
-    ## 
-    ##                                             method pictures agreedOn
-    ##                                             (fctr)    (int)    (int)
-    ## 1 Cohen's Kappa for 2 Raters (Weights: unweighted)      956      956
-    ## 2 Cohen's Kappa for 2 Raters (Weights: unweighted)      956      956
-    ## 3 Cohen's Kappa for 2 Raters (Weights: unweighted)      956      956
-    ## Variables not shown: rater1 (fctr), rater2 (fctr), Kappa (dbl), z (dbl),
-    ##   pValue (dbl).
+| method                                           |  pictures|  agreedOn| rater1 | rater2 |       Kappa|          z|  pValue|
+|:-------------------------------------------------|---------:|---------:|:-------|:-------|-----------:|----------:|-------:|
+| Cohen's Kappa for 2 Raters (Weights: unweighted) |      1263|        28| Riri   | Fifi   |  -0.0422707|  -16.95465|       0|
+| Cohen's Kappa for 2 Raters (Weights: unweighted) |      1263|      1263| Riri   | Loulou |   1.0000000|   37.02157|       0|
+| Cohen's Kappa for 2 Raters (Weights: unweighted) |      1263|        28| Fifi   | Loulou |  -0.0422707|  -16.95465|       0|
 
 Conclusion
 ==========
