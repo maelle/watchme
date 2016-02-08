@@ -338,12 +338,12 @@ irrWatchme <- function(wearableCamImagesList, namesList=NULL,
 
           pairs <- as.data.frame(t(combn(namesList, 2)))
           names(pairs) <- c("rater1", "rater2")
-
+          pairs$"rater1" <- as.character(pairs$"rater1")
+          pairs$"rater2" <- as.character(pairs$"rater2")
           tableResults <- NULL
           for (i in 1:nrow(pairs)){
             rater1 <- pairs$rater1[i]
             rater2 <- pairs$rater2[i]
-
             results <- kappa2(dat[, c(rater1, rater2)], "unweighted")
             temp <- data.frame(method=results$method,
                                pictures=results$subjects,
