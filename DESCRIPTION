@@ -1,11 +1,11 @@
 Package: watchme
 Type: Package
-Title: What the Package Does (Title Case)
+Title: Analysis of Autographer Images Annotations
 Version: 1.0
-Date: 2015-11-17
+Date: 2015-01-21
 Author: M. Salmon
-Maintainer: Who to complain to <maelle.salmon@yahoo.se>
-Description: More about what it does (maybe more than one line)
+Maintainer: <maelle.salmon@yahoo.se>
+Description: Analyses autographer images annotations: plots, comparison of coders results, etc.
 License: GPL (version 2 or later)
 LazyData: TRUE
 RoxygenNote: 5.0.1

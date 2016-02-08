@@ -349,11 +349,11 @@ irrWatchme <- function(wearableCamImagesList, namesList=NULL,
                                pictures=results$subjects,
                                agreedOn=sum(dat[,rater1] == dat[,rater2]),
                                rater1YesRater2No=
-                                 sum(dat[,1] == TRUE &
-                                       dat[,2] == FALSE),
+                                 sum(dat[,rater1] == TRUE &
+                                       dat[,rater2] == FALSE),
                                rater1NoRater2Yes=
-                                 sum(dat[,1] == FALSE &
-                                       dat[,2] == TRUE),
+                                 sum(dat[,rater1] == FALSE &
+                                       dat[,rater2] == TRUE),
                                rater1=rater1,
                                rater2=rater2,
                                Kappa=results$value,
