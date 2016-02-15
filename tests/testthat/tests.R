@@ -315,8 +315,7 @@ test_that("outputDifferences checks comparability",{
 })
 
 test_that("outputDifferences gives no difference if equal",{
-  expect_that(outputDifferences(list(dummyWearableCamImages, dummyWearableCamImages)),
-              is_null())
+  expect_null(outputDifferences(list(dummyWearableCamImages, dummyWearableCamImages)))
 })
 
 test_that("outputDifferences gives differences if there are some",{

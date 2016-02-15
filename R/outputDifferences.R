@@ -94,31 +94,36 @@ outputDifferences <- function(wearableCamImagesList, namesList=NULL){
   for (code in dicoCoding$Code){
     miniTable <- bigTable[,c("coder",
                              "imageTime", code)]
+    # only if the code is present in one of the tables
     if(sum(miniTable[,3]) != 0){
       miniTable <- dplyr::tbl_df(miniTable)
       miniTable <- dplyr::arrange(miniTable,
                                   imageTime)
       names(miniTable)[3] <- "code"
+      # spread the table
+      # in order to have a column for each coder
       miniTable2 <- tidyr::spread(miniTable,
                                   coder, code)
+      # do the coder have the same code for the picture?
       notEqual <- !(apply(miniTable2[,2:(nCoders + 1)], 1, sum)
                     %in% c(0, nCoders))
-      if(sum(notEqual) != 0){
+      # only keep lines with differences
         miniTable2 <- dplyr::filter(miniTable2,
                                     notEqual)
-        miniTable2[miniTable2 == TRUE] <- code
-        miniTable2[miniTable2 == FALSE] <- ""
-      }
-      else{
-        miniTable2 <- NULL
-      }
-      tableImages <- rbind(tableImages,
-                           miniTable2)
+        # transform and bind if there are lines
+       if (nrow(miniTable2) > 0){
+         miniTable2[miniTable2 == TRUE] <- code
+         miniTable2[miniTable2 == FALSE] <- ""
+         # table with differences for all codes
+         tableImages <- rbind(tableImages,
+                              miniTable2)
+       }
     }
 
   }
 
-  # One line per picture with all codes for each coder
+  # Now one line per picture with all codes for each coder
+  # this is much easier to read
 
   if(!is.null(tableImages)){
     tableImages <- dplyr::tbl_df(tableImages)
@@ -126,22 +131,30 @@ outputDifferences <- function(wearableCamImagesList, namesList=NULL){
                            imageTime)
     tableImagesFinal <- NULL
     uniqueImages <- unique(tableImages$imageTime)
+    # loop over all unique image
     for (image in uniqueImages){
+      # and for each coder paste all the codes he had applied
       vectorImage <- paste0(tableImages[tableImages$imageTime ==
                                           image, 2:(nCoders + 1)])
       vectorImage <- gsub("c\\(", "", vectorImage)
       vectorImage <- gsub("\"", "", vectorImage)
       vectorImage <- gsub("\\)", "", vectorImage)
       vectorImage <- gsub(",", "", vectorImage)
+      # remember that we have lines only for pictures
+      # for which coders disagree on at least one code
+      # so no further filterin
       tableImagesFinal <- rbind(tableImagesFinal,
                                 vectorImage)
     }
+    # make a tbl_df, and give right names
     tableImages <- dplyr::tbl_df(tableImagesFinal)
     names(tableImages) <- namesList
-     tableImages <- dplyr::mutate(tableImages,
-                                  imageTime = as.character(uniqueImages))
-     tableImages <- dplyr::select(tableImages,
-                                  imageTime, everything())
+
+    tableImages <- dplyr::mutate(tableImages,
+                                 imageTime = as.character(uniqueImages))
+    tableImages <- dplyr::select(tableImages,
+                                 imageTime, everything())
+
   }
 
 
