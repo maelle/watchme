@@ -2,7 +2,7 @@
 % Please edit documentation in R/plotSequence.R
 \name{plotSequence}
 \alias{plotSequence}
-\title{Creates a table with events from the image level annotation information.}
+\title{Plot sequences of events}
 \usage{
 plotSequence(eventTable, doNotUseCode = NULL, xAxis = "time",
   facettingGroup = FALSE, facettingCoder = FALSE, dicoCoding = NULL,
@@ -30,6 +30,19 @@ for categories and subcategories you may want to not plot categories.}
 A \code{ggplot2} graph.
 }
 \description{
-Creates a table with events from the image level annotation information.
+Plot sequences of events
+}
+\examples{
+data('dummyWearableCamImages')
+library('ggplot2')
+eventTable <- toEventLevel(wearableCamImagesObject=dummyWearableCamImages)
+plotSequence(eventTable, dicoCoding = dummyWearableCamImages@dicoCoding)
+plotSequence(eventTable, xAxis='picture', facettingGroup=TRUE,
+dicoCoding = dummyWearableCamImages@dicoCoding)
+data('IO1')
+data('IO2')
+eventTableCoders <- bindCoders(list(IO1, IO2), minDuration = 1)
+plotSequence(eventTableCoders, facettingGroup = TRUE, facettingCoder = TRUE,
+dicoCoding=IO1@dicoCoding)
 }
 

@@ -1,4 +1,4 @@
-#' Creates a table with events from the image level annotation information.
+#' Plot sequences of events
 #'
 #' @import ggplot2
 #' @import RColorBrewer
@@ -20,11 +20,12 @@
 #' plotSequence(eventTable, dicoCoding = dummyWearableCamImages@dicoCoding)
 #' plotSequence(eventTable, xAxis='picture', facettingGroup=TRUE,
 #' dicoCoding = dummyWearableCamImages@dicoCoding)
-#' data("IO1")
-#' data("IO2)
+#' data('IO1')
+#' data('IO2')
 #' eventTableCoders <- bindCoders(list(IO1, IO2), minDuration = 1)
 #' plotSequence(eventTableCoders, facettingGroup = TRUE, facettingCoder = TRUE,
 #' dicoCoding=IO1@dicoCoding)
+
 #' @export
 plotSequence <- function(eventTable, doNotUseCode = NULL, xAxis = "time",
                          facettingGroup = FALSE, facettingCoder = FALSE,
