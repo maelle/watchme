@@ -189,14 +189,15 @@ eventTable <- toEventLevel(wearableCamImagesObject=dummyWearableCamImages)
 plotSequence(eventTable, dicoCoding = dummyWearableCamImages@dicoCoding)
 ```
 
-![](README_files/figure-markdown_github/unnamed-chunk-7-1.png)
+![](README_files/figure-markdown_github/unnamed-chunk-7-1.png)<!-- -->
 
 ``` r
 plotSequence(eventTable, xAxis="picture", facettingGroup=TRUE, 
              cbbPaletteYes = FALSE, dicoCoding = dummyWearableCamImages@dicoCoding)
 ```
 
-![](README_files/figure-markdown_github/unnamed-chunk-7-2.png)
+![](README_files/figure-markdown_github/unnamed-chunk-7-2.png)<!-- -->
+
 For plotting results from more than one coder, one has to start by creating a table of events containing all the results using the `bindCoders`function that takes a list of `wearableCamImages` objects as input, as well as a `minDuration` for events (in pictures).
 
 ``` r
@@ -207,7 +208,7 @@ plotSequence(eventTableCoders, facettingGroup = TRUE, facettingCoder = TRUE,
              dicoCoding=IO1@dicoCoding)
 ```
 
-![](README_files/figure-markdown_github/unnamed-chunk-8-1.png)
+![](README_files/figure-markdown_github/unnamed-chunk-8-1.png)<!-- -->
 
 Calculating interrater reliability
 ==================================
