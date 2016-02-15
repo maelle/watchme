@@ -19,10 +19,11 @@ A \code{tbl_df} with image name, image time, and one column for each coder.
 Outputs images for which codes are different among coders
 }
 \examples{
+#' \dontrun{
 data(IO1)
 data(IO2)
 listObjects <- list(IO1, IO2)
 namesList <- c("coder1", "coder2")
-outputDifferences(listObjects, namesList)
+outputDifferences(listObjects, namesList)}
 }
 
