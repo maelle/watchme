@@ -2,7 +2,7 @@
 % Please edit documentation in R/interraterReliability.R
 \name{irrWatchme}
 \alias{irrWatchme}
-\title{Calculates interrater reliability using the irr package.}
+\title{Calculates interrater reliability using the irr package. A unit of comparison is one picture.}
 \usage{
 irrWatchme(wearableCamImagesList, namesList = NULL, oneToOne = FALSE,
   byGroup = FALSE, byCode = FALSE)
@@ -20,8 +20,7 @@ instead of Fleiss's Kappa for all coders at the same time.}
 \item{byGroup}{boolean indicating whether the IRR should be calculated for each group of codes separately.}
 
 \item{byCode}{boolean indicating whether the IRR should be calculated for each code separately. If both
-byGroup and byCode are FALSE annotations are compared as they are, so make sure all raters use e.g. the same separator
-between annotations when they give several codes to the same picture.}
+byGroup and byCode are FALSE annotations are compared as they are.}
 }
 \value{
 A \code{tbl_df} presenting the results of a call to the \code{irr} function.
@@ -29,14 +28,15 @@ If there are only two raters the called function is \code{kappa2}, unweighted.
  If there are more than two raters and \code{oneToOne} is \code{FALSE}, the called function is \code{kappam.fleiss}.
 }
 \description{
-Calculates interrater reliability using the irr package.
+Calculates interrater reliability using the irr package. A unit of comparison is one picture.
 }
 \examples{
-data('dummyWearableCamImages')
-listWC <- list(dummyWearableCamImages, dummyWearableCamImages)
+data('IO1')
+data('IO2')
+listWC <- list(IO1, IO2)
 namesList <- c('Cain', 'Abel')
 irrWatchme(listWC, namesList=namesList)
-listWC2 <- list(dummyWearableCamImages, dummyWearableCamImages, dummyWearableCamImages)
+listWC2 <- list(IO1, IO1, IO2)
 namesList <- c('Riri', 'Fifi', 'Loulou')
 irrWatchme(listWC2, namesList=namesList)
 irrWatchme(listWC2, namesList=namesList, oneToOne=TRUE)

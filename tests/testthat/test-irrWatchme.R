@@ -67,20 +67,18 @@ test_that("irrWatchme outputs the right type of results depending on the options
   expect_that(as.character(output$method[1]), equals("Cohen's Kappa for 2 Raters (Weights: unweighted)"))
 
   output <- irrWatchme(listWC, namesList=c("Cain", "Abel"), byCode=TRUE)
-  expect_that(output, is_a("list"))
-  expect_that(length(output), equals(ncol(IO1@codesBinaryVariables)))
-  expect_that(dim(output[[1]]), equals(c(1,10)))
-#   expect_that(names(output[[1]]), equals(c( "method", "pictures", "agreedOn", "raters", "ratersNames", "Kappa",
-#                                        "z" , "pValue"  )))
-  expect_that(as.character(output[[1]]$method), equals("Cohen's Kappa for 2 Raters (Weights: unweighted)"))
+  expect_that(output, is_a("tbl_df"))
+  expect_that(nrow(output), equals(ncol(IO1@codesBinaryVariables)))
+  expect_that(ncol(output), equals(11))
+  expect_that(as.character(output$method[1]), equals("Cohen's Kappa for 2 Raters (Weights: unweighted)"))
 
   output <- irrWatchme(listWC, namesList=c("Cain", "Abel"), byGroup=TRUE)
-  expect_that(output, is_a("list"))
-  expect_that(length(output), equals(length(levels(factor(IO1@dicoCoding$Group)))))
-  expect_that(dim(output[[1]]), equals(c(1,8)))
-  expect_that(names(output[[1]]), equals(c( "method", "pictures", "agreedOn", "raters", "ratersNames", "Kappa",
-                                            "z" , "pValue"  )))
-  expect_that(as.character(output[[1]]$method), equals("Cohen's Kappa for 2 Raters (Weights: unweighted)"))
+  expect_that(output, is_a("tbl_df"))
+  expect_that(nrow(output), equals(length(levels(factor(IO1@dicoCoding$Group)))))
+  expect_that(ncol(output), equals(9))
+  expect_that(names(output), equals(c( "method", "pictures", "agreedOn", "raters", "ratersNames", "Kappa",
+                                            "z" , "pValue", "group"  )))
+  expect_that(as.character(output$method[1]), equals("Cohen's Kappa for 2 Raters (Weights: unweighted)"))
 })
 
 test_that("irrWachme outputs an error if there is only one file",{

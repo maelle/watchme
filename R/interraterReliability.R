@@ -1,6 +1,6 @@
 #' Calculates interrater reliability using the irr package. A unit of comparison is one picture.
 #' @importFrom irr kappa2 kappam.fleiss
-#' @importFrom dplyr tbl_df
+#' @importFrom dplyr tbl_df "%>%" mutate
 #' @importFrom data.table setattr
 #' @param wearableCamImagesList a list of \code{wearableCamImages} objects.
 #' @param namesList (optional) a vector of names for the coders. It must be the same length as wearableCamImagesList
@@ -10,17 +10,17 @@
 #' instead of Fleiss's Kappa for all coders at the same time.
 #' @param byGroup boolean indicating whether the IRR should be calculated for each group of codes separately.
 #' @param byCode boolean indicating whether the IRR should be calculated for each code separately. If both
-#' byGroup and byCode are FALSE annotations are compared as they are, so make sure all raters use e.g. the same separator
-#' between annotations when they give several codes to the same picture.
+#' byGroup and byCode are FALSE annotations are compared as they are.
 #' @return  A \code{tbl_df} presenting the results of a call to the \code{irr} function.
 #' If there are only two raters the called function is \code{kappa2}, unweighted.
 #'  If there are more than two raters and \code{oneToOne} is \code{FALSE}, the called function is \code{kappam.fleiss}.
 #' @examples
-#' data('dummyWearableCamImages')
-#' listWC <- list(dummyWearableCamImages, dummyWearableCamImages)
+#' data('IO1')
+#' data('IO2')
+#' listWC <- list(IO1, IO2)
 #' namesList <- c('Cain', 'Abel')
 #' irrWatchme(listWC, namesList=namesList)
-#' listWC2 <- list(dummyWearableCamImages, dummyWearableCamImages, dummyWearableCamImages)
+#' listWC2 <- list(IO1, IO1, IO2)
 #' namesList <- c('Riri', 'Fifi', 'Loulou')
 #' irrWatchme(listWC2, namesList=namesList)
 #' irrWatchme(listWC2, namesList=namesList, oneToOne=TRUE)
@@ -87,7 +87,7 @@ irrWatchme <- function(wearableCamImagesList, namesList=NULL,
          should have the same dicoCoding!")
     }
 
-  # Easy, simply compares the equality of anotations
+  # Easy, simply compares the equality of annotations
     if ( !byGroup & !byCode){
     # create the table for comparing
     dat <- NULL
@@ -178,7 +178,7 @@ irrWatchme <- function(wearableCamImagesList, namesList=NULL,
     listResults <- list()
 
     if (byGroup & !byCode){
-      for (group in dicoRef$Group){
+      for (group in unique(dicoRef$Group)){
         dat <- NULL
         namesDat <- NULL
         for (object in 1:length(wearableCamImagesList)){
@@ -279,8 +279,9 @@ irrWatchme <- function(wearableCamImagesList, namesList=NULL,
 
         listResults[[as.character(group)]] <- tableResults
 
-
       }
+      listResults <- do.call("rbind", listResults) %>%
+        dplyr::mutate(group = as.factor(unique(dicoRef$Group)))
     }
 
     if (byCode){
@@ -370,9 +371,15 @@ irrWatchme <- function(wearableCamImagesList, namesList=NULL,
         listResults[[code]] <- tableResults
 
       }
-
+      listResults <- dplyr::tbl_df(do.call("rbind", listResults)) %>%
+        dplyr::mutate(code =
+                 names(wearableCamImagesList[[1]]@
+                         codesBinaryVariables)) %>%
+        dplyr::mutate(code = as.factor(code))
     }
+
     tableResults <- listResults
+
   }
 
   return(tableResults)

@@ -209,20 +209,20 @@ IRR <- irrWatchme(listWC, namesList=namesList)
 kable(IRR)
 ```
 
-Here we compare annotations by group of codes. One gets a list of as many tables as there are groups.
+Here we compare annotations by group of codes. 
 
 ```{r, warning=FALSE, message=FALSE, fig.width=10, results="asis"} 
 IRR <- irrWatchme(listWC, namesList=c("Cain", "Abel"), oneToOne=TRUE, byGroup=TRUE)
-lapply(IRR, kable)
+kable(IRR)
 ```
 
 
-Here we compare annotations by code. One gets a list of as many tables as there are codes.
+Here we compare annotations by code. 
 
 
 ```{r, warning=FALSE, message=FALSE, fig.width=10, results="asis"} 
 IRR <- irrWatchme(listWC, namesList=c("Cain", "Abel"), oneToOne=TRUE, byCode=TRUE)
-lapply(IRR, kable)
+kable(IRR)
 ```
 
 

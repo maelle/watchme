@@ -275,61 +275,32 @@ kable(IRR)
 |:-------------------------------------------------|---------:|---------:|-------:|:--------------|-----------:|----------:|-------:|
 | Cohen's Kappa for 2 Raters (Weights: unweighted) |      1263|        28|       2| Cain and Abel |  -0.0422707|  -16.95465|       0|
 
-Here we compare annotations by group of codes. One gets a list of as many tables as there are groups.
+Here we compare annotations by group of codes.
 
 ``` r
 IRR <- irrWatchme(listWC, namesList=c("Cain", "Abel"), oneToOne=TRUE, byGroup=TRUE)
-lapply(IRR, kable)
+kable(IRR)
 ```
 
-$`indoor outdoor`
+| method                                           |  pictures|  agreedOn|  raters| ratersNames   |       Kappa|          z|  pValue| group          |
+|:-------------------------------------------------|---------:|---------:|-------:|:--------------|-----------:|----------:|-------:|:---------------|
+| Cohen's Kappa for 2 Raters (Weights: unweighted) |      1263|        28|       2| Cain and Abel |  -0.0422707|  -16.95465|       0| indoor outdoor |
+| Cohen's Kappa for 2 Raters (Weights: unweighted) |      1263|        28|       2| Cain and Abel |  -0.0422707|  -16.95465|       0| non codable    |
 
-| method                                           |  pictures|  agreedOn|  raters| ratersNames   |       Kappa|          z|  pValue|
-|:-------------------------------------------------|---------:|---------:|-------:|:--------------|-----------:|----------:|-------:|
-| Cohen's Kappa for 2 Raters (Weights: unweighted) |      1263|        28|       2| Cain and Abel |  -0.0422707|  -16.95465|       0|
-
-$`non codable`
-
-| method                                           |  pictures|  agreedOn|  raters| ratersNames   |       Kappa|          z|  pValue|
-|:-------------------------------------------------|---------:|---------:|-------:|:--------------|-----------:|----------:|-------:|
-| Cohen's Kappa for 2 Raters (Weights: unweighted) |      1263|        28|       2| Cain and Abel |  -0.0422707|  -16.95465|       0|
-
-Here we compare annotations by code. One gets a list of as many tables as there are codes.
+Here we compare annotations by code.
 
 ``` r
 IRR <- irrWatchme(listWC, namesList=c("Cain", "Abel"), oneToOne=TRUE, byCode=TRUE)
-lapply(IRR, kable)
+kable(IRR)
 ```
 
-$indoors
-
-| method                                           |  pictures|  agreedOn|  rater1YesRater2No|  rater1NoRater2Yes|  raters| ratersNames   |      Kappa|         z|  pValue|
-|:-------------------------------------------------|---------:|---------:|------------------:|------------------:|-------:|:--------------|----------:|---------:|-------:|
-| Cohen's Kappa for 2 Raters (Weights: unweighted) |      1263|      1251|                  9|                  3|       2| Cain and Abel |  0.9430487|  33.52833|       0|
-
-$outdoors
-
-| method                                           |  pictures|  agreedOn|  rater1YesRater2No|  rater1NoRater2Yes|  raters| ratersNames   |      Kappa|        z|  pValue|
-|:-------------------------------------------------|---------:|---------:|------------------:|------------------:|-------:|:--------------|----------:|--------:|-------:|
-| Cohen's Kappa for 2 Raters (Weights: unweighted) |      1263|      1232|                  1|                 30|       2| Cain and Abel |  0.8296414|  29.8661|       0|
-
-$`in vehicle`
-
-| method                                           |  pictures|  agreedOn|  rater1YesRater2No|  rater1NoRater2Yes|  raters| ratersNames   |  Kappa|    z|  pValue|
-|:-------------------------------------------------|---------:|---------:|------------------:|------------------:|-------:|:--------------|------:|----:|-------:|
-| Cohen's Kappa for 2 Raters (Weights: unweighted) |      1263|      1263|                  0|                  0|       2| Cain and Abel |    NaN|  NaN|     NaN|
-
-$mixed
-
-| method                                           |  pictures|  agreedOn|  rater1YesRater2No|  rater1NoRater2Yes|  raters| ratersNames   |  Kappa|    z|  pValue|
-|:-------------------------------------------------|---------:|---------:|------------------:|------------------:|-------:|:--------------|------:|----:|-------:|
-| Cohen's Kappa for 2 Raters (Weights: unweighted) |      1263|      1241|                 22|                  0|       2| Cain and Abel |      0|  NaN|     NaN|
-
-$`non codable`
-
-| method                                           |  pictures|  agreedOn|  rater1YesRater2No|  rater1NoRater2Yes|  raters| ratersNames   |      Kappa|         z|  pValue|
-|:-------------------------------------------------|---------:|---------:|------------------:|------------------:|-------:|:--------------|----------:|---------:|-------:|
-| Cohen's Kappa for 2 Raters (Weights: unweighted) |      1263|      1262|                  1|                  0|       2| Cain and Abel |  0.9226814|  32.88936|       0|
+| method                                           |  pictures|  agreedOn|  rater1YesRater2No|  rater1NoRater2Yes|  raters| ratersNames   |      Kappa|         z|  pValue| code        |
+|:-------------------------------------------------|---------:|---------:|------------------:|------------------:|-------:|:--------------|----------:|---------:|-------:|:------------|
+| Cohen's Kappa for 2 Raters (Weights: unweighted) |      1263|      1251|                  9|                  3|       2| Cain and Abel |  0.9430487|  33.52833|       0| indoors     |
+| Cohen's Kappa for 2 Raters (Weights: unweighted) |      1263|      1232|                  1|                 30|       2| Cain and Abel |  0.8296414|  29.86610|       0| outdoors    |
+| Cohen's Kappa for 2 Raters (Weights: unweighted) |      1263|      1263|                  0|                  0|       2| Cain and Abel |        NaN|       NaN|     NaN| in vehicle  |
+| Cohen's Kappa for 2 Raters (Weights: unweighted) |      1263|      1241|                 22|                  0|       2| Cain and Abel |  0.0000000|       NaN|     NaN| mixed       |
+| Cohen's Kappa for 2 Raters (Weights: unweighted) |      1263|      1262|                  1|                  0|       2| Cain and Abel |  0.9226814|  32.88936|       0| non codable |
 
 And then for more than two coders. If we do the comparison one by one, the resulting table has as many lines as there are possible pairs of coders. Here we compare all annotations together but even when comparing more than two coders you can do it by group of codes or by code.
 
