@@ -19,7 +19,7 @@ This package aims at supporting robust and reproducible analysis of annotation r
 
 -   the results of these annotations are then used to e.g. reconstruct the sequence of activities of a person during the day, or link it to pollution exposure.
 
-This R package supports the last step. How to calculate interrater reliability? How to plot the data? These are the processes that we want to code in the package, so that scientists from different projects can produce consistent results and get ideas from other projects. Every suggestion to expand the package is more than welcome, such as bug reports, if nicely written.
+This R package supports the last step. How to calculate interrater agreement? How to plot the data? These are the processes that we want to code in the package, so that scientists from different projects can produce consistent results and get ideas from other projects. Every suggestion to expand the package is more than welcome, such as bug reports, if nicely written.
 
 Data structure
 ==============
@@ -210,10 +210,10 @@ plotSequence(eventTableCoders, facettingGroup = TRUE, facettingCoder = TRUE,
 
 ![](README_files/figure-markdown_github/unnamed-chunk-8-1.png)<!-- -->
 
-Calculating interrater reliability
-==================================
+Calculating interrater agreement
+================================
 
-An important aspect of coding images is having a list of annotations that provides consistent results acrossed (trained) coders, or raters. Therefore one needs to check and report interrater reliability.
+An important aspect of coding images is having a list of annotations that provides consistent results acrossed (trained) coders, or raters. Therefore one needs to check and report interrater agreement.
 
 Simply look at disagreements
 ----------------------------
@@ -242,10 +242,10 @@ kable(differences[1:10,])
 | 2015-06-12 15:24:55 | mixed       | outdoors |
 | 2015-06-12 16:06:08 | indoors     | outdoors |
 
-Assess interrater reliability
------------------------------
+Assess interrater agreement
+---------------------------
 
-Nowadays the state of the art is to use Cohen's kappa for codes attributed to pictures, even if they are not independent (Aiden Doherty's personal communication). In the package we provide a function for calculating interrater reliability (or IRR) this way, which is called `irrWatchme`. It uses functions of the R `irr` package. It allows using several possibilities for defining what codes are to be compared:
+Nowadays the state of the art is to use Cohen's kappa for codes attributed to pictures, even if they are not independent (Aiden Doherty's personal communication). In the package we provide a function for calculating interrater agreement (or IRR) this way, which is called `iraWatchme`. It uses functions of the R `irr` package. It allows using several possibilities for defining what codes are to be compared:
 
 -   one could compare the global annotations of all files, i.e. all codes at the same time. For instance compare washingYourTeeth; readingABook to washingYourTeeh; readingAMagazine for picture 1 between coder A and coder B. This is the default option.
 
@@ -255,7 +255,7 @@ Nowadays the state of the art is to use Cohen's kappa for codes attributed to pi
 
 In the case in which wants to compare results provided by more than two coders, another choice to be made is whether all coders are to be compared together using Fleiss Kappa, or one to one using Cohen's kappa. This is set with the `oneToOne` Boolean argument.
 
-The comparison one wants to make depends on the context of the calculation of the IRR. When developping a new list of annotations one wants to see interrater reliability for each code, later when may want to report a single figure for the whole list of annotations.
+The comparison one wants to make depends on the context of the calculation of the IRR. When developping a new list of annotations one wants to see interrater agreement for each code, later when may want to report a single figure for the whole list of annotations.
 
 Below are a few examples for two coders to be compared.
 
@@ -267,7 +267,7 @@ data("IO1")
 data("IO2")
 listWC <- list(IO1, IO2)
 namesList <- c("Cain", "Abel")
-IRR <- irrWatchme(listWC, namesList=namesList)
+IRR <- iraWatchme(listWC, namesList=namesList)
 kable(IRR)
 ```
 
@@ -278,29 +278,29 @@ kable(IRR)
 Here we compare annotations by group of codes. The agreement here means giving a code of the same group (or not giving any code) for each picture.
 
 ``` r
-IRR <- irrWatchme(listWC, namesList=c("Cain", "Abel"), oneToOne=TRUE, byGroup=TRUE)
+IRR <- iraWatchme(listWC, namesList=c("Cain", "Abel"), oneToOne=TRUE, byGroup=TRUE)
 kable(IRR)
 ```
 
-| method                                           |  pictures|  agreedOn|  raters| ratersNames   |      Kappa|         z|  pValue| group          |
-|:-------------------------------------------------|---------:|---------:|-------:|:--------------|----------:|---------:|-------:|:---------------|
-| Cohen's Kappa for 2 Raters (Weights: unweighted) |      1263|      1262|       2| Cain and Abel |  0.9226814|  32.88936|       0| indoor outdoor |
-| Cohen's Kappa for 2 Raters (Weights: unweighted) |      1263|      1262|       2| Cain and Abel |  0.9226814|  32.88936|       0| non codable    |
+|                | method                                           |  pictures|  agreedOn|  raters| ratersNames   |      Kappa|         z|  pValue| group          |
+|----------------|:-------------------------------------------------|---------:|---------:|-------:|:--------------|----------:|---------:|-------:|:---------------|
+| indoor outdoor | Cohen's Kappa for 2 Raters (Weights: unweighted) |      1263|      1262|       2| Cain and Abel |  0.9226814|  32.88936|       0| indoor outdoor |
+| non codable    | Cohen's Kappa for 2 Raters (Weights: unweighted) |      1263|      1262|       2| Cain and Abel |  0.9226814|  32.88936|       0| non codable    |
 
 Here we compare annotations by code. The agreement here means to agree for each code on whether it is present or not. It is useful to spot if a code often leads to disagreements. Below the "mixed" code leads to only disagreements.
 
 ``` r
-IRR <- irrWatchme(listWC, namesList=c("Cain", "Abel"), oneToOne=TRUE, byCode=TRUE)
+IRR <- iraWatchme(listWC, namesList=c("Cain", "Abel"), oneToOne=TRUE, byCode=TRUE)
 kable(IRR)
 ```
 
-| method                                           |  pictures|  agreedOn|  rater1YesRater2No|  rater1NoRater2Yes|  raters| ratersNames   |      Kappa|         z|  pValue| code        |
-|:-------------------------------------------------|---------:|---------:|------------------:|------------------:|-------:|:--------------|----------:|---------:|-------:|:------------|
-| Cohen's Kappa for 2 Raters (Weights: unweighted) |      1263|      1251|                  9|                  3|       2| Cain and Abel |  0.9430487|  33.52833|       0| indoors     |
-| Cohen's Kappa for 2 Raters (Weights: unweighted) |      1263|      1232|                  1|                 30|       2| Cain and Abel |  0.8296414|  29.86610|       0| outdoors    |
-| Cohen's Kappa for 2 Raters (Weights: unweighted) |      1263|      1263|                  0|                  0|       2| Cain and Abel |        NaN|       NaN|     NaN| in vehicle  |
-| Cohen's Kappa for 2 Raters (Weights: unweighted) |      1263|      1241|                 22|                  0|       2| Cain and Abel |  0.0000000|       NaN|     NaN| mixed       |
-| Cohen's Kappa for 2 Raters (Weights: unweighted) |      1263|      1262|                  1|                  0|       2| Cain and Abel |  0.9226814|  32.88936|       0| non codable |
+|             | method                                           |  pictures|  agreedOn|  rater1YesRater2No|  rater1NoRater2Yes|  raters| ratersNames   |      Kappa|         z|  pValue| code        |
+|-------------|:-------------------------------------------------|---------:|---------:|------------------:|------------------:|-------:|:--------------|----------:|---------:|-------:|:------------|
+| indoors     | Cohen's Kappa for 2 Raters (Weights: unweighted) |      1263|      1251|                  9|                  3|       2| Cain and Abel |  0.9430487|  33.52833|       0| indoors     |
+| outdoors    | Cohen's Kappa for 2 Raters (Weights: unweighted) |      1263|      1232|                  1|                 30|       2| Cain and Abel |  0.8296414|  29.86610|       0| outdoors    |
+| in vehicle  | Cohen's Kappa for 2 Raters (Weights: unweighted) |      1263|      1263|                  0|                  0|       2| Cain and Abel |        NaN|       NaN|     NaN| in vehicle  |
+| mixed       | Cohen's Kappa for 2 Raters (Weights: unweighted) |      1263|      1241|                 22|                  0|       2| Cain and Abel |  0.0000000|       NaN|     NaN| mixed       |
+| non codable | Cohen's Kappa for 2 Raters (Weights: unweighted) |      1263|      1262|                  1|                  0|       2| Cain and Abel |  0.9226814|  32.88936|       0| non codable |
 
 And then for more than two coders. If we do the comparison one by one, the resulting table has as many lines as there are possible pairs of coders. Here we compare all annotations together but even when comparing more than two coders you can do it by group of codes or by code.
 
@@ -308,7 +308,7 @@ And then for more than two coders. If we do the comparison one by one, the resul
 data("IO3")
 listWC2 <- list(IO1, IO2, IO3)
 namesList <- c("Riri", "Fifi", "Loulou")
-IRR <- irrWatchme(listWC2, namesList=namesList)
+IRR <- iraWatchme(listWC2, namesList=namesList)
 kable(IRR)
 ```
 
@@ -317,7 +317,7 @@ kable(IRR)
 | Fleiss' Kappa for m Raters |      1263|        19|       3| Riri, Fifi, Loulou |  -0.2875235|  -20.28196|       0|
 
 ``` r
-IRR2 <- irrWatchme(listWC2, namesList=namesList, oneToOne=TRUE)
+IRR2 <- iraWatchme(listWC2, namesList=namesList, oneToOne=TRUE)
 kable(IRR2)
 ```
 

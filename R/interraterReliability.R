@@ -1,4 +1,4 @@
-#' Calculates interrater reliability using the irr package. A unit of comparison is one picture.
+#' Calculates interrater agreement using the irr package. A unit of comparison is one picture.
 #' @importFrom irr kappa2 kappam.fleiss
 #' @importFrom dplyr tbl_df "%>%"
 #' @importFrom data.table setattr
@@ -19,16 +19,16 @@
 #' data('IO2')
 #' listWC <- list(IO1, IO2)
 #' namesList <- c('Cain', 'Abel')
-#' irrWatchme(listWC, namesList=namesList)
+#' iraWatchme(listWC, namesList=namesList)
 #' listWC2 <- list(IO1, IO1, IO2)
 #' namesList <- c('Riri', 'Fifi', 'Loulou')
-#' irrWatchme(listWC2, namesList=namesList)
-#' irrWatchme(listWC2, namesList=namesList, oneToOne=TRUE)
-#' irrWatchme(listWC, namesList=c('Cain', 'Abel'), oneToOne=TRUE, byCode=TRUE)
-#' irrWatchme(listWC, namesList=c('Cain', 'Abel'), oneToOne=TRUE, byGroup=TRUE)
+#' iraWatchme(listWC2, namesList=namesList)
+#' iraWatchme(listWC2, namesList=namesList, oneToOne=TRUE)
+#' iraWatchme(listWC, namesList=c('Cain', 'Abel'), oneToOne=TRUE, byCode=TRUE)
+#' iraWatchme(listWC, namesList=c('Cain', 'Abel'), oneToOne=TRUE, byGroup=TRUE)
 
 #' @export
-irrWatchme <- function(wearableCamImagesList, namesList=NULL,
+iraWatchme <- function(wearableCamImagesList, namesList=NULL,
                        oneToOne=FALSE, byGroup=FALSE,
                        byCode=FALSE){
 
