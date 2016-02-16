@@ -4,11 +4,6 @@ library("dplyr")
 #################################################################################################
 context("bindCoders")
 #################################################################################################
-test_that("bindCoders want at least two coders",{
-  data("IO1")
-  expect_error(bindCoders(list(IO1)),
-               "Do not bother using this function if you only have one wearableCamImages object.")
-})
 
 test_that("bindCoders outputs a data table", {
   data("IO1")
@@ -20,13 +15,6 @@ test_that("bindCoders outputs a data table", {
 
 test_that("bindCoders uses namesList well", {
   data("dummyWearableCamImages")
-
-  expect_that(bindCoders(list(dummyWearableCamImages, dummyWearableCamImages), namesList="theOnlyOne"),
-              throws_error("Not as many names as wearableCamImages objects"))
-
-  expect_that(bindCoders(list(dummyWearableCamImages, dummyWearableCamImages),
-                         namesList=c("theOnlyOne", "theOnlyOne")),
-              throws_error("Please provide unique names for the coders"))
 
   output <- bindCoders(list(dummyWearableCamImages, dummyWearableCamImages),
                        namesList=c("Cain", "Abel"))

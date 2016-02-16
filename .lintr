@@ -1,4 +1,4 @@
 linters:with_defaults(camel_case_linter = NULL,
               snake_case_linter,
               object_length_linter(50))
-exclusions: list("tests/testthat.R", "tests/testthat/test-bindCoders.R", "tests/testthat/test-combineObjects.R", "tests/testthat/test-convertInput.R", "tests/testthat/test-iraWatchme.R", "tests/testthat/test-lints.R", "tests/testthat/test-outputDifferences.R", "tests/testthat/test-plotSequence.R", "tests/testthat/test-summaryEventTable.R", "tests/testthat/test-toEventLevel.R", "R/plotSequence.R"  )
+exclusions: list("tests/testthat.R", "tests/testthat/test-bindCoders.R", "tests/testthat/test-convertInput.R", "tests/testthat/test-iraWatchme.R", "tests/testthat/test-lints.R", "tests/testthat/test-outputDifferences.R", "tests/testthat/test-plotSequence.R", "tests/testthat/test-summaryEventTable.R", "tests/testthat/test-toEventLevel.R", "tests/testthat/test-utils.R","R/plotSequence.R"  )

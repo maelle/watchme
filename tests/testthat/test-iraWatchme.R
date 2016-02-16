@@ -6,35 +6,6 @@ library("irr")
 #################################################################################################
 context("iraWatchme")
 #################################################################################################
-test_that("iraWatchme uses namesList well", {
-  data("IO1")
-  data("IO2")
-
-  expect_that(iraWatchme(list(IO1, IO2), namesList="theOnlyOne"),
-              throws_error("Not as many names as wearableCamImages objects"))
-
-  expect_that(iraWatchme(list(IO1, IO2),
-                         namesList=c("theOnlyOne", "theOnlyOne")),
-              throws_error("Please provide unique names for the coders"))
-
-  expect_that(iraWatchme(list(IO1, IO2)),
-                         is_a("tbl_df"))
-
-})
-
-test_that("iraWatchme checks comparability",{
-  data("dummyWearableCamImages")
-  dummyWearableCamImages2 <- dummyWearableCamImages
-  dummyWearableCamImages2@codes <- dummyWearableCamImages@codes[1:10]
-  expect_error(iraWatchme(list(dummyWearableCamImages, dummyWearableCamImages2)),
-               "There should be the same number of pictures in each wearableCamImages object!")
-
-  dummyWearableCamImages2 <- dummyWearableCamImages
-  dummyWearableCamImages2@dicoCoding <- dummyWearableCamImages@dicoCoding[1:6,]
-  expect_error(iraWatchme(list(dummyWearableCamImages, dummyWearableCamImages2)),
-               "All wearableCamImages objects should have the same dicoCoding!")
-})
-
 test_that("iraWatchme outputs the right type of results depending on the options",{
   data("IO1")
   data("IO2")
@@ -81,6 +52,3 @@ test_that("iraWatchme outputs the right type of results depending on the options
   expect_that(as.character(output$method[1]), equals("Cohen's Kappa for 2 Raters (Weights: unweighted)"))
 })
 
-test_that("iraWachme outputs an error if there is only one file",{
-  expect_error(iraWatchme(list(dummyWearableCamImages)), "Do not bother using this function if you only have one wearableCamImages object.")
-})
