@@ -17,6 +17,13 @@ environment:
 
 build_script:
   - travis-tool.sh install_deps
+  - travis-tool.sh install_r dplyr
+  - travis-tool.sh install_r ggplot2
+  - travis-tool.sh install_r irr
+  - travis-tool.sh install_r lubridate
+  - travis-tool.sh install_r xtable
+  - travis-tool.sh install_r RColorBrewer
+  - travis-tool.sh install_r tidyr
 
 test_script:
   - travis-tool.sh run_tests

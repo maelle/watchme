@@ -1,7 +1,7 @@
 #' Creates a wearableCamImages object from information read in a csv file.
 #'
 #' @importFrom lubridate ymd_hms mdy_hms
-#' @importFrom data.table like
+#' @importFrom data.table setattr
 #' @param pathResults the path to the file with coding results
 #' @param sepResults the separator in the file with coding results
 #' @param pathDicoCoding the path to the file with the list of annotations
@@ -46,7 +46,7 @@ convertInput <- function(pathResults, sepResults, quoteSign = "\'",
     }
 
     # When it comes from XnView MP, wrong names
-    if(names(resultsCoding)[1] %like% "Filename"){
+    if(grepl("Filename", names(resultsCoding)[1])){
       names(resultsCoding) <- c("image_path",
                                 "image_time",
                                 "annotation")

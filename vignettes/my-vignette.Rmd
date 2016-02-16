@@ -11,7 +11,7 @@ vignette: >
 
 ```{r, echo=FALSE, warning=FALSE, message=FALSE}
 library("knitr")
-
+library("dplyr")
 ```
 
 # Introduction

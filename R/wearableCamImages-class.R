@@ -1,4 +1,5 @@
 #' An S4 class to store information about images and their code.
+#' @importFrom methods setClass
 #' @name wearableCamImages-class
 #' @rdname wearableCamImages-class
 #'

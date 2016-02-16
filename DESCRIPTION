@@ -3,17 +3,25 @@ Type: Package
 Title: Analysis of Autographer Images Annotations
 Version: 1.0
 Date: 2015-01-21
-Author: M. Salmon
-Maintainer: <maelle.salmon@yahoo.se>
+Authors@R: person("Maëlle", "Salmon", email = "maelle.salmon@yahoo.se", role = c("aut", "cre"))
 Description: Analyses autographer images annotations: plots, comparison of coders results, etc.
-License: GPL (version 2 or later)
+License: GPL (>= 2)
 LazyData: TRUE
 RoxygenNote: 5.0.1
+Imports: dplyr,
+    ggplot2,
+    irr,
+    lubridate,
+    data.table,
+    RColorBrewer,
+    tidyr,
+    methods
 Suggests: knitr,
     rmarkdown,
-    testthat
+    testthat,
+    xtable
 VignetteBuilder: knitr
 URL: http://github.com/masalmon/watchme
 BugReports: http://github.com/masalmon/watchme/issues
-Imports: dplyr, ggplot2, irr, lubridate, xtable, data.table, RColorBrewer, tidyr
+
 
