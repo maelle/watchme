@@ -1,6 +1,6 @@
 #' Calculates interrater reliability using the irr package. A unit of comparison is one picture.
 #' @importFrom irr kappa2 kappam.fleiss
-#' @importFrom dplyr tbl_df "%>%" mutate
+#' @importFrom dplyr tbl_df "%>%"
 #' @importFrom data.table setattr
 #' @param wearableCamImagesList a list of \code{wearableCamImages} objects.
 #' @param namesList (optional) a vector of names for the coders. It must be the same length as wearableCamImagesList
@@ -184,13 +184,15 @@ irrWatchme <- function(wearableCamImagesList, namesList=NULL,
         dat <- NULL
         namesDat <- NULL
         for (object in 1:length(wearableCamImagesList)){
-
+          # filter only for the group
+          # and then look whether any code for this group
           temp <- wearableCamImagesList[[object]]@codesBinaryVariables
           temp <- temp[, filter(dicoRef,
-                                Group == "indoor outdoor")$Code]
+                                Group == group)$Code]
+          temp <- as.data.frame(temp)
           temp <- (apply(temp, 1, sum) >= 1)
 
-
+         # bind, one column per coder
          dat <- cbind(dat, as.factor(temp))
          namesDat <- c(namesDat, namesList[object])
         }
@@ -206,13 +208,17 @@ irrWatchme <- function(wearableCamImagesList, namesList=NULL,
                                      raters = results$raters,
                                      ratersNames =
                                        paste(namesList[[1]], "and",
-                                             namesList[[2]], sep=" "),
-                                     Kappa=results$value,
-                                     z=results$statistic,
-                                     pValue=results$p.value)
+                                             namesList[[2]],
+                                             sep = " "),
+                                     Kappa = results$value,
+                                     z = results$statistic,
+                                     pValue = results$p.value,
+                                     group = group)
           tableResults <- dplyr::tbl_df(tableResults)
         }
 
+        # more than two coders, but kappam.fleiss
+        # (global measure of agreement)
         if (length(wearableCamImagesList) > 2 & !oneToOne){
 
           results <- irr::kappam.fleiss(dat)
@@ -224,17 +230,20 @@ irrWatchme <- function(wearableCamImagesList, namesList=NULL,
           agreedOn <- sum(apply(dat, 1, lengthOfUnique) == 1)
 
 
-          tableResults <- data.frame(method=results$method,
-                                     pictures=results$subjects,
-                                     agreedOn=agreedOn,
-                                     raters=results$raters,
-                                     ratersNames=toString(namesList),
-                                     Kappa=results$value,
-                                     z=results$statistic,
-                                     pValue=results$p.value)
+          tableResults <- data.frame(method = results$method,
+                                     pictures = results$subjects,
+                                     agreedOn = agreedOn,
+                                     raters = results$raters,
+                                     ratersNames = toString(namesList),
+                                     Kappa = results$value,
+                                     z = results$statistic,
+                                     pValue = results$p.value,
+                                     group = group)
           tableResults <- dplyr::tbl_df(tableResults)
         }
 
+        # more than two coders
+        # and results for each pair
         if (length(wearableCamImagesList) > 2 & oneToOne){
 
           pairs <- as.data.frame(t(combn(namesList, 2)))
@@ -246,14 +255,16 @@ irrWatchme <- function(wearableCamImagesList, namesList=NULL,
             rater2 <- pairs$rater2[i]
 
             results <- kappa2(dat[, c(rater1, rater2)], "unweighted")
-            temp <- data.frame(method=results$method,
-                               pictures=results$subjects,
-                               agreedOn=sum(dat[,rater1] == dat[,rater2]),
-                               rater1=rater1,
-                               rater2=rater2,
-                               Kappa=results$value,
-                               z=results$statistic,
-                               pValue=results$p.value)
+            temp <- data.frame(method = results$method,
+                               pictures = results$subjects,
+                               agreedOn = sum(dat[,rater1] ==
+                                                dat[,rater2]),
+                               rater1 = rater1,
+                               rater2 = rater2,
+                               Kappa = results$value,
+                               z = results$statistic,
+                               pValue = results$p.value,
+                               group = group)
             tableResults <- rbind(tableResults, temp)
           }
 
@@ -264,8 +275,7 @@ irrWatchme <- function(wearableCamImagesList, namesList=NULL,
         listResults[[as.character(group)]] <- tableResults
 
       }
-      listResults <- do.call("rbind", listResults) %>%
-        dplyr::mutate(group = as.factor(unique(dicoRef$Group)))
+      listResults <- do.call("rbind", listResults)
     }
 
     if (byCode){
@@ -294,7 +304,8 @@ irrWatchme <- function(wearableCamImagesList, namesList=NULL,
                                        namesList[[2]], sep=" "),
                                      Kappa=results$value,
                                      z=results$statistic,
-                                     pValue=results$p.value)
+                                     pValue=results$p.value,
+                                     code = code)
           tableResults <- dplyr::tbl_df(tableResults)
         }
 
@@ -316,7 +327,8 @@ irrWatchme <- function(wearableCamImagesList, namesList=NULL,
                                      ratersNames=toString(namesList),
                                      Kappa=results$value,
                                      z=results$statistic,
-                                     pValue=results$p.value)
+                                     pValue=results$p.value,
+                                     code = code)
           tableResults <- dplyr::tbl_df(tableResults)
         }
 
@@ -344,7 +356,8 @@ irrWatchme <- function(wearableCamImagesList, namesList=NULL,
                                rater2=rater2,
                                Kappa=results$value,
                                z=results$statistic,
-                               pValue=results$p.value)
+                               pValue=results$p.value,
+                               code = code)
             tableResults <- rbind(tableResults, temp)
           }
 
@@ -355,11 +368,7 @@ irrWatchme <- function(wearableCamImagesList, namesList=NULL,
         listResults[[code]] <- tableResults
 
       }
-      listResults <- dplyr::tbl_df(do.call("rbind", listResults)) %>%
-        dplyr::mutate(code =
-                 names(wearableCamImagesList[[1]]@
-                         codesBinaryVariables)) %>%
-        dplyr::mutate(code = as.factor(code))
+      listResults <- dplyr::tbl_df(do.call("rbind", listResults))
     }
 
     tableResults <- listResults
