@@ -1,7 +1,6 @@
 #' Creates a wearableCamImages object from information read in a csv file.
 #'
 #' @importFrom lubridate ymd_hms mdy_hms
-#' @importFrom data.table setattr
 #' @param pathResults the path to the file with coding results
 #' @param sepResults the separator in the file with coding results
 #' @param pathDicoCoding the path to the file with the list of annotations
