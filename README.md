@@ -275,19 +275,19 @@ kable(IRR)
 |:-------------------------------------------------|---------:|---------:|-------:|:--------------|-----------:|----------:|-------:|
 | Cohen's Kappa for 2 Raters (Weights: unweighted) |      1263|        28|       2| Cain and Abel |  -0.0422707|  -16.95465|       0|
 
-Here we compare annotations by group of codes.
+Here we compare annotations by group of codes. The agreement here means giving a code of the same group (or not giving any code) for each picture.
 
 ``` r
 IRR <- irrWatchme(listWC, namesList=c("Cain", "Abel"), oneToOne=TRUE, byGroup=TRUE)
 kable(IRR)
 ```
 
-| method                                           |  pictures|  agreedOn|  raters| ratersNames   |       Kappa|          z|  pValue| group          |
-|:-------------------------------------------------|---------:|---------:|-------:|:--------------|-----------:|----------:|-------:|:---------------|
-| Cohen's Kappa for 2 Raters (Weights: unweighted) |      1263|        28|       2| Cain and Abel |  -0.0422707|  -16.95465|       0| indoor outdoor |
-| Cohen's Kappa for 2 Raters (Weights: unweighted) |      1263|        28|       2| Cain and Abel |  -0.0422707|  -16.95465|       0| non codable    |
+| method                                           |  pictures|  agreedOn|  raters| ratersNames   |      Kappa|         z|  pValue| group          |
+|:-------------------------------------------------|---------:|---------:|-------:|:--------------|----------:|---------:|-------:|:---------------|
+| Cohen's Kappa for 2 Raters (Weights: unweighted) |      1263|      1262|       2| Cain and Abel |  0.9226814|  32.88936|       0| indoor outdoor |
+| Cohen's Kappa for 2 Raters (Weights: unweighted) |      1263|      1262|       2| Cain and Abel |  0.9226814|  32.88936|       0| non codable    |
 
-Here we compare annotations by code.
+Here we compare annotations by code. The agreement here means to agree for each code on whether it is present or not. It is useful to spot if a code often leads to disagreements. Below the "mixed" code leads to only disagreements.
 
 ``` r
 IRR <- irrWatchme(listWC, namesList=c("Cain", "Abel"), oneToOne=TRUE, byCode=TRUE)

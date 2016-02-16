@@ -8,7 +8,7 @@
 #' @param oneToOne a boolean indicating whether Cohen's kappa should be calculated for each possible
 #' pair of coders in case of more than 2 coders,
 #' instead of Fleiss's Kappa for all coders at the same time.
-#' @param byGroup boolean indicating whether the IRR should be calculated for each group of codes separately.
+#' @param byGroup boolean indicating whether the IRR should be calculated for each group of codes separately. The meaning is, agreement = giving a code of the same group.
 #' @param byCode boolean indicating whether the IRR should be calculated for each code separately. If both
 #' byGroup and byCode are FALSE annotations are compared as they are.
 #' @return  A \code{tbl_df} presenting the results of a call to the \code{irr} function.
@@ -100,23 +100,23 @@ irrWatchme <- function(wearableCamImagesList, namesList=NULL,
      # make sure the levels are the same
     # even if one coder has not used one code
     names(dat) <- namesList
+    levelsAll <- unique(unlist(lapply(dat, levels)))
     for (i in 1:length(wearableCamImagesList)){
-      levelsAll <- unique(unlist(lapply(dat, levels)))
       setattr(dat[,i], "levels", levelsAll)
     }
 
     if (length(wearableCamImagesList) == 2){
       results <- irr::kappa2(dat, "unweighted")
-      tableResults <- data.frame(method=results$method,
-                                 pictures=results$subjects,
-                                 agreedOn=sum(dat[,1] == dat[,2]),
-                                 raters=results$raters,
-                                 ratersNames=
+      tableResults <- data.frame(method = results$method,
+                                 pictures = results$subjects,
+                                 agreedOn = sum(dat[,1] == dat[,2]),
+                                 raters = results$raters,
+                                 ratersNames =
                                    paste(namesList[[1]], "and",
                                          namesList[[2]], sep=" "),
-                                 Kappa=results$value,
-                                 z=results$statistic,
-                                 pValue=results$p.value)
+                                 Kappa = results$value,
+                                 z = results$statistic,
+                                 pValue = results$p.value)
       tableResults <- dplyr::tbl_df(tableResults)
     }
 
@@ -131,14 +131,14 @@ irrWatchme <- function(wearableCamImagesList, namesList=NULL,
       agreedOn <- sum(apply(dat, 1, lengthOfUnique) == 1)
 
 
-      tableResults <- data.frame(method=results$method,
-                                 pictures=results$subjects,
-                                 agreedOn=agreedOn,
-                                 raters=results$raters,
-                                 ratersNames=toString(namesList),
-                                 Kappa=results$value,
-                                 z=results$statistic,
-                                 pValue=results$p.value)
+      tableResults <- data.frame(method = results$method,
+                                 pictures = results$subjects,
+                                 agreedOn = agreedOn,
+                                 raters = results$raters,
+                                 ratersNames = toString(namesList),
+                                 Kappa = results$value,
+                                 z = results$statistic,
+                                 pValue = results$p.value)
       tableResults <- dplyr::tbl_df(tableResults)
     }
 
@@ -152,16 +152,18 @@ irrWatchme <- function(wearableCamImagesList, namesList=NULL,
         rater1 <- pairs$rater1[i]
         rater2 <- pairs$rater2[i]
 
-        results <- irr::kappa2(dat[, c(rater1, rater2)], "unweighted")
-        temp <- data.frame(method=results$method,
-                           pictures=results$subjects,
-                           agreedOn=sum(
-                             dat[,rater1] == dat[,rater2]),
-                           rater1=rater1,
-                           rater2=rater2,
-                           Kappa=results$value,
-                           z=results$statistic,
-                           pValue=results$p.value)
+        results <- irr::kappa2(dat[, c(rater1, rater2)],
+                               "unweighted")
+
+        temp <- data.frame(method = results$method,
+                           pictures = results$subjects,
+                           agreedOn = sum(
+                             dat[,rater1]  ==  dat[,rater2]),
+                           rater1 = rater1,
+                           rater2 = rater2,
+                           Kappa = results$value,
+                           z = results$statistic,
+                           pValue = results$p.value)
         tableResults <- rbind(tableResults, temp)
       }
 
@@ -184,43 +186,25 @@ irrWatchme <- function(wearableCamImagesList, namesList=NULL,
         for (object in 1:length(wearableCamImagesList)){
 
           temp <- wearableCamImagesList[[object]]@codesBinaryVariables
+          temp <- temp[, filter(dicoRef,
+                                Group == "indoor outdoor")$Code]
+          temp <- (apply(temp, 1, sum) >= 1)
 
-          for (j in 1:ncol(temp)){
-            for (i in 1:nrow(temp)){
-              if (temp[i,j]){
-                temp[i,j] <- names(temp)[j]
-                }
-              else {
-                temp[i,j] <- ""
-                }
-            }
-          }
 
-          codes <- rep("", nrow(temp))
-          for (i in 1:nrow(temp)){
-            codes[i] <- toString(temp[i,])
-          }
-
-         dat <- cbind(dat, as.factor(codes))
+         dat <- cbind(dat, as.factor(temp))
          namesDat <- c(namesDat, namesList[object])
         }
         dat <- as.data.frame(dat)
         names(dat) <- namesDat
         dat <- tbl_df(dat)
 
-        # make sure levels are the same
-        for (i in 1:length(wearableCamImagesList)){
-          levelsAll <- unique(unlist(lapply(dat, levels)))
-          setattr(dat[,i], "levels", levelsAll)
-        }
-
         if (length(wearableCamImagesList) == 2){
           results <- irr::kappa2(dat, "unweighted")
-          tableResults <- data.frame(method=results$method,
-                                     pictures=results$subjects,
-                                     agreedOn=sum(dat[,1] == dat[,2]),
-                                     raters=results$raters,
-                                     ratersNames=
+          tableResults <- data.frame(method = results$method,
+                                     pictures = results$subjects,
+                                     agreedOn = sum(dat[,1] == dat[,2]),
+                                     raters = results$raters,
+                                     ratersNames =
                                        paste(namesList[[1]], "and",
                                              namesList[[2]], sep=" "),
                                      Kappa=results$value,

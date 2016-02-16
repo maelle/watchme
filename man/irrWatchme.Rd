@@ -17,7 +17,7 @@ and contains different names.}
 pair of coders in case of more than 2 coders,
 instead of Fleiss's Kappa for all coders at the same time.}
 
-\item{byGroup}{boolean indicating whether the IRR should be calculated for each group of codes separately.}
+\item{byGroup}{boolean indicating whether the IRR should be calculated for each group of codes separately. The meaning is, agreement = giving a code of the same group.}
 
 \item{byCode}{boolean indicating whether the IRR should be calculated for each code separately. If both
 byGroup and byCode are FALSE annotations are compared as they are.}

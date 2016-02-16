@@ -2,7 +2,7 @@ Package: watchme
 Type: Package
 Title: Analysis of Autographer Images Annotations
 Version: 1.0
-Date: 2015-01-21
+Date: 2016-02-16
 Authors@R: person("Maëlle", "Salmon", email = "maelle.salmon@yahoo.se", role = c("aut", "cre"))
 Description: Analyses autographer images annotations: plots, comparison of coders results, etc.
 License: GPL (>= 2)
