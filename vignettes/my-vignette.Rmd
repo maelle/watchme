@@ -88,6 +88,11 @@ wearableCamImagesObject <- convertInput(pathResults=pathResults, sepResults=sepR
 class(wearableCamImagesObject)
 ```
 
+All slots can be accessed by accessors that have the same name as the slot, e.g.
+
+```{r, warning=FALSE, message=FALSE}
+codesBinaryVariables(wearableCamImagesObject) %>% head() %>% knitr::kable()
+```
 
 # From `wearableCamImages` to table of events
 
@@ -143,9 +148,9 @@ Below are several examples.
 data("dummyWearableCamImages")
 library("ggplot2")
 eventTable <- toEventLevel(wearableCamImagesObject=dummyWearableCamImages)
-plotSequence(eventTable, dicoCoding = dummyWearableCamImages@dicoCoding)
+plotSequence(eventTable, dicoCoding = dicoCoding(dummyWearableCamImages))
 plotSequence(eventTable, xAxis="picture", facettingGroup=TRUE, 
-             cbbPaletteYes = FALSE, dicoCoding = dummyWearableCamImages@dicoCoding)
+             cbbPaletteYes = FALSE, dicoCoding = dicoCoding(dummyWearableCamImages))
 
 
 
@@ -158,7 +163,7 @@ data("IO1")
 data("IO2")
 eventTableCoders <- bindCoders(list(IO1, IO2), minDuration = 1)
 plotSequence(eventTableCoders, facettingGroup = TRUE, facettingCoder = TRUE,
-             dicoCoding=IO1@dicoCoding)
+             dicoCoding=dicoCoding(IO1))
 ```
 
 

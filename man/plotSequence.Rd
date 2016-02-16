@@ -36,13 +36,13 @@ Plot sequences of events
 data('dummyWearableCamImages')
 library('ggplot2')
 eventTable <- toEventLevel(wearableCamImagesObject=dummyWearableCamImages)
-plotSequence(eventTable, dicoCoding = dummyWearableCamImages@dicoCoding)
+plotSequence(eventTable, dicoCoding = dicoCoding(dummyWearableCamImages))
 plotSequence(eventTable, xAxis='picture', facettingGroup=TRUE,
-dicoCoding = dummyWearableCamImages@dicoCoding)
+dicoCoding = dicoCoding(dummyWearableCamImages))
 data('IO1')
 data('IO2')
 eventTableCoders <- bindCoders(list(IO1, IO2), minDuration = 1)
 plotSequence(eventTableCoders, facettingGroup = TRUE, facettingCoder = TRUE,
-dicoCoding=IO1@dicoCoding)
+dicoCoding=dicoCoding(IO1))
 }
 

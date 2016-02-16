@@ -109,6 +109,21 @@ class(wearableCamImagesObject)
     ## attr(,"package")
     ## [1] "watchme"
 
+All slots can be accessed by accessors that have the same name as the slot, e.g.
+
+``` r
+codesBinaryVariables(wearableCamImagesObject) %>% head() %>% knitr::kable()
+```
+
+| 01a   | 01b   | 01c   | 02b   | 02a   | 03a   | 01.   |
+|:------|:------|:------|:------|:------|:------|:------|
+| FALSE | FALSE | FALSE | FALSE | FALSE | FALSE | FALSE |
+| FALSE | FALSE | FALSE | FALSE | FALSE | FALSE | FALSE |
+| FALSE | FALSE | FALSE | FALSE | FALSE | FALSE | FALSE |
+| FALSE | FALSE | FALSE | FALSE | FALSE | FALSE | FALSE |
+| FALSE | FALSE | FALSE | FALSE | FALSE | FALSE | FALSE |
+| FALSE | FALSE | FALSE | FALSE | FALSE | FALSE | FALSE |
+
 From `wearableCamImages` to table of events
 ===========================================
 
@@ -186,17 +201,17 @@ Below are several examples.
 data("dummyWearableCamImages")
 library("ggplot2")
 eventTable <- toEventLevel(wearableCamImagesObject=dummyWearableCamImages)
-plotSequence(eventTable, dicoCoding = dummyWearableCamImages@dicoCoding)
+plotSequence(eventTable, dicoCoding = dicoCoding(dummyWearableCamImages))
 ```
 
-![](README_files/figure-markdown_github/unnamed-chunk-7-1.png)<!-- -->
+![](README_files/figure-markdown_github/unnamed-chunk-8-1.png)<!-- -->
 
 ``` r
 plotSequence(eventTable, xAxis="picture", facettingGroup=TRUE, 
-             cbbPaletteYes = FALSE, dicoCoding = dummyWearableCamImages@dicoCoding)
+             cbbPaletteYes = FALSE, dicoCoding = dicoCoding(dummyWearableCamImages))
 ```
 
-![](README_files/figure-markdown_github/unnamed-chunk-7-2.png)<!-- -->
+![](README_files/figure-markdown_github/unnamed-chunk-8-2.png)<!-- -->
 
 For plotting results from more than one coder, one has to start by creating a table of events containing all the results using the `bindCoders`function that takes a list of `wearableCamImages` objects as input, as well as a `minDuration` for events (in pictures).
 
@@ -205,10 +220,10 @@ data("IO1")
 data("IO2")
 eventTableCoders <- bindCoders(list(IO1, IO2), minDuration = 1)
 plotSequence(eventTableCoders, facettingGroup = TRUE, facettingCoder = TRUE,
-             dicoCoding=IO1@dicoCoding)
+             dicoCoding=dicoCoding(IO1))
 ```
 
-![](README_files/figure-markdown_github/unnamed-chunk-8-1.png)<!-- -->
+![](README_files/figure-markdown_github/unnamed-chunk-9-1.png)<!-- -->
 
 Calculating interrater agreement
 ================================
