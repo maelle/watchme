@@ -1,6 +1,7 @@
 #############################################
 # participantID
 #############################################
+# nocov start
 #' Accesses participantID
 #' @rdname participantID-methods
 #' @aliases participantID,participantID-method
@@ -90,3 +91,4 @@ setGeneric("dicoCoding", function(wearableCamImages) standardGeneric("dicoCoding
 setMethod("dicoCoding", "wearableCamImages", function(wearableCamImages) wearableCamImages@dicoCoding)# nolint
 
 ##########################################################################################
+# nocov end
