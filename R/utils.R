@@ -51,3 +51,6 @@ checkList <- function(wearableCamImagesList, namesList=NULL){
     stop("All wearableCamImages objects  should have the same dicoCoding!")# nolint
   }
 }
+
+
+
