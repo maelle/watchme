@@ -52,3 +52,29 @@ test_that("iraWatchme outputs the right type of results depending on the options
   expect_that(as.character(output$method[1]), equals("Cohen's Kappa for 2 Raters (Weights: unweighted)"))
 })
 
+test_that("The function works if namesList is NULL", {
+  data("IO1")
+  data("IO2")
+  listWC <- list(IO1, IO2)
+  output <- iraWatchme(listWC, namesList=NULL, byGroup=TRUE)
+  expect_that(output, is_a("tbl_df"))
+})
+
+test_that("It works for several combinations of arguments", {
+  data("IO1")
+  data("IO2")
+  listWC3 <- list(IO1, IO2, IO3)
+  output <- iraWatchme(listWC3, namesList=c("Riri", "Fifi", "Loulou"), byGroup=TRUE, byCode = FALSE, oneToOne = FALSE)
+  expect_that(output, is_a("tbl_df"))
+
+  output <- iraWatchme(listWC3, namesList=c("Riri", "Fifi", "Loulou"), byGroup=FALSE, byCode = TRUE, oneToOne = FALSE)
+  expect_that(output, is_a("tbl_df"))
+
+  output <- iraWatchme(listWC3, namesList=c("Riri", "Fifi", "Loulou"), byGroup=TRUE, byCode = FALSE, oneToOne = TRUE)
+  expect_that(output, is_a("tbl_df"))
+
+  output <- iraWatchme(listWC3, namesList=c("Riri", "Fifi", "Loulou"), byGroup=FALSE, byCode = TRUE, oneToOne = TRUE)
+  expect_that(output, is_a("tbl_df"))
+
+
+})
