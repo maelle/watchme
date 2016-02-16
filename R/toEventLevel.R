@@ -16,11 +16,11 @@
 #' @export
 toEventLevel <- function(wearableCamImagesObject, minDuration = 1) {
     # Extract dicoCoding
-    dicoCoding <- wearableCamImagesObject@dicoCoding
+    dicoCoding <- dicoCoding(wearableCamImagesObject)
     # Extract codes
-    resultsCoding <- wearableCamImagesObject@codes
+    resultsCoding <- codes(wearableCamImagesObject)
     # Extract times
-    timeDate <- wearableCamImagesObject@timeDate
+    timeDate <- timeDate(wearableCamImagesObject)
     # Prepare variables for the table of events
     eventIndex <- c(0)
     startTime <- NULL

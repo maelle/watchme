@@ -40,14 +40,14 @@ iraWatchme <- function(wearableCamImagesList, namesList=NULL,
   }
 
   # take one dicoCoding (they're all the same)
-  dicoRef <- wearableCamImagesList[[1]]@dicoCoding
+  dicoRef <- dicoCoding(wearableCamImagesList[[1]])
 
   # Easy, simply compares the equality of annotations
     if ( !byGroup & !byCode){
     # create the table for comparing
     dat <- NULL
     for (i in 1:length(wearableCamImagesList)){
-      dat <- cbind(dat, as.factor(wearableCamImagesList[[i]]@codes))
+      dat <- cbind(dat, as.factor(codes(wearableCamImagesList[[i]])))
     }
 
     dat <- as.data.frame(dat)
@@ -141,7 +141,7 @@ iraWatchme <- function(wearableCamImagesList, namesList=NULL,
         for (object in 1:length(wearableCamImagesList)){
           # filter only for the group
           # and then look whether any code for this group
-          temp <- wearableCamImagesList[[object]]@codesBinaryVariables
+          temp <- codesBinaryVariables(wearableCamImagesList[[object]])
           temp <- temp[, filter(dicoRef,
                                 Group == group)$Code]
           temp <- as.data.frame(temp)
@@ -235,12 +235,12 @@ iraWatchme <- function(wearableCamImagesList, namesList=NULL,
 
     if (byCode){
 
-      for (j in 1:ncol(wearableCamImagesList[[1]]@codesBinaryVariables)){
-        code <- names(wearableCamImagesList[[1]]@codesBinaryVariables)[j]
+      for (j in 1:ncol(codesBinaryVariables(wearableCamImagesList[[1]]))){
+        code <- names(codesBinaryVariables(wearableCamImagesList[[1]]))[j]
         dat <- NULL
         for (i in 1:length(wearableCamImagesList)){
           dat <- cbind(dat,
-                       wearableCamImagesList[[i]]@codesBinaryVariables[,j])
+                       codesBinaryVariables(wearableCamImagesList[[i]])[,j])
         }
         dat <- as.data.frame(dat)
         names(dat) <- namesList

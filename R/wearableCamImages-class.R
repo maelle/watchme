@@ -20,6 +20,3 @@ wearableCamImages <- setClass("wearableCamImages",
                                         codes = "character",
                                         codesBinaryVariables = "data.frame",
                                         dicoCoding = "data.frame"))
-
-
-

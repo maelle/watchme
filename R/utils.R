@@ -19,7 +19,7 @@ checkList <- function(wearableCamImagesList, namesList=NULL){
   # check that all sets of codes to be compared have the same length
 
   getLengthCodes <- function(x){
-    return(length(x@codes))
+    return(length(codes(x)))
   }
   lengthRef <- getLengthCodes(wearableCamImagesList[[1]])
   lengthsCodes <- lapply(wearableCamImagesList, getLengthCodes)
@@ -29,12 +29,10 @@ checkList <- function(wearableCamImagesList, namesList=NULL){
 
 
   # check that all objects used the same dicoCoding
-  getDicoCoding <- function(x){
-    return(x@dicoCoding)
-  }
-  dicoRef <- getDicoCoding(wearableCamImagesList[[1]])
+
+  dicoRef <- dicoCoding(wearableCamImagesList[[1]])
   nElements <- nrow(dicoRef) * ncol(dicoRef)
-  dicoCodings <- lapply(wearableCamImagesList, getDicoCoding)
+  dicoCodings <- lapply(wearableCamImagesList, dicoCoding)
 
   if (length(unique(lapply(dicoCodings, nrow))) != 1){
     stop("All wearableCamImages objects should have the same dicoCoding!")# nolint
@@ -51,6 +49,3 @@ checkList <- function(wearableCamImagesList, namesList=NULL){
     stop("All wearableCamImages objects  should have the same dicoCoding!")# nolint
   }
 }
-
-
-

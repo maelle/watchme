@@ -6,10 +6,11 @@
 #' @aliases participantID,participantID-method
 #' @param wearableCamImages the wearableCamImages object
 #' @exportMethod participantID
-setGeneric("participantID", function(wearableCamImages) standardGeneric("participantID"))
+setGeneric("participantID", function(wearableCamImages) standardGeneric("participantID")) # nolint
 
 #' @rdname participantID-methods
-setMethod("participantID", "wearableCamImages", function(wearableCamImages) wearableCamImages@participantID)
+setMethod("participantID", "wearableCamImages",
+          function(wearableCamImages) wearableCamImages@participantID)# nolint
 
 ##########################################################################################
 
@@ -21,10 +22,11 @@ setMethod("participantID", "wearableCamImages", function(wearableCamImages) wear
 #' @aliases imagePath,imagePath-method
 #' @param wearableCamImages the wearableCamImages object
 #' @exportMethod imagePath
-setGeneric("imagePath", function(wearableCamImages) standardGeneric("imagePath"))
+setGeneric("imagePath", function(wearableCamImages) standardGeneric("imagePath"))# nolint
 
 #' @rdname imagePath-methods
-setMethod("imagePath", "wearableCamImages", function(wearableCamImages) wearableCamImages@imagePath)
+setMethod("imagePath", "wearableCamImages",
+          function(wearableCamImages) wearableCamImages@imagePath)# nolint
 
 ##########################################################################################
 
@@ -36,10 +38,11 @@ setMethod("imagePath", "wearableCamImages", function(wearableCamImages) wearable
 #' @aliases timeDate,timeDate-method
 #' @param wearableCamImages the wearableCamImages object
 #' @exportMethod timeDate
-setGeneric("timeDate", function(wearableCamImages) standardGeneric("timeDate"))
+setGeneric("timeDate", function(wearableCamImages) standardGeneric("timeDate"))# nolint
 
 #' @rdname timeDate-methods
-setMethod("timeDate", "wearableCamImages", function(wearableCamImages) wearableCamImages@timeDate)
+setMethod("timeDate", "wearableCamImages",
+          function(wearableCamImages) wearableCamImages@timeDate)# nolint
 
 ##########################################################################################
 
@@ -51,10 +54,10 @@ setMethod("timeDate", "wearableCamImages", function(wearableCamImages) wearableC
 #' @aliases codes,codes-method
 #' @param wearableCamImages the wearableCamImages object
 #' @exportMethod codes
-setGeneric("codes", function(wearableCamImages) standardGeneric("codes"))
+setGeneric("codes", function(wearableCamImages) standardGeneric("codes"))# nolint
 
 #' @rdname codes-methods
-setMethod("codes", "wearableCamImages", function(wearableCamImages) wearableCamImages@codes)
+setMethod("codes", "wearableCamImages", function(wearableCamImages) wearableCamImages@codes)# nolint
 
 ##########################################################################################
 
@@ -66,10 +69,10 @@ setMethod("codes", "wearableCamImages", function(wearableCamImages) wearableCamI
 #' @aliases codesBinaryVariables,codesBinaryVariables-method
 #' @param wearableCamImages the wearableCamImages object
 #' @exportMethod codesBinaryVariables
-setGeneric("codesBinaryVariables", function(wearableCamImages) standardGeneric("codesBinaryVariables"))
+setGeneric("codesBinaryVariables", function(wearableCamImages) standardGeneric("codesBinaryVariables"))# nolint
 
 #' @rdname codesBinaryVariables-methods
-setMethod("codesBinaryVariables", "wearableCamImages", function(wearableCamImages) wearableCamImages@codesBinaryVariables)
+setMethod("codesBinaryVariables", "wearableCamImages", function(wearableCamImages) wearableCamImages@codesBinaryVariables)# nolint
 
 ##########################################################################################
 
@@ -81,9 +84,9 @@ setMethod("codesBinaryVariables", "wearableCamImages", function(wearableCamImage
 #' @aliases dicoCoding,dicoCoding-method
 #' @param wearableCamImages the wearableCamImages object
 #' @exportMethod dicoCoding
-setGeneric("dicoCoding", function(wearableCamImages) standardGeneric("dicoCoding"))
+setGeneric("dicoCoding", function(wearableCamImages) standardGeneric("dicoCoding"))# nolint
 
 #' @rdname dicoCoding-methods
-setMethod("dicoCoding", "wearableCamImages", function(wearableCamImages) wearableCamImages@dicoCoding)
+setMethod("dicoCoding", "wearableCamImages", function(wearableCamImages) wearableCamImages@dicoCoding)# nolint
 
 ##########################################################################################

@@ -26,7 +26,7 @@ outputDifferences <- function(wearableCamImagesList, namesList=NULL){
     namesList <- as.character(1:length(wearableCamImagesList))
   }
   # take one dicoCoding (they're all the same)
-  dicoRef <- wearableCamImagesList[[1]]@dicoCoding
+  dicoRef <- dicoCoding(wearableCamImagesList[[1]])
   # Now off to find different codes
   dicoCoding <- dicoRef
   tableImages <- NULL
@@ -35,8 +35,8 @@ outputDifferences <- function(wearableCamImagesList, namesList=NULL){
 
   # table with all binary variables
   for (i in 1:length(wearableCamImagesList)){
-    binaryTable <- wearableCamImagesList[[i]]@codesBinaryVariables
-    imageTime <- wearableCamImagesList[[i]]@timeDate
+    binaryTable <- codesBinaryVariables(wearableCamImagesList[[i]])
+    imageTime <- timeDate(wearableCamImagesList[[i]])
     coder <- namesList[i]
     binaryTable <- cbind(coder=rep(coder, nrow(binaryTable)),
                          imageTime=imageTime,
