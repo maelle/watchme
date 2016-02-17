@@ -14,12 +14,12 @@
 #' wearableCamImagesObject <- convertInput(pathResults=pathResults, sepResults=sepResults,
 #'                                         pathDicoCoding=pathDicoCoding, sepDicoCoding=sepDicoCoding)
 #' class(wearableCamImagesObject)
-#' @field \code{participantID} Name or ID number of the participant (character)
-#' @field \code{imagePath} Path or name of the image in order to be able to identify duplicates (character)
-#' @field \code{timeDate} Time and date of each image (POSIXt)
-#' @field \code{codes} annotation(s) given to this image (character), e.g. separated by ','.
-#' @field \code{booleanCodes} table of boolean, indicating if a given code was given to a given picture. codes is a condensed form of this slot.
-#' @field \code{dicoCoding} table for defining the codes with at least Code and Meaning column, possibly Group column for having groups of codes (e.g. sport encompasses running and swimming)
+#' @field participantID Name or ID number of the participant (character)
+#' @field imagePath Path or name of the image in order to be able to identify duplicates (character)
+#' @field timeDate Time and date of each image (POSIXt)
+#' @field codes annotation(s) given to this image (character), e.g. separated by ','.
+#' @field booleanCodes table of boolean, indicating if a given code was given to a given picture. codes is a condensed form of this slot.
+#' @field dicoCoding table for defining the codes with at least Code and Meaning column, possibly Group column for having groups of codes (e.g. sport encompasses running and swimming)
 
 wearableCamImages <- R6::R6Class("wearableCamImages",
                         public = list(

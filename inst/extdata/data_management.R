@@ -7,7 +7,7 @@ pathDicoCoding <-  system.file("extdata", "dicoCoding_pinocchio.csv", package = 
 sepDicoCoding <- ";"
 dummyWearableCamImages <- convertInput(pathResults=pathResults, sepResults=sepResults,
                                         pathDicoCoding=pathDicoCoding, sepDicoCoding=sepDicoCoding)
-save(dummyWearableCamImages, file = "data/dummyWearableCamImages.RData")
+save(dummyWearableCamImages, file = "data/dummyWearableCamImages.RData", compress='xz')
 
 ###################################################
 # IO1
@@ -19,7 +19,7 @@ sepDicoCoding <- ";"
 IO1 <- convertInput(pathResults=pathResults, sepResults=sepResults,
                                        pathDicoCoding=pathDicoCoding, sepDicoCoding=sepDicoCoding,
                     quoteSign = "\'")
-save(IO1, file = "data/IO1.RData")
+save(IO1, file = "data/IO1.RData", compress='xz')
 
 ###################################################
 # IO2
@@ -30,4 +30,4 @@ pathDicoCoding <-  system.file("extdata", "dico_coding_2016_01_IO.csv", package 
 sepDicoCoding <- ";"
 IO2 <- convertInput(pathResults=pathResults, sepResults=sepResults,
                                        pathDicoCoding=pathDicoCoding, sepDicoCoding=sepDicoCoding)
-save(IO2, file = "data/IO2.RData")
+save(IO2, file = "data/IO2.RData", compress='xz')
