@@ -19,8 +19,8 @@ test_that("the dates in toEventLevel are not invented or shifted", {
   data("dummyWearableCamImages")
   eventTable <- toEventLevel(wearableCamImagesObject=dummyWearableCamImages)
 
-  expect_that(sum(eventTable$startTime%in%dummyWearableCamImages@timeDate), equals(nrow(eventTable)))
-  expect_that(sum(eventTable$endTime%in%dummyWearableCamImages@timeDate), equals(nrow(eventTable)))
+  expect_that(sum(eventTable$startTime%in%dummyWearableCamImages$timeDate), equals(nrow(eventTable)))
+  expect_that(sum(eventTable$endTime%in%dummyWearableCamImages$timeDate), equals(nrow(eventTable)))
 })
 
 

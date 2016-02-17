@@ -72,11 +72,11 @@ kable(head(codingResults, n=9))
 From input data to `wearableCamImages` objects
 ==============================================
 
-Using both these inputs, we create an object of the S4 class `wearableCamImages` on which operations will be performed.
+Using both these inputs, we create an object of the R6 class `wearableCamImages` on which operations will be performed.
 
-The object has the following slots:
+The object has the following fields:
 
--   `participantID` which is extracted from the name column in the coding results. However, this slot can be changed manually.
+-   `participantID` which is extracted from the name column in the coding results. However, this field can be changed manually.
 
 -   `imagePath` which is a vector of `character` giving the path to or the name of the picture.
 
@@ -84,7 +84,7 @@ The object has the following slots:
 
 -   `codes` which is a vector of `character` giving all codes associated with an image, separated by commas.
 
--   `codesBinaryVariables` which is a `data.frame` of boolean. Each column corresponds to a code, and each line corresponds to a picture. Each cell at line i and at column j thus indicates whether the code j was attributed to the image i.
+-   `booleanCodes` which is a `data.frame` of boolean. Each column corresponds to a code, and each line corresponds to a picture. Each cell at line i and at column j thus indicates whether the code j was attributed to the image i.
 
 -   `dicoCoding` which is the list of annotations whose structure was previously presented. It is very important to have it stored in the same object as the coding results, since it explains the meaning of the results. Without `dicoCoding`, results do not make any sense. Likewise, it is important for comparable `wearableCamImages` objects to have the same `dicoCoding`, because comparing coding results obtained with different lists of annotations would not make any sense.
 
@@ -105,14 +105,12 @@ wearableCamImagesObject <- convertInput(pathResults=pathResults, sepResults=sepR
 class(wearableCamImagesObject)
 ```
 
-    ## [1] "wearableCamImages"
-    ## attr(,"package")
-    ## [1] "watchme"
+    ## [1] "wearableCamImages" "R6"
 
-All slots can be accessed by accessors that have the same name as the slot, e.g.
+All fields can be accessed by "$", e.g.
 
 ``` r
-codesBinaryVariables(wearableCamImagesObject) %>% head() %>% knitr::kable()
+wearableCamImagesObject$booleanCodes %>% head() %>% knitr::kable()
 ```
 
 | 01a   | 01b   | 01c   | 02b   | 02a   | 03a   | 01.   |
@@ -153,12 +151,12 @@ kable(head(eventTable))
 
 |  eventIndex| startTime           | endTime             | eventCode |  noOfPictures| activity           | group |  startPicture|  endPicture|
 |-----------:|:--------------------|:--------------------|:----------|-------------:|:-------------------|:------|-------------:|-----------:|
-|           1| 2015-06-03 09:37:53 | 2015-06-03 09:37:53 | 01A       |             1| BiomassCookingUnit | 1     |            83|          83|
-|           2| 2015-06-04 06:16:37 | 2015-06-04 06:16:37 | 01A       |             1| BiomassCookingUnit | 1     |           806|         806|
-|           3| 2015-06-04 06:42:46 | 2015-06-04 06:43:24 | 01A       |             2| BiomassCookingUnit | 1     |           841|         842|
-|           4| 2015-06-04 07:01:41 | 2015-06-04 07:02:14 | 01A       |             2| BiomassCookingUnit | 1     |           863|         864|
-|           5| 2015-06-04 07:03:37 | 2015-06-04 07:04:51 | 01A       |             3| BiomassCookingUnit | 1     |           866|         868|
-|           6| 2015-06-04 07:06:09 | 2015-06-04 07:09:14 | 01A       |             6| BiomassCookingUnit | 1     |           870|         875|
+|           1| 2015-06-03 09:37:53 | 2015-06-03 09:37:53 | 01a       |             1| biomasscookingunit | 1     |            83|          83|
+|           2| 2015-06-04 06:16:00 | 2015-06-04 06:16:00 | 01a       |             1| biomasscookingunit | 1     |           806|         806|
+|           3| 2015-06-04 06:33:35 | 2015-06-04 06:34:16 | 01a       |             2| biomasscookingunit | 1     |           841|         842|
+|           4| 2015-06-04 06:44:42 | 2015-06-04 06:45:25 | 01a       |             2| biomasscookingunit | 1     |           863|         864|
+|           5| 2015-06-04 06:47:14 | 2015-06-04 06:49:08 | 01a       |             3| biomasscookingunit | 1     |           866|         868|
+|           6| 2015-06-04 06:49:08 | 2015-06-04 06:55:56 | 01a       |             6| biomasscookingunit | 1     |           870|         875|
 
 ``` r
 eventTable2 <- toEventLevel(wearableCamImagesObject=dummyWearableCamImages, minDuration = 2)
@@ -167,12 +165,12 @@ kable(head(eventTable2))
 
 |  eventIndex| startTime           | endTime             | eventCode |  noOfPictures| activity           | group |  startPicture|  endPicture|
 |-----------:|:--------------------|:--------------------|:----------|-------------:|:-------------------|:------|-------------:|-----------:|
-|           3| 2015-06-04 06:42:46 | 2015-06-04 06:43:24 | 01A       |             2| BiomassCookingUnit | 1     |           841|         842|
-|           4| 2015-06-04 07:01:41 | 2015-06-04 07:02:14 | 01A       |             2| BiomassCookingUnit | 1     |           863|         864|
-|           5| 2015-06-04 07:03:37 | 2015-06-04 07:04:51 | 01A       |             3| BiomassCookingUnit | 1     |           866|         868|
-|           6| 2015-06-04 07:06:09 | 2015-06-04 07:09:14 | 01A       |             6| BiomassCookingUnit | 1     |           870|         875|
-|          10| 2015-06-04 06:26:13 | 2015-06-04 06:29:03 | 01B       |             4| LPGStove           | 1     |           818|         821|
-|          11| 2015-06-04 06:31:28 | 2015-06-04 06:34:16 | 01B       |             5| LPGStove           | 1     |           824|         828|
+|           3| 2015-06-04 06:33:35 | 2015-06-04 06:34:16 | 01a       |             2| biomasscookingunit | 1     |           841|         842|
+|           4| 2015-06-04 06:44:42 | 2015-06-04 06:45:25 | 01a       |             2| biomasscookingunit | 1     |           863|         864|
+|           5| 2015-06-04 06:47:14 | 2015-06-04 06:49:08 | 01a       |             3| biomasscookingunit | 1     |           866|         868|
+|           6| 2015-06-04 06:49:08 | 2015-06-04 06:55:56 | 01a       |             6| biomasscookingunit | 1     |           870|         875|
+|          10| 2015-06-04 06:23:00 | 2015-06-04 06:26:13 | 01b       |             4| lpgstove           | 1     |           818|         821|
+|          11| 2015-06-04 06:27:24 | 2015-06-04 06:29:03 | 01b       |             5| lpgstove           | 1     |           824|         828|
 
 Plotting a table of events
 ==========================
@@ -201,14 +199,14 @@ Below are several examples.
 data("dummyWearableCamImages")
 library("ggplot2")
 eventTable <- toEventLevel(wearableCamImagesObject=dummyWearableCamImages)
-plotSequence(eventTable, dicoCoding = dicoCoding(dummyWearableCamImages))
+plotSequence(eventTable, dicoCoding = dummyWearableCamImages$dicoCoding)
 ```
 
 ![](README_files/figure-markdown_github/unnamed-chunk-8-1.png)<!-- -->
 
 ``` r
 plotSequence(eventTable, xAxis="picture", facettingGroup=TRUE, 
-             cbbPaletteYes = FALSE, dicoCoding = dicoCoding(dummyWearableCamImages))
+             cbbPaletteYes = FALSE, dicoCoding = dummyWearableCamImages$dicoCoding)
 ```
 
 ![](README_files/figure-markdown_github/unnamed-chunk-8-2.png)<!-- -->
@@ -220,7 +218,7 @@ data("IO1")
 data("IO2")
 eventTableCoders <- bindCoders(list(IO1, IO2), minDuration = 1)
 plotSequence(eventTableCoders, facettingGroup = TRUE, facettingCoder = TRUE,
-             dicoCoding=dicoCoding(IO1))
+             dicoCoding=IO1$dicoCoding)
 ```
 
 ![](README_files/figure-markdown_github/unnamed-chunk-9-1.png)<!-- -->
@@ -320,8 +318,7 @@ kable(IRR)
 And then for more than two coders. If we do the comparison one by one, the resulting table has as many lines as there are possible pairs of coders. Here we compare all annotations together but even when comparing more than two coders you can do it by group of codes or by code.
 
 ``` r
-data("IO3")
-listWC2 <- list(IO1, IO2, IO3)
+listWC2 <- list(IO1, IO2, IO2)
 namesList <- c("Riri", "Fifi", "Loulou")
 IRR <- iraWatchme(listWC2, namesList=namesList)
 kable(IRR)
@@ -329,7 +326,7 @@ kable(IRR)
 
 | method                     |  pictures|  agreedOn|  raters| ratersNames        |       Kappa|          z|  pValue|
 |:---------------------------|---------:|---------:|-------:|:-------------------|-----------:|----------:|-------:|
-| Fleiss' Kappa for m Raters |      1263|        19|       3| Riri, Fifi, Loulou |  -0.2875235|  -20.28196|       0|
+| Fleiss' Kappa for m Raters |      1263|        28|       3| Riri, Fifi, Loulou |  -0.2740431|  -20.36427|       0|
 
 ``` r
 IRR2 <- iraWatchme(listWC2, namesList=namesList, oneToOne=TRUE)

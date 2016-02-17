@@ -97,7 +97,7 @@ convertInput <- function(pathResults, sepResults, quoteSign = "\'",
     }
     temp <- as.data.frame(temp)
     names(temp) <- namesTemp
-    codesBinaryVariables <- temp
+    booleanCodes <- temp
 
     ########################################################
     # and now I create a list
@@ -124,13 +124,11 @@ convertInput <- function(pathResults, sepResults, quoteSign = "\'",
     ########################################################
     # Done!
     ########################################################
-    wearableCamImagesObject <- new("wearableCamImages",
-                                   dicoCoding = dicoCoding,
-                                   imagePath = imagePath,
-                                   timeDate = timeDate,
-                                   codes = codes,
-                                   codesBinaryVariables =
-                                     codesBinaryVariables,
-                                   participantID = participantID)
+    wearableCamImagesObject <- wearableCamImages$new(dicoCoding = dicoCoding,# nolint
+                                                     imagePath = imagePath,# nolint
+                                                     timeDate = timeDate,# nolint
+                                                     codes = codes,# nolint
+                                                     booleanCodes = booleanCodes,# nolint
+                                                     participantID = participantID)# nolint
     return(wearableCamImagesObject)
 }

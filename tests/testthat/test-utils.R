@@ -30,13 +30,11 @@ test_that("utils uses namesList well", {
 
 test_that("utils checks comparability",{
   data("dummyWearableCamImages")
-  dummyWearableCamImages2 <- dummyWearableCamImages
-  dummyWearableCamImages2@codes <- dummyWearableCamImages@codes[1:10]
-  expect_error(iraWatchme(list(dummyWearableCamImages, dummyWearableCamImages2)),
+  expect_error(iraWatchme(list(dummyWearableCamImages, IO2)),
                "There should be the same number of pictures in each wearableCamImages object!")
-
-  dummyWearableCamImages2 <- dummyWearableCamImages
-  dummyWearableCamImages2@dicoCoding <- dummyWearableCamImages@dicoCoding[1:6,]
+  data("dummyWearableCamImages")
+  dummyWearableCamImages2 <- dummyWearableCamImages$clone()
+  dummyWearableCamImages2$dicoCoding <- dummyWearableCamImages$dicoCoding[1:6,]
   expect_error(iraWatchme(list(dummyWearableCamImages, dummyWearableCamImages2)),
                "All wearableCamImages objects should have the same dicoCoding!")
 })

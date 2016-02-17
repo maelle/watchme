@@ -31,14 +31,3 @@ NULL
 #' @keywords data
 #' @examples data(IO2)
 NULL
-
-#' A dummy WearableCamImages object for one coder.
-#'
-#' A dummy WearableCamImages object for one coder.
-#'
-#' @format A dummy WearableCamImages object.
-#' @name IO3
-#' @docType data
-#' @keywords data
-#' @examples data(IO3)
-NULL

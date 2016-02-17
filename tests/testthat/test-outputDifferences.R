@@ -9,7 +9,7 @@ context("outputDifferences")
 
 
 test_that("outputDifferences gives no difference if equal",{
-  expect_null(outputDifferences(list(dummyWearableCamImages, dummyWearableCamImages)))
+  expect_null(outputDifferences(list(IO1, IO1)))
 })
 
 test_that("outputDifferences gives differences if there are some",{

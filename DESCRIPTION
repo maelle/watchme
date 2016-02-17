@@ -15,7 +15,7 @@ Imports: dplyr,
     data.table,
     RColorBrewer,
     tidyr,
-    methods
+    R6
 Suggests: knitr,
     rmarkdown,
     testthat,

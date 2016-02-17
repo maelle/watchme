@@ -55,11 +55,11 @@ kable(head(codingResults, n=9))
 
 # From input data to `wearableCamImages` objects
 
-Using both these inputs, we create an object of the S4 class `wearableCamImages` on which operations will be performed.
+Using both these inputs, we create an object of the R6 class `wearableCamImages` on which operations will be performed.
 
-The object has the following slots:
+The object has the following fields:
 
-* `participantID` which is extracted from the name column in the coding results. However, this slot can be changed manually.
+* `participantID` which is extracted from the name column in the coding results. However, this field can be changed manually.
 
 * `imagePath` which is a vector of `character` giving the path to or the name of the picture.
 
@@ -67,7 +67,7 @@ The object has the following slots:
 
 * `codes` which is a vector of `character` giving all codes associated with an image, separated by commas.
 
-* `codesBinaryVariables` which is a `data.frame` of boolean. Each column corresponds to a code, and each line corresponds to a picture. Each cell at line i and at column j thus indicates whether the code j was attributed to the image i.
+* `booleanCodes` which is a `data.frame` of boolean. Each column corresponds to a code, and each line corresponds to a picture. Each cell at line i and at column j thus indicates whether the code j was attributed to the image i.
 
 * `dicoCoding` which is the list of annotations whose structure was previously presented. It is very important to have it stored in the same object as the coding results, since it explains the meaning of the results. Without `dicoCoding`, results do not make any sense. Likewise, it is important for comparable `wearableCamImages` objects to have the same `dicoCoding`, because comparing coding results obtained with different lists of annotations would not make any sense.
 
@@ -88,10 +88,10 @@ wearableCamImagesObject <- convertInput(pathResults=pathResults, sepResults=sepR
 class(wearableCamImagesObject)
 ```
 
-All slots can be accessed by accessors that have the same name as the slot, e.g.
+All fields can be accessed by "$", e.g.
 
 ```{r, warning=FALSE, message=FALSE}
-codesBinaryVariables(wearableCamImagesObject) %>% head() %>% knitr::kable()
+wearableCamImagesObject$booleanCodes %>% head() %>% knitr::kable()
 ```
 
 # From `wearableCamImages` to table of events
@@ -148,9 +148,9 @@ Below are several examples.
 data("dummyWearableCamImages")
 library("ggplot2")
 eventTable <- toEventLevel(wearableCamImagesObject=dummyWearableCamImages)
-plotSequence(eventTable, dicoCoding = dicoCoding(dummyWearableCamImages))
+plotSequence(eventTable, dicoCoding = dummyWearableCamImages$dicoCoding)
 plotSequence(eventTable, xAxis="picture", facettingGroup=TRUE, 
-             cbbPaletteYes = FALSE, dicoCoding = dicoCoding(dummyWearableCamImages))
+             cbbPaletteYes = FALSE, dicoCoding = dummyWearableCamImages$dicoCoding)
 
 
 
@@ -163,7 +163,7 @@ data("IO1")
 data("IO2")
 eventTableCoders <- bindCoders(list(IO1, IO2), minDuration = 1)
 plotSequence(eventTableCoders, facettingGroup = TRUE, facettingCoder = TRUE,
-             dicoCoding=dicoCoding(IO1))
+             dicoCoding=IO1$dicoCoding)
 ```
 
 
@@ -235,8 +235,7 @@ kable(IRR)
 And then for more than two coders. If we do the comparison one by one, the resulting table has as many lines as there are possible pairs of coders. Here we compare all annotations together but even when comparing more than two coders you can do it by group of codes or by code.
 
 ```{r, warning=FALSE, message=FALSE, fig.width=10} 
-data("IO3")
-listWC2 <- list(IO1, IO2, IO3)
+listWC2 <- list(IO1, IO2, IO2)
 namesList <- c("Riri", "Fifi", "Loulou")
 IRR <- iraWatchme(listWC2, namesList=namesList)
 kable(IRR)
