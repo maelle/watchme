@@ -2,11 +2,12 @@
 title: "Analyse annotation of wearable camera images with the `watchme` R package"
 author: "Maëlle Salmon and other CHAI project members"
 date: "`r Sys.Date()`"
-output: rmarkdown::html_vignette
+output: rmarkdown::html_vignette   
 vignette: >
   %\VignetteIndexEntry{Vignette Title}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+
 ---
 
 ```{r, echo=FALSE, warning=FALSE, message=FALSE}
@@ -192,7 +193,7 @@ Nowadays the state of the art is to use Cohen's kappa for codes attributed to pi
 * one could compare the global annotations of all files, i.e. all codes at the same time. For instance compare washingYourTeeth; readingABook to washingYourTeeh; readingAMagazine for picture 1 between coder A and coder B. This is the default option.
 
 
-* one could merge all codes from a group for each picture. So we would compare eatingBadFood; drinkingWater to eatingBadFood even if the complete annotation are eatingBadFood, drinkingWater; readingABook and eatingBadFood; readingABook. For this one needs to set the `byCode` argument to TRUE.
+* one could simply want to compare the use of one group of codes for pictures. E.g., for all pictures, do raters agree on using a cooking code or not using it? In this case, "cooking on LPG stove" and "cutting vegetables" are an agreement.
 
 * one could look separately at each code using binary variables. For instance for washingYourTeeth comparing TRUE to TRUE and for readingABook TRUE to FALSE. For this one needs to set the `byGroup` argument to TRUE but the `byCode` argument to FALSE.
 
