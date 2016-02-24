@@ -237,12 +237,14 @@ iraWatchme <- function(wearableCamImagesList, namesList=NULL,
 
       for (j in 1:ncol(wearableCamImagesList[[1]]$booleanCodes)){
         code <- names(wearableCamImagesList[[1]]$booleanCodes)[j]
-        dat <- NULL
+        dat <- data.frame(rep(NA,
+                              length(wearableCamImagesList[[1]]$
+                                       booleanCodes[,code])))
         for (i in 1:length(wearableCamImagesList)){
           dat <- cbind(dat,
-                       wearableCamImagesList[[i]]$booleanCodes[,j])
+                       wearableCamImagesList[[i]]$booleanCodes[,code])
         }
-        dat <- as.data.frame(dat)
+        dat <- as.data.frame(dat[,2:ncol(dat)])
         names(dat) <- namesList
         if (length(wearableCamImagesList)  ==  2){
           results <- kappa2(dat, "unweighted")

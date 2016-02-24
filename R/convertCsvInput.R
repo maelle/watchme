@@ -1,6 +1,7 @@
 #' Creates a wearableCamImages object from information read in a csv file.
 #'
 #' @importFrom lubridate ymd_hms mdy_hms
+#' @importFrom dplyr tbl_df
 #' @param pathResults the path to the file with coding results
 #' @param sepResults the separator in the file with coding results
 #' @param pathDicoCoding the path to the file with the list of annotations
@@ -97,7 +98,7 @@ convertInput <- function(pathResults, sepResults, quoteSign = "\'",
     }
     temp <- as.data.frame(temp)
     names(temp) <- namesTemp
-    booleanCodes <- temp
+    booleanCodes <- dplyr::tbl_df(temp)
 
     ########################################################
     # and now I create a list
@@ -124,7 +125,7 @@ convertInput <- function(pathResults, sepResults, quoteSign = "\'",
     ########################################################
     # Done!
     ########################################################
-    wearableCamImagesObject <- wearableCamImages$new(dicoCoding = dicoCoding,# nolint
+    wearableCamImagesObject <- wearableCamImages$new(dicoCoding = tbl_df(dicoCoding),# nolint
                                                      imagePath = imagePath,# nolint
                                                      timeDate = timeDate,# nolint
                                                      codes = codes,# nolint

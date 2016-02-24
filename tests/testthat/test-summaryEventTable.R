@@ -21,6 +21,6 @@ test_that("summaryEventTable outputs columns with the right classes", {
   expect_that(summaryTable$activity, is_a("factor"))
   expect_that(summaryTable$noOfEvents, is_a("integer"))
   expect_that(summaryTable$meanNoOfPictures, is_a("numeric"))
-  expect_that(summaryTable$meanDuration, is_a("numeric"))
+  expect_that(summaryTable$meanDuration, is_a("difftime"))
 
 })

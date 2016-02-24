@@ -37,6 +37,10 @@ test_that("iraWatchme outputs the right type of results depending on the options
                                        "z" , "pValue"  )))
   expect_that(as.character(output$method[1]), equals("Cohen's Kappa for 2 Raters (Weights: unweighted)"))
 
+  data("IO1")
+  data("IO2")
+
+  listWC <- list(IO1, IO2)
   output <- iraWatchme(listWC, namesList=c("Cain", "Abel"), byCode=TRUE)
   expect_that(output, is_a("tbl_df"))
   expect_that(nrow(output), equals(ncol(IO1$booleanCodes)))

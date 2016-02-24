@@ -16,7 +16,8 @@ Imports: dplyr,
     data.table,
     RColorBrewer,
     tidyr,
-    R6
+    R6,
+    lazyeval
 Suggests: knitr,
     rmarkdown,
     testthat,

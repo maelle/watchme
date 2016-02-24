@@ -107,8 +107,9 @@ outputDifferences <- function(wearableCamImagesList, namesList=NULL){
     tableImages <- dplyr::tbl_df(tableImagesFinal)
     names(tableImages) <- namesList
 
-    tableImages <- dplyr::mutate(tableImages,
-                                 imageTime = as.character(uniqueImages))
+    tableImages <- dplyr::mutate_(tableImages,
+                                 imageTime = interp(~
+                                as.character(uniqueImages)))
     tableImages <- dplyr::select(tableImages,
                                  imageTime, everything())
 
