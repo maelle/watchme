@@ -48,7 +48,8 @@ toEventLevel <- function(wearableCamImagesObject, minDuration = 1) {
       mutate_(activity = interp(~ as.factor(Meaning))) %>%
       select_(~ (- Meaning)) %>%
       arrange_(~ eventCode) %>%
-      filter_(interp(~ noOfPictures >= minDuration))
+      filter_(interp(~ noOfPictures >= minDuration)) %>%
+      ungroup()
 
     return(tableEvents)
 }

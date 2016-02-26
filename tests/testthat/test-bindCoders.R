@@ -15,9 +15,8 @@ test_that("bindCoders outputs a data table", {
 
 test_that("bindCoders uses namesList well", {
   data("dummyWearableCamImages")
-
   output <- bindCoders(list(dummyWearableCamImages, dummyWearableCamImages),
                        namesList=c("Cain", "Abel"))
-  expect_that(levels(output$coder), equals(c("Cain", "Abel")))
+  expect_that(levels(output$coder), equals(c("Abel", "Cain")))
 
 })

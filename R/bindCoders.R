@@ -1,7 +1,8 @@
 #' Creates a table with events from the image level annotation information,
 #'  with an additional columns with the names of the coders.
 #'
-#' @importFrom dplyr tbl_df
+#' @importFrom dplyr tbl_df mutate_
+#' @importFrom lazyeval interp
 #' @param wearableCamImagesList a list of \code{wearableCamImages} objects.
 #' @param namesList (optional) a list of names for the coders. It must be the same length as wearableCamImagesList
 #' and contains different names.
@@ -22,18 +23,20 @@ bindCoders <- function(wearableCamImagesList,
   if (is.null(namesList)){
     namesList <- as.character(1:length(wearableCamImagesList))
   }
-    mergedTable <- NULL
-    for (i in 1:length(wearableCamImagesList)) {
-
-        temp <- toEventLevel(wearableCamImagesList[[i]],
-                             minDuration = minDuration)
-
-        mergedTable <- rbind(mergedTable,
-                             cbind(temp,
-                                   coder = rep(namesList[i],
-                                               nrow(temp))))
+    # get table of events
+    temp <- lapply(wearableCamImagesList,
+                   toEventLevel,
+                   minDuration = minDuration)
+    names(temp) <- namesList
+    mergedTable <- do.call("rbind", temp)
+    # coders names
+    repCoders <- function(name, no){
+      rep(name, nrow(temp[[name]]))
     }
-
-    mergedTable <- dplyr::tbl_df(mergedTable)
+    coders <- do.call("c",lapply(namesList,
+                                 repCoders))
+    # add the names to the table
+    mergedTable <- mergedTable %>%
+      mutate_(coder = interp(~ as.factor(coders)))
     return(mergedTable)
 }
