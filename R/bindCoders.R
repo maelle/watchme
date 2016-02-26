@@ -33,7 +33,7 @@ bindCoders <- function(wearableCamImagesList,
     repCoders <- function(name, no){
       rep(name, nrow(temp[[name]]))
     }
-    coders <- do.call("c",lapply(namesList,
+    coders <- do.call("c", lapply(namesList,
                                  repCoders))
     # add the names to the table
     mergedTable <- mergedTable %>%

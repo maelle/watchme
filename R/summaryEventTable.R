@@ -12,16 +12,12 @@
 
 #' @export
 summaryEventTable <- function(eventTable) {
-    eventTable <- mutate_(eventTable,
-                          duration = interp(~ difftime(endTime,
-                                                       startTime,
-                                                       units = "secs")))
-    summaryTable <- group_by_(eventTable,
-                              ~ activity) %>%
+      mutate_(eventTable,
+                  duration = interp(~ difftime(endTime,
+                                               startTime,
+                                               units = "secs"))) %>%
+      group_by_(~ activity) %>%
       summarize_(meanNoOfPictures = interp(~ mean(noOfPictures)),
                   meanDuration = interp(~ mean(duration)),
                   noOfEvents = interp(~ length(duration)))
-
-
-    return(summaryTable)
 }
