@@ -1,6 +1,6 @@
 #' Outputs images for which codes are different among coders
 #'
-#' @importFrom dplyr tbl_df mutate_ arrange_ group_by_ left_join filter_ summarize_
+#' @importFrom dplyr tbl_df mutate_ arrange_ group_by_ left_join filter_ summarize_ select_
 #' @importFrom tidyr gather spread
 #' @param wearableCamImagesList a list of \code{wearableCamImages} objects.
 #' @param namesList (optional) a vector of names for the coders. It must be the same length as wearableCamImagesList
@@ -50,7 +50,8 @@ outputDifferences <- function(wearableCamImagesList, namesList=NULL){
   # now get one line with codes from each coder
     left_join(bigTable, by = "imageTime") %>%
     mutate_(codes = interp(~ gsub("\\, ", "", codes))) %>%
-    spread(coders, codes)
+    spread(coders, codes) %>%
+    select_(~ - unique)
 
 return(tableImages)
 }
