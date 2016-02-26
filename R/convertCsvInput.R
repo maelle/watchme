@@ -1,7 +1,9 @@
 #' Creates a wearableCamImages object from information read in a csv file.
 #'
 #' @importFrom lubridate ymd_hms mdy_hms
-#' @importFrom dplyr tbl_df mutate_ group_by summarize_ ungroup
+#' @importFrom dplyr tbl_df mutate_ group_by_ summarize_ ungroup
+#' @importFrom tidyr gather
+#' @importFrom lazyeval interp
 #' @param pathResults the path to the file with coding results
 #' @param sepResults the separator in the file with coding results
 #' @param pathDicoCoding the path to the file with the list of annotations
@@ -54,9 +56,10 @@ convertInput <- function(pathResults, sepResults, quoteSign = "\'",
 
     # if several rows for one image, merge annotation
     resultsCoding <- resultsCoding %>%
-      group_by(image_path, image_time) %>%  # nolint
+      group_by_(~ image_path,~ image_time) %>%  # nolint
       summarize_(annotation = interp(~ toString(annotation))) %>%
       ungroup()
+    imagePath <- resultsCoding$"image_path"
     ########################################################
     # participantID
     ########################################################
@@ -86,16 +89,12 @@ convertInput <- function(pathResults, sepResults, quoteSign = "\'",
     ########################################################
     # one column for each possible code,
     # one line for each picture
-    temp <- NULL
-    namesTemp <- NULL
+    temp <- list()
     for (code in dicoCoding$Code) {
-        temp <- cbind(temp, grepl(code, codeResults))
-        namesTemp <- c(namesTemp, code)
+        temp[[code]] <- grepl(code, codeResults)
     }
-    temp <- as.data.frame(temp)
-    names(temp) <- namesTemp
+    temp <- do.call("cbind", temp)
     booleanCodes <- dplyr::tbl_df(temp)
-
     ########################################################
     # and now I create a list
     ########################################################
@@ -105,23 +104,21 @@ convertInput <- function(pathResults, sepResults, quoteSign = "\'",
     # while in the original codeResults we could have
     # other separators... and other code:
     # here we only see what is in the dicoCoding.
-    for (j in 1:ncol(temp)) {
-        for (i in 1:nrow(temp)) {
-            if (temp[i, j]) {
-                temp[i, j] <- names(temp)[j]
-            } else {
-                temp[i, j] <- ""
-            }
-        }
-    }
-    codes <- rep("", nrow(temp))
-    for (i in 1:nrow(temp)) {
-        codes[i] <- toString(temp[i, ])
-    }
+    nCodes <- ncol(booleanCodes)
+    codes <- booleanCodes  %>%
+      mutate_(timeDate = interp(~ timeDate)) %>%
+      select_(~timeDate, ~everything()) %>%
+      gather(eventCode, boolean,
+             2:(nCodes+1)) %>%
+      group_by_(~ timeDate) %>%
+      mutate_(eventCode = interp(~
+              ifelse(boolean, eventCode, "")) ) %>%
+    summarize_(codes = interp(~ toString(eventCode)))
+    codes <- codes$codes
+
     ########################################################
     # Done!
     ########################################################
-    imagePath <- resultsCoding$"image_path"
     wearableCamImagesObject <- wearableCamImages$new(dicoCoding = tbl_df(dicoCoding),# nolint
                                                      imagePath = imagePath,# nolint
                                                      timeDate = timeDate,# nolint
