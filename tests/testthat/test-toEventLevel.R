@@ -28,8 +28,9 @@ test_that("toEventLevel outputs a data table with the right variables", {
   data("dummyWearableCamImages")
   eventTable <- toEventLevel(wearableCamImagesObject=dummyWearableCamImages)
 
-  expect_that(names(eventTable), equals(c("eventIndex", "startTime", "endTime",
-                                          "eventCode",  "noOfPictures", "activity",
-                                          "group", "startPicture", "endPicture")))
+  expect_that(names(eventTable), equals(c("eventCode", "startTime", "endTime",
+                                          "noOfPictures", "startPicture", "endPicture",
+                                          "group",
+                                          "activity")))
 
 })

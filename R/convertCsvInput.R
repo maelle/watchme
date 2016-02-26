@@ -1,7 +1,7 @@
 #' Creates a wearableCamImages object from information read in a csv file.
 #'
 #' @importFrom lubridate ymd_hms mdy_hms
-#' @importFrom dplyr tbl_df
+#' @importFrom dplyr tbl_df mutate_ group_by summarize_ ungroup
 #' @param pathResults the path to the file with coding results
 #' @param sepResults the separator in the file with coding results
 #' @param pathDicoCoding the path to the file with the list of annotations
@@ -51,40 +51,36 @@ convertInput <- function(pathResults, sepResults, quoteSign = "\'",
                                 "image_time",
                                 "annotation")
     }
+
+    # if several rows for one image, merge annotation
+    resultsCoding <- resultsCoding %>%
+      group_by(image_path, image_time) %>%  # nolint
+      summarize_(annotation = interp(~ toString(annotation))) %>%
+      ungroup()
     ########################################################
     # participantID
     ########################################################
     # well participantID will not always make sense
     participantID <- as.character(resultsCoding[1, 1])
-    imagePath <- unique(as.character(resultsCoding$"image_path"))
 
     ########################################################
     # convert time date
     ########################################################
+    functionDate <-
     formatDate <- match.arg(formatDate, c("ymd", "mdy"))
     if (formatDate == "ymd") {
-        timeDate <- lubridate::ymd_hms(
-          as.character(resultsCoding$"image_time"))
+      functionDate <- lubridate::ymd_hms
     }
     if (formatDate == "mdy") {
-        timeDate <- lubridate::mdy_hms(
-          as.character(resultsCoding$"image_time"))
+      functionDate <- lubridate::mdy_hms
     }
-
+    timeDate <- functionDate(
+      as.character(resultsCoding$"image_time"))
     ########################################################
     # Find all codes
     ########################################################
     # create empty vector
-    codeResults <- rep("", length(imagePath))
-    # loop over pictures
-    # quite complicated
-    # because sometimes >1 line per picture
-    for (i in 1:length(imagePath)) {
-        codeResults[i] <- tolower(
-          toString(as.character(resultsCoding$annotation[
-          as.character(resultsCoding$"image_path") == imagePath[i]])))
-    }
-
+    codeResults <- tolower(resultsCoding$annotation)
     ########################################################
     # then first I create the table with binary variables
     ########################################################
@@ -125,6 +121,7 @@ convertInput <- function(pathResults, sepResults, quoteSign = "\'",
     ########################################################
     # Done!
     ########################################################
+    imagePath <- resultsCoding$"image_path"
     wearableCamImagesObject <- wearableCamImages$new(dicoCoding = tbl_df(dicoCoding),# nolint
                                                      imagePath = imagePath,# nolint
                                                      timeDate = timeDate,# nolint
