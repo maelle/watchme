@@ -249,20 +249,20 @@ iraWatchme <- function(wearableCamImagesList, namesList=NULL,
         names(dat) <- namesList
         if (length(wearableCamImagesList)  ==  2){
           results <- kappa2(dat, "unweighted")
-          tableResults <- data.frame(method=results$method,
-                                     pictures=results$subjects,
-                                     agreedOn=sum(dat[,1] == dat[,2]),
+          tableResults <- data.frame(method = results$method,
+                                     pictures = results$subjects,
+                                     agreedOn = sum(dat[,1] == dat[,2]),
                                      rater1YesRater2No=sum(
                                        dat[,1] == TRUE & dat[,2] == FALSE),
                                      rater1NoRater2Yes=sum(
                                        dat[,1] == FALSE & dat[,2] == TRUE),
-                                     raters=results$raters,
-                                     ratersNames=paste(
+                                     raters = results$raters,
+                                     ratersNames = paste(
                                        namesList[[1]], "and",
                                        namesList[[2]], sep=" "),
-                                     Kappa=results$value,
-                                     z=results$statistic,
-                                     pValue=results$p.value,
+                                     Kappa = results$value,
+                                     z = results$statistic,
+                                     pValue = results$p.value,
                                      code = code)
           tableResults <- dplyr::tbl_df(tableResults)
         }
@@ -278,14 +278,14 @@ iraWatchme <- function(wearableCamImagesList, namesList=NULL,
           agreedOn <- sum(apply(dat, 1, lengthOfUnique) == 1)
 
 
-          tableResults <- data.frame(method=results$method,
-                                     pictures=results$subjects,
-                                     agreedOn=agreedOn,
-                                     raters=results$raters,
-                                     ratersNames=toString(namesList),
-                                     Kappa=results$value,
-                                     z=results$statistic,
-                                     pValue=results$p.value,
+          tableResults <- data.frame(method = results$method,
+                                     pictures = results$subjects,
+                                     agreedOn = agreedOn,
+                                     raters = results$raters,
+                                     ratersNames = toString(namesList),
+                                     Kappa = results$value,
+                                     z = results$statistic,
+                                     pValue = results$p.value,
                                      code = code)
           tableResults <- dplyr::tbl_df(tableResults)
         }
@@ -301,20 +301,20 @@ iraWatchme <- function(wearableCamImagesList, namesList=NULL,
             rater1 <- pairs$rater1[i]
             rater2 <- pairs$rater2[i]
             results <- kappa2(dat[, c(rater1, rater2)], "unweighted")
-            temp <- data.frame(method=results$method,
-                               pictures=results$subjects,
-                               agreedOn=sum(dat[,rater1] == dat[,rater2]),
-                               rater1YesRater2No=
+            temp <- data.frame(method = results$method,
+                               pictures = results$subjects,
+                               agreedOn = sum(dat[,rater1] == dat[,rater2]),
+                               rater1YesRater2No =
                                  sum(dat[,rater1] == TRUE &
                                        dat[,rater2] == FALSE),
-                               rater1NoRater2Yes=
+                               rater1NoRater2Yes =
                                  sum(dat[,rater1] == FALSE &
                                        dat[,rater2] == TRUE),
-                               rater1=rater1,
-                               rater2=rater2,
-                               Kappa=results$value,
-                               z=results$statistic,
-                               pValue=results$p.value,
+                               rater1 = rater1,
+                               rater2 = rater2,
+                               Kappa = results$value,
+                               z = results$statistic,
+                               pValue = results$p.value,
                                code = code)
             tableResults <- rbind(tableResults, temp)
           }
