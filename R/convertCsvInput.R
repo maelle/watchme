@@ -93,7 +93,7 @@ convertInput <- function(pathResults, sepResults, quoteSign = "\'",
     for (code in dicoCoding$Code) {
         temp[[code]] <- grepl(code, codeResults)
     }
-    temp <- do.call("cbind", temp)
+    temp <- as.data.frame(do.call("cbind", temp))
     booleanCodes <- dplyr::tbl_df(temp)
     ########################################################
     # and now I create a list
@@ -107,9 +107,9 @@ convertInput <- function(pathResults, sepResults, quoteSign = "\'",
     nCodes <- ncol(booleanCodes)
     codes <- booleanCodes  %>%
       mutate_(timeDate = interp(~ timeDate)) %>%
-      select_(~timeDate, ~everything()) %>%
+      select_(~ timeDate, ~ everything()) %>%
       gather(eventCode, boolean,
-             2:(nCodes+1)) %>%
+             2:(nCodes + 1)) %>%
       group_by_(~ timeDate) %>%
       mutate_(eventCode = interp(~
               ifelse(boolean, eventCode, "")) ) %>%
