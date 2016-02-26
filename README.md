@@ -242,18 +242,18 @@ differences <- outputDifferences(listWC, namesList)
 kable(differences[1:10,])
 ```
 
-| imageTime           | Cain        | Abel     |
-|:--------------------|:------------|:---------|
-| 2015-06-12 12:23:40 | indoors     | outdoors |
-| 2015-06-12 12:24:59 | mixed       | outdoors |
-| 2015-06-12 12:25:34 | mixed       | outdoors |
-| 2015-06-12 13:08:17 | mixed       | outdoors |
-| 2015-06-12 13:10:01 | outdoors    | indoors  |
-| 2015-06-12 15:19:45 | non codable | indoors  |
-| 2015-06-12 15:23:47 | mixed       | outdoors |
-| 2015-06-12 15:24:23 | mixed       | outdoors |
-| 2015-06-12 15:24:55 | mixed       | outdoors |
-| 2015-06-12 16:06:08 | indoors     | outdoors |
+|            imageTime|  unique| Abel     | Cain        |
+|--------------------:|-------:|:---------|:------------|
+|  2015-06-12 14:23:40|       2| outdoors | indoors     |
+|  2015-06-12 14:24:59|       2| outdoors | mixed       |
+|  2015-06-12 14:25:34|       2| outdoors | mixed       |
+|  2015-06-12 15:08:17|       2| outdoors | mixed       |
+|  2015-06-12 15:10:01|       2| indoors  | outdoors    |
+|  2015-06-12 17:19:45|       2| indoors  | non codable |
+|  2015-06-12 17:23:47|       2| outdoors | mixed       |
+|  2015-06-12 17:24:23|       2| outdoors | mixed       |
+|  2015-06-12 17:24:55|       2| outdoors | mixed       |
+|  2015-06-12 18:06:08|       2| outdoors | indoors     |
 
 Assess interrater agreement
 ---------------------------
