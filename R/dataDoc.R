@@ -31,3 +31,15 @@ NULL
 #' @keywords data
 #' @examples data(IO2)
 NULL
+
+#' A list of dummy WearableCamImages objects
+#'
+#' A list of dummy WearableCamImages objects,
+#' several passes but same set of pictures
+#'
+#' @format A list of dummy WearableCamImages object.
+#' @name listWM
+#' @docType data
+#' @keywords data
+#' @examples data(listWM)
+NULL
