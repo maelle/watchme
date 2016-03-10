@@ -6,6 +6,7 @@ r_github_packages:
   - jimhester/covr
   - jimhester/lintr
   - hadley/dplyr
+  - hrbrmstr/vegalite
 
 notifications:
     email:
