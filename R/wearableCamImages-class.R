@@ -2,7 +2,7 @@
 #'
 #' @docType class
 #' @importFrom R6 R6Class
-#' @import vegalite
+#' @importFrom vegalite vegalite cell_size add_data encode_y encode_color encode_x timeunit_x axis_x axis_y mark_tick "%>%"
 #' @importFrom dplyr tbl_df mutate_ group_by_ summarize_ ungroup left_join
 #' @importFrom tidyr gather
 #' @importFrom lazyeval interp

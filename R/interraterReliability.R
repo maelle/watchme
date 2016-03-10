@@ -1,6 +1,6 @@
 #' Calculates interrater agreement using the irr package. A unit of comparison is one picture.
 #' @importFrom irr kappa2 kappam.fleiss
-#' @importFrom dplyr tbl_df "%>%" filter_
+#' @importFrom dplyr tbl_df filter_
 #' @importFrom data.table setattr
 #' @param wearableCamImagesList a list of \code{wearableCamImages} objects.
 #' @param namesList (optional) a vector of names for the coders. It must be the same length as wearableCamImagesList

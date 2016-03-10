@@ -1,6 +1,6 @@
 #' Plot sequences of events
 #'
-#' @import ggplot2
+#' @importFrom ggplot2 geom_rect scale_fill_manual scale_colour_manual facet_grid element_blank
 #' @import RColorBrewer
 #' @param eventTable a table of events created with the\code{toEventLevel} function (or having the same structure).
 #' @param doNotUseCode a vector of codes that you do not want to see on the graph, e.g. if you have both codes
