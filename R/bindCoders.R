@@ -1,7 +1,7 @@
 #' Creates a table with events from the image level annotation information,
 #'  with an additional columns with the names of the coders.
 #'
-#' @importFrom dplyr tbl_df mutate_
+#' @importFrom dplyr tbl_df mutate_ everything
 #' @importFrom lazyeval interp
 #' @param wearableCamImagesList a list of \code{wearableCamImages} objects.
 #' @param namesList (optional) a list of names for the coders. It must be the same length as wearableCamImagesList
