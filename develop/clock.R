@@ -1,3 +1,5 @@
+# from https://gist.github.com/drewconway/1142938#file-clock-r
+
 library("ggplot2")
 library("gganimate")
 library("dplyr")
