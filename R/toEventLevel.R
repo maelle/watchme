@@ -1,6 +1,6 @@
 #' Creates a table with events from the image level annotation information.
 #'
-#' @importFrom  dplyr tbl_df filter_ mutate_ select_ arrange_ left_join
+#' @importFrom  dplyr tbl_df filter_ mutate_ select_ arrange_ left_join "%>%"
 #' @importFrom lazyeval interp
 #' @importFrom lubridate ymd_hms
 #' @importFrom tidyr gather
