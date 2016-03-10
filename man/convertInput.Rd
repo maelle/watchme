@@ -5,7 +5,7 @@
 \title{Creates a wearableCamImages object from information read in a csv file.}
 \usage{
 convertInput(pathResults, sepResults, quoteSign = "'", pathDicoCoding,
-  sepDicoCoding, formatDate = "ymd")
+  sepDicoCoding, formatDate = "ymd", tz = "Asia/Kolkata")
 }
 \arguments{
 \item{pathResults}{the path to the file with coding results}
@@ -19,6 +19,8 @@ convertInput(pathResults, sepResults, quoteSign = "'", pathDicoCoding,
 \item{sepDicoCoding}{the separator in the file with the list of annotations}
 
 \item{formatDate}{either 'ymd' or 'dmy'.}
+
+\item{tz}{timezone}
 }
 \value{
 A \code{wearableCamImages} object.

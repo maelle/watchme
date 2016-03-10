@@ -9,6 +9,7 @@
 #' @param pathDicoCoding the path to the file with the list of annotations
 #' @param sepDicoCoding the separator in the file with the list of annotations
 #' @param formatDate either 'ymd' or 'dmy'.
+#' @param tz timezone
 #' @param quoteSign the quote argument of read.table for the results, default is "\'"
 #' @return A \code{wearableCamImages} object.
 #' @details
@@ -28,7 +29,8 @@
 
 #' @export
 convertInput <- function(pathResults, sepResults, quoteSign = "\'",
-                         pathDicoCoding, sepDicoCoding, formatDate = "ymd") {
+                         pathDicoCoding, sepDicoCoding, formatDate = "ymd",
+                         tz = "Asia/Kolkata") {
     ########################################################
     # Get dico coding
     ########################################################
@@ -78,7 +80,7 @@ convertInput <- function(pathResults, sepResults, quoteSign = "\'",
       functionDate <- lubridate::mdy_hms
     }
     timeDate <- functionDate(
-      as.character(resultsCoding$"image_time"))
+      as.character(resultsCoding$"image_time"), tz = tz)
     ########################################################
     # Find all codes
     ########################################################

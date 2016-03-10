@@ -2,6 +2,10 @@
 #'
 #' @docType class
 #' @importFrom R6 R6Class
+#' @import vegalite
+#' @importFrom dplyr tbl_df mutate_ group_by_ summarize_ ungroup left_join
+#' @importFrom tidyr gather
+#' @importFrom lazyeval interp
 #' @export
 #' @keywords data
 #' @return Object of \code{\link{R6Class}}.
@@ -49,8 +53,54 @@ wearableCamImages <- R6::R6Class("wearableCamImages",
                             self$codes <- codes
                             self$booleanCodes <- booleanCodes
                             self$dicoCoding <- dicoCoding
+                          },
+                          plot = function(){
+                            plotVegalite(booleanCodes = self$booleanCodes,
+                                         timeDate = self$timeDate,
+                                         dico = self$dicoCoding)
                           }
+
 
 
                         )
 )
+
+##########################################################################
+# PLOT METHOD
+##########################################################################
+# nocov start
+plotVegalite <- function(booleanCodes,
+                         timeDate,
+                         dico){# nolint start
+  dataPlot <- cbind(timeDate,
+                    booleanCodes)
+  dataPlot <- tbl_df(dataPlot) %>%
+    gather("code", "value", 2:ncol(dataPlot)) %>%
+    filter_(~ value == TRUE) %>%
+    mutate_(code = interp(~factor(code, levels = dico$Code,
+                         ordered = TRUE))) %>%
+    arrange_(~ code) %>%
+    left_join(dico, by = c("code" = "Code"))
+
+  p <- vegalite(renderer = "canvas",
+                 export = TRUE,
+                background = "white") %>%
+          cell_size(1000, 800) %>%
+          add_data(dataPlot) %>%
+          encode_y("code", "nominal",
+                   sort = "none") %>%
+          encode_color("Group", "nominal") %>%
+          encode_x("timeDate", "temporal") %>%
+          timeunit_x("yearmonthdayhoursminutesseconds")%>%
+          axis_x(title = "Time of day",
+                 format="%a, %H:%M",
+                 labelAngle=0)  %>%
+          axis_y(axisWidth=0,
+                 title = "Activity", grid = TRUE)  %>%
+          mark_tick(size = 1,
+                    thickness = 10, opacity = 1)
+
+ return(p)
+}
+# nolint end
+# nocov end

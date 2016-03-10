@@ -17,7 +17,8 @@ Imports: dplyr,
     RColorBrewer,
     tidyr,
     R6,
-    lazyeval
+    lazyeval,
+    vegalite
 Suggests: knitr,
     rmarkdown,
     testthat,

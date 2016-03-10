@@ -57,8 +57,9 @@ combineObjects <- function(wearableCamImagesList,
                           lapply(wearableCamImagesList,
                                  "[[", "booleanCodes")))
   for (code in codeException){
-    booleanCodes$code <-
-      booleanCodes[,grepl(code, names(booleanCodes))]
+    booleanCodes[,code] <-
+      (apply(booleanCodes[,grepl(code, names(booleanCodes))],
+            1, sum) > 0)
   }
   booleanCodes <- booleanCodes[,dicoCoding$Code]
   ########################################################
