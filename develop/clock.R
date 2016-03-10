@@ -66,8 +66,10 @@ coord_polar()+
         axis.text.y=element_blank(),
         axis.ticks.y=element_blank(),
         axis.title.y=element_blank(),
+        axis.title.x=element_blank(),
         panel.background=element_blank(),
         panel.border=element_blank(),panel.grid.major=element_blank(),
         panel.grid.minor=element_blank(),plot.background=element_blank())
 
 gg_animate(clock, "clock.mp4", interval = 0.025)
+gg_animate(clock, "clock.gif", interval = 0.025)
