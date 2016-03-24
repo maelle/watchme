@@ -20,6 +20,7 @@ environment:
 
 build_script:
   - travis-tool.sh install_deps
+  - travis-tool.sh install_r devtools
   - travis-tool.sh install_r dplyr
   - travis-tool.sh install_r ggplot2
   - travis-tool.sh install_r irr
