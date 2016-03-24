@@ -33,7 +33,6 @@ build_script:
   - travis-tool.sh install_r xtable
   - travis-tool.sh install_r RColorBrewer
   - travis-tool.sh install_r tidyr
-  - travis-tool.sh install_github hrbrmstr/vegalite
 
 test_script:
   - travis-tool.sh run_tests
