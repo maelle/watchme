@@ -11,7 +11,15 @@
 #' @param formatDate either 'ymd' or 'dmy'.
 #' @param tz timezone
 #' @param quoteSign the quote argument of read.table for the results, default is "\'"
-#' @return A \code{wearableCamImages} object.
+#' @return A \code{wearableCamImages} object which is a \code{tibble} with
+#' \itemize{
+#' \item participantID Name or ID number of the participant (character)
+#' \item image_time Path or name of the image in order to be able to identify duplicates (character)
+#' \item image_time Time and date of each image (POSIXt)
+#' \item codes annotation(s) given to this image (character), e.g. separated by ','.
+#' \item booleanCodes columns of boolean, indicating if a given code was given to a given picture. codes is a condensed form of this.
+#' \item the attribute \code{dicoCoding} \code{tibble} for defining the codes with at least Code and Meaning column, possibly Group column for having groups of codes (e.g. sport encompasses running and swimming)
+#' }
 #' @details
 #' Please check the format that both files should have by looking at the provided
 #' example data.
@@ -29,15 +37,14 @@
 
 #' @export
 convertInput <- function(pathResults, sepResults, quoteSign = "\'",
+                         participant_id = "no_id",
                          pathDicoCoding, sepDicoCoding, formatDate = "ymd",
                          tz = "Asia/Kolkata") {
     ########################################################
     # Get dico coding
     ########################################################
     dicoCoding <- read.csv(pathDicoCoding, sep = sepDicoCoding, header = TRUE)
-    dicoCoding$Code <- tolower(dicoCoding$Code)
-    dicoCoding$Meaning <- tolower(dicoCoding$Meaning)
-    dicoCoding$Group <- tolower(dicoCoding$Group)
+    dicoCoding <- dplyr::mutate_each_(dicoCoding, dplyr::funs_("tolower"), c("Code", "Meaning", "Group"))
 
     ########################################################
     # open results
@@ -61,12 +68,10 @@ convertInput <- function(pathResults, sepResults, quoteSign = "\'",
       group_by_(~ image_path,~ image_time) %>%  # nolint
       summarize_(annotation = interp(~ toString(annotation))) %>%
       ungroup()
-    imagePath <- resultsCoding$"image_path"
-    ########################################################
-    # participantID
-    ########################################################
-    # well participantID will not always make sense
-    participantID <- as.character(resultsCoding[1, 1])
+
+    resultsCoding <- dplyr::mutate_(resultsCoding,
+                             participant_id = ~participant_id)
+
 
     ########################################################
     # convert time date
@@ -79,24 +84,32 @@ convertInput <- function(pathResults, sepResults, quoteSign = "\'",
     if (formatDate == "mdy") {
       functionDate <- lubridate::mdy_hms
     }
-    timeDate <- functionDate(
-      as.character(resultsCoding$"image_time"), tz = tz)
+    resultsCoding <-mutate_(resultsCoding,
+                            image_time = lazyeval::interp(~functionDate(
+                              as.character(image_time), tz = tz)))
+
     ########################################################
     # Find all codes
     ########################################################
     # create empty vector
-    codeResults <- tolower(resultsCoding$annotation)
+    resultsCoding <- mutate_(resultsCoding,
+                             annotation = lazyeval::interp(~tolower(annotation)))
+
+
+
     ########################################################
     # then first I create the table with binary variables
     ########################################################
     # one column for each possible code,
     # one line for each picture
-    temp <- list()
-    for (code in dicoCoding$Code) {
-        temp[[code]] <- grepl(code, codeResults)
-    }
-    temp <- as.data.frame(do.call("cbind", temp))
-    booleanCodes <- dplyr::tbl_df(temp)
+    codes <- dicoCoding$Code
+    resultsCoding <- dplyr::group_by(resultsCoding, image_path) %>%
+      dplyr::mutate_(booleanCodes = lazyeval::interp(~list(vapply(codes, grepl, annotation,
+                                                              FUN.VALUE = FALSE))))
+    print(resultsCoding$booleanCodes[1])
+
+    names(booleanCodes) <- dicoCoding$Code
+    resultsCoding <- dplyr::select_(resultsCoding, quote(- annotation))
     ########################################################
     # and now I create a list
     ########################################################
@@ -107,25 +120,27 @@ convertInput <- function(pathResults, sepResults, quoteSign = "\'",
     # other separators... and other code:
     # here we only see what is in the dicoCoding.
     nCodes <- ncol(booleanCodes)
-    codes <- booleanCodes  %>%
-      mutate_(timeDate = interp(~ timeDate)) %>%
-      select_(~ timeDate, ~ everything()) %>%
+    codes <- booleanCodes %>%
+      select_(~ image_time, ~ everything()) %>%
       gather(eventCode, boolean,
              2:(nCodes + 1)) %>%
-      group_by_(~ timeDate) %>%
+      group_by_(~ image_time) %>%
       mutate_(eventCode = interp(~
               ifelse(boolean, eventCode, "")) ) %>%
     summarize_(codes = interp(~ toString(eventCode)))
-    codes <- codes$codes
+
 
     ########################################################
     # Done!
     ########################################################
-    wearableCamImagesObject <- wearableCamImages$new(dicoCoding = tbl_df(dicoCoding),# nolint
-                                                     imagePath = imagePath,# nolint
-                                                     timeDate = timeDate,# nolint
-                                                     codes = codes,# nolint
-                                                     booleanCodes = booleanCodes,# nolint
-                                                     participantID = participantID)# nolint
+    wearableCamImagesObject <- tibble::tibble_(list(participant_id,
+                                                    image_time,
+                                                    codes))
+    return(wearableCamImagesObject)
+    wearableCamImagesObject <- dplyr::bind_rows(wearableCamImagesObject,
+                                                booleanCodes)
+    #attributes(wearableCamImagesObject, "dicoCoding") <- dicoCoding
     return(wearableCamImagesObject)
 }
+
+

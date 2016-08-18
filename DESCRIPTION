@@ -18,7 +18,8 @@ Imports: dplyr,
     tidyr,
     R6,
     lazyeval,
-    vegalite
+    vegalite,
+    purrr
 Suggests: knitr,
     rmarkdown,
     testthat,

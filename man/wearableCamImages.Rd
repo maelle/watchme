@@ -17,17 +17,15 @@ An R6 class to store information about images and their code.
 \section{Fields}{
 
 \describe{
-\item{\code{participantID}}{Name or ID number of the participant (character)}
-
-\item{\code{imagePath}}{Path or name of the image in order to be able to identify duplicates (character)}
-
-\item{\code{timeDate}}{Time and date of each image (POSIXt)}
-
-\item{\code{codes}}{annotation(s) given to this image (character), e.g. separated by ','.}
-
-\item{\code{booleanCodes}}{table of boolean, indicating if a given code was given to a given picture. codes is a condensed form of this slot.}
-
-\item{\code{dicoCoding}}{table for defining the codes with at least Code and Meaning column, possibly Group column for having groups of codes (e.g. sport encompasses running and swimming)}
+\item{\code{data}}{which is a \code{tibble} with
+\itemize{
+\item participantID Name or ID number of the participant (character)
+\item imagePath Path or name of the image in order to be able to identify duplicates (character)
+\item timeDate Time and date of each image (POSIXt)
+\item codes annotation(s) given to this image (character), e.g. separated by ','.
+\item booleanCodes table of boolean, indicating if a given code was given to a given picture. codes is a condensed form of this slot.
+\item and as \attribute dicoCoding table for defining the codes with at least Code and Meaning column, possibly Group column for having groups of codes (e.g. sport encompasses running and swimming)
+}}
 }}
 \examples{
 pathResults <- system.file("extdata", "image_level_pinocchio.csv", package = "watchme")

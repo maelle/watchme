@@ -18,46 +18,27 @@
 #' wearableCamImagesObject <- convertInput(pathResults=pathResults, sepResults=sepResults,
 #'                                         pathDicoCoding=pathDicoCoding, sepDicoCoding=sepDicoCoding)
 #' class(wearableCamImagesObject)
-#' @field participantID Name or ID number of the participant (character)
-#' @field imagePath Path or name of the image in order to be able to identify duplicates (character)
-#' @field timeDate Time and date of each image (POSIXt)
-#' @field codes annotation(s) given to this image (character), e.g. separated by ','.
-#' @field booleanCodes table of boolean, indicating if a given code was given to a given picture. codes is a condensed form of this slot.
-#' @field dicoCoding table for defining the codes with at least Code and Meaning column, possibly Group column for having groups of codes (e.g. sport encompasses running and swimming)
+#' @field data which is a \code{tibble} with
+#' \itemize{
+#' \item participantID Name or ID number of the participant (character)
+#' \item imagePath Path or name of the image in order to be able to identify duplicates (character)
+#' \item timeDate Time and date of each image (POSIXt)
+#' \item codes annotation(s) given to this image (character), e.g. separated by ','.
+#' \item booleanCodes table of boolean, indicating if a given code was given to a given picture. codes is a condensed form of this slot.
+#' \item and as \attribute dicoCoding table for defining the codes with at least Code and Meaning column, possibly Group column for having groups of codes (e.g. sport encompasses running and swimming)
+#' }
 
 wearableCamImages <- R6::R6Class("wearableCamImages",
                         public = list(
-                          participantID = "character",
-                          imagePath = "character",
-                          timeDate = "POSIXt",
-                          codes = "character",
-                          booleanCodes = "tbl_df",
-                          dicoCoding = "tbl_df",
-                          initialize = function(participantID,
-                                                imagePath,
-                                                timeDate,
-                                                codes,
-                                                booleanCodes,
-                                                dicoCoding) {
-                            if(any(is.na(c(participantID,
-                                             imagePath,
-                                             timeDate,
-                                             codes,
-                                             booleanCodes,
-                                             dicoCoding)))){
+                          data = "tbl_df",
+                          initialize = function(data) {
+                            if(is.na(data)){
                               stop("all fields must be known")
                             }
-                            self$participantID <- participantID
-                            self$imagePath <- imagePath
-                            self$timeDate <- timeDate
-                            self$codes <- codes
-                            self$booleanCodes <- booleanCodes
-                            self$dicoCoding <- dicoCoding
+                            self$data <- data
                           },
                           plot = function(){
-                            plotVegalite(booleanCodes = self$booleanCodes,
-                                         timeDate = self$timeDate,
-                                         dico = self$dicoCoding)
+                            plotVegalite(data)
                           }
 
 
@@ -69,12 +50,8 @@ wearableCamImages <- R6::R6Class("wearableCamImages",
 # PLOT METHOD
 ##########################################################################
 # nocov start
-plotVegalite <- function(booleanCodes,
-                         timeDate,
-                         dico){# nolint start
-  dataPlot <- cbind(timeDate,
-                    booleanCodes)
-  dataPlot <- tbl_df(dataPlot) %>%
+plotVegalite <- function(data){# nolint start
+  dataPlot <- data %>%
     gather("code", "value", 2:ncol(dataPlot)) %>%
     filter_(~ value == TRUE) %>%
     mutate_(code = interp(~factor(code, levels = dico$Code,
