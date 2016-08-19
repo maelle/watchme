@@ -29,12 +29,12 @@
 #' sepResults <- ','
 #' pathDicoCoding <-  system.file('extdata', 'dicoCoding_pinocchio.csv', package = 'watchme')
 #' sepDicoCoding <- ';'
-#' wearableCamImagesObject <- convertInput(pathResults=pathResults, sepResults=sepResults,
+#' data_pictures <- watchme_prepare_data(pathResults=pathResults, sepResults=sepResults,
 #'               pathDicoCoding=pathDicoCoding, sepDicoCoding=sepDicoCoding)
 #' class(wearableCamImagesObject)
 
 #' @export
-convertInput <- function(pathResults, sepResults, quoteSign = "\'",
+watchme_prepare_data <- function(pathResults, sepResults, quoteSign = "\'",
                          participant_id = "no_id",
                          pathDicoCoding, sepDicoCoding,
                          tz = "Asia/Kolkata") {
@@ -50,20 +50,18 @@ convertInput <- function(pathResults, sepResults, quoteSign = "\'",
     ########################################################
     resultsCoding <- read.table(pathResults, sep = sepResults,
                                 header = TRUE, quote = quoteSign)
-    # keep only rows with image_path
-    resultsCoding <- dplyr::filter(resultsCoding, image_path!= "")
 
-    # deal with different formats
-    if(ncol(resultsCoding) != 4){
-      resultsCoding <- resultsCoding[,1:3]
-    }
 
     # When it comes from XnView MP, wrong names
     if(grepl("Filename", names(resultsCoding)[1])){
       names(resultsCoding) <- c("image_path",
                                 "image_time",
                                 "annotation")
+      resultsCoding <- resultsCoding[,1:3]
     }
+    # keep only rows with image_path
+    resultsCoding <- dplyr::filter(resultsCoding, image_path!= "")
+
 
     # if several rows for one image, merge annotation
     resultsCoding <- resultsCoding %>%

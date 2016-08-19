@@ -1,33 +1,32 @@
-###################################################
-# dummyWearableCamImages
+# coding_example
 ###################################################
 pathResults <- system.file("extdata", "image_level_pinocchio.csv", package = "watchme")
 sepResults <- ","
 pathDicoCoding <-  system.file("extdata", "dicoCoding_pinocchio.csv", package = "watchme")
 sepDicoCoding <- ";"
-dummyWearableCamImages <- convertInput(pathResults=pathResults, sepResults=sepResults,
+coding_example <- watchme_prepare_data(pathResults=pathResults, sepResults=sepResults,
                                         pathDicoCoding=pathDicoCoding, sepDicoCoding=sepDicoCoding)
-save(dummyWearableCamImages, file = "data/dummyWearableCamImages.RData", compress='xz')
+save(coding_example, file = "data/coding_example.RData", compress='xz')
 
 ###################################################
-# IO1
+# coding1
 ###################################################
-pathResults <- system.file("extdata", "sample_IO1.csv", package = "watchme")
+pathResults <- system.file("extdata", "sample_coding1.csv", package = "watchme")
 sepResults <- "\t"
 pathDicoCoding <-  system.file("extdata", "dico_coding_2016_01_IO.csv", package = "watchme")
 sepDicoCoding <- ";"
-IO1 <- convertInput(pathResults=pathResults, sepResults=sepResults,
+coding1 <- watchme_prepare_data(pathResults=pathResults, sepResults=sepResults,
                                        pathDicoCoding=pathDicoCoding, sepDicoCoding=sepDicoCoding,
                     quoteSign = "\'")
-save(IO1, file = "data/IO1.RData", compress='xz')
+save(coding1, file = "data/coding1.RData", compress='xz')
 
 ###################################################
-# IO2
+# coding2
 ###################################################
-pathResults <- system.file("extdata", "sample_IO2.csv", package = "watchme")
+pathResults <- system.file("extdata", "sample_coding2.csv", package = "watchme")
 sepResults <- "\t"
 pathDicoCoding <-  system.file("extdata", "dico_coding_2016_01_IO.csv", package = "watchme")
 sepDicoCoding <- ";"
-IO2 <- convertInput(pathResults=pathResults, sepResults=sepResults,
+coding2 <- watchme_prepare_data(pathResults=pathResults, sepResults=sepResults,
                                        pathDicoCoding=pathDicoCoding, sepDicoCoding=sepDicoCoding)
-save(IO2, file = "data/IO2.RData", compress='xz')
+save(coding2, file = "data/coding2.RData", compress='xz')
