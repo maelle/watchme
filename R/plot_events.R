@@ -2,37 +2,29 @@
 #'
 #' @param df
 #'
-#' @return
+#' @return a \code{ggplot}.
 #' @export
 #'
 #' @examples
-plot_events <- function(df){
+#' data("coding_example")
+#' watchme_plot_raw(coding_example)
+watchme_plot_raw <- function(df){
+  dico <- attr(df, "dico")
   # nolint start
   dataPlot <- df %>%
-    gather("code", "value", 2:ncol(dataPlot)) %>%
+    gather("code", "value", 4:ncol(df)) %>%
     filter_(~ value == TRUE) %>%
     mutate_(code = interp(~factor(code, levels = dico$Code,
                                   ordered = TRUE))) %>%
-    arrange_(~ code) %>%
-    left_join(dico, by = c("code" = "Code"))
+    arrange_(~ code)
 
-  p <- vegalite(renderer = "canvas",
-                export = TRUE,
-                background = "white") %>%
-    cell_size(1000, 800) %>%
-    add_data(dataPlot) %>%
-    encode_y("code", "nominal",
-             sort = "none") %>%
-    encode_color("Group", "nominal") %>%
-    encode_x("timeDate", "temporal") %>%
-    timeunit_x("yearmonthdayhoursminutesseconds")%>%
-    axis_x(title = "Time of day",
-           format="%a, %H:%M",
-           labelAngle=0)  %>%
-    axis_y(axisWidth=0,
-           title = "Activity", grid = TRUE)  %>%
-    mark_tick(size = 1,
-              thickness = 10, opacity = 1)
+dataPlot <- suppressWarnings(left_join(dataPlot,
+                                       dico, by = c("code" = "Code")))
+
+  p <- ggplot(dataPlot) +
+    geom_point(aes(image_time, Meaning, col = Group)) +
+    scale_color_viridis(discrete = TRUE) +
+    facet_grid(Group ~ ., scales = "free_y")
 
   return(p)
 }

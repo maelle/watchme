@@ -3,10 +3,10 @@
 #' A dummy WearableCamImages object.
 #'
 #' @format A dummy WearableCamImages object.
-#' @name dummyWearableCamImages
+#' @name coding_example
 #' @docType data
 #' @keywords data
-#' @examples data(dummyWearableCamImages)
+#' @examples data(coding_example)
 NULL
 
 
@@ -15,10 +15,10 @@ NULL
 #' A dummy WearableCamImages object for one coder.
 #'
 #' @format A dummy WearableCamImages object.
-#' @name IO1
+#' @name coding1
 #' @docType data
 #' @keywords data
-#' @examples data(IO1)
+#' @examples data(coding1)
 NULL
 
 #' A dummy WearableCamImages object for one coder.
@@ -26,10 +26,10 @@ NULL
 #' A dummy WearableCamImages object for one coder.
 #'
 #' @format A dummy WearableCamImages object.
-#' @name IO2
+#' @name coding2
 #' @docType data
 #' @keywords data
-#' @examples data(IO2)
+#' @examples data(coding2)
 NULL
 
 #' A list of dummy WearableCamImages objects
