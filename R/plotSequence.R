@@ -2,7 +2,7 @@
 #'
 #' @importFrom ggplot2 geom_rect scale_fill_manual scale_colour_manual facet_grid element_blank
 #' @import RColorBrewer
-#' @param eventTable a table of events created with the\code{toEventLevel} function (or having the same structure).
+#' @param event_table a table of events created with the\code{toEventLevel} function (or having the same structure).
 #' @param doNotUseCode a vector of codes that you do not want to see on the graph, e.g. if you have both codes
 #' for categories and subcategories you may want to not plot categories.
 #' @param xAxis either 'time' or 'picture' index as x axis variable.
@@ -16,18 +16,18 @@
 #' @examples
 #' data('dummyWearableCamImages')
 #' library('ggplot2')
-#' eventTable <- toEventLevel(wearableCamImagesObject=dummyWearableCamImages)
-#' plotSequence(eventTable, dicoCoding = dummyWearableCamImages$dicoCoding)
-#' plotSequence(eventTable, xAxis='picture', facettingGroup=TRUE,
+#' event_table <- toEventLevel(wearableCamImagesObject=dummyWearableCamImages)
+#' plotSequence(event_table, dicoCoding = dummyWearableCamImages$dicoCoding)
+#' plotSequence(event_table, xAxis='picture', facettingGroup=TRUE,
 #' dicoCoding = dummyWearableCamImages$dicoCoding)
 #' data('IO1')
 #' data('IO2')
-#' eventTableCoders <- bindCoders(list(IO1, IO2), minDuration = 1)
-#' plotSequence(eventTableCoders, facettingGroup = TRUE, facettingCoder = TRUE,
+#' event_tableCoders <- bindCoders(list(IO1, IO2), minDuration = 1)
+#' plotSequence(event_tableCoders, facettingGroup = TRUE, facettingCoder = TRUE,
 #' dicoCoding=IO1$dicoCoding)
 
 #' @export
-plotSequence <- function(eventTable, doNotUseCode = NULL, xAxis = "time",
+plotSequence <- function(event_table, doNotUseCode = NULL, xAxis = "time",
                          facettingGroup = FALSE, facettingCoder = FALSE,
     dicoCoding = NULL, cbbPaletteYes = TRUE) {
 
@@ -37,13 +37,13 @@ plotSequence <- function(eventTable, doNotUseCode = NULL, xAxis = "time",
 
   dicoCoding$Meaning <- as.factor(dicoCoding$Meaning)
 
-    if (!"coder" %in% names(eventTable) & facettingCoder == TRUE) {
+    if (!"coder" %in% names(event_table) & facettingCoder == TRUE) {
         stop("You can't facet by coder if you do not have several coders")
     }
     # The palette with black:
     cbbPalette <- c("#000000", "#E69F00", "#56B4E9", "#009E73",
                     "#0072B2", "#D55E00", "#CC79A7", "#F0E442")
-    p <- ggplot(eventTable[!eventTable$eventCode %in% doNotUseCode, ])
+    p <- ggplot(event_table[!event_table$eventCode %in% doNotUseCode, ])
     if (xAxis == "time") {
         p <- p + geom_rect(aes(xmin = startTime, xmax = endTime,
                                ymin = 0, ymax = 2, fill = activity,

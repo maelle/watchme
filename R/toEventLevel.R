@@ -9,20 +9,20 @@
 #' @return A \code{tbl_df} with event index, start time (POSIXt), end time (POSIXt) and event_code (character).
 #' @examples
 #' data('coding_example')
-#' eventTable <- watchme_aggregate(df = coding_example)
-#' eventTable
-#' eventTable2 <- watchme_aggregate(df = coding_example, min_no_pictures = 2)
-#' eventTable2
+#' event_table <- watchme_aggregate(df = coding_example)
+#' event_table
+#' event_table2 <- watchme_aggregate(df = coding_example, min_no_pictures = 2)
+#' event_table2
 
 #' @export
 watchme_aggregate <- function(df, min_no_pictures = 1) {
     # Extract dicoCoding
     dicoCoding <- attr(df, "dicoCoding")
 
-
     nCodes <- nrow(dicoCoding)
-    events_table <- df %>%
 
+    # Transformation
+    df %>%
       mutate_(index = interp(~1:nrow(df))) %>%
       select_(~ image_time,  ~ index, ~ everything()) %>%
       select_(quote(- image_path), quote(- participant_id)) %>%
@@ -47,6 +47,4 @@ watchme_aggregate <- function(df, min_no_pictures = 1) {
       arrange_(~ event_code) %>%
       filter_(interp(~ no_pictures >= min_no_pictures)) %>%
       ungroup()
-
-    return(events_table)
 }
