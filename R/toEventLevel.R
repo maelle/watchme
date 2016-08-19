@@ -22,6 +22,7 @@ watchme_aggregate <- function(df, min_no_pictures = 1) {
 
     nCodes <- nrow(dicoCoding)
     events_table <- df %>%
+
       mutate_(index = interp(~1:nrow(df))) %>%
       select_(~ image_time,  ~ index, ~ everything()) %>%
       select_(quote(- image_path), quote(- participant_id)) %>%
