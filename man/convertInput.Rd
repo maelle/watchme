@@ -6,7 +6,7 @@
 \usage{
 convertInput(pathResults, sepResults, quoteSign = "'",
   participant_id = "no_id", pathDicoCoding, sepDicoCoding,
-  formatDate = "ymd", tz = "Asia/Kolkata")
+  tz = "Asia/Kolkata")
 }
 \arguments{
 \item{pathResults}{the path to the file with coding results}
@@ -19,17 +19,14 @@ convertInput(pathResults, sepResults, quoteSign = "'",
 
 \item{sepDicoCoding}{the separator in the file with the list of annotations}
 
-\item{formatDate}{either 'ymd' or 'dmy'.}
-
 \item{tz}{timezone}
 }
 \value{
-A \code{wearableCamImages} object which is a \code{tibble} with
+A \code{tibble} with
 \itemize{
 \item participantID Name or ID number of the participant (character)
 \item image_time Path or name of the image in order to be able to identify duplicates (character)
 \item image_time Time and date of each image (POSIXt)
-\item codes annotation(s) given to this image (character), e.g. separated by ','.
 \item booleanCodes columns of boolean, indicating if a given code was given to a given picture. codes is a condensed form of this.
 \item the attribute \code{dicoCoding} \code{tibble} for defining the codes with at least Code and Meaning column, possibly Group column for having groups of codes (e.g. sport encompasses running and swimming)
 }

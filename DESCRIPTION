@@ -16,7 +16,6 @@ Imports: dplyr,
     data.table,
     RColorBrewer,
     tidyr,
-    R6,
     lazyeval,
     vegalite,
     purrr
