@@ -92,39 +92,14 @@ watchme_ira <- function(results_list, names_list=NULL,
     }
 
     if (length(results_list) > 2 & one_to_one){
-
-      pairs <- as.data.frame(t(combn(names_list, 2)))
-      names(pairs) <- c("rater1", "rater2")
-
-      tableResults <- NULL
-      for (i in 1:nrow(pairs)){
-        rater1 <- pairs$rater1[i]
-        rater2 <- pairs$rater2[i]
-
-        results <- irr::kappa2(dat[, c(rater1, rater2)],
-                               "unweighted")
-
-        temp <- data.frame(method = results$method,
-                           pictures = results$subjects,
-                           agreedOn = sum(
-                             dat[,rater1]  ==  dat[,rater2]),
-                           rater1 = rater1,
-                           rater2 = rater2,
-                           Kappa = results$value,
-                           z = results$statistic,
-                           pValue = results$p.value)
-        tableResults <- rbind(tableResults, temp)
+        tableResults <- compare_all_onetoone(dat)
       }
-
-      tableResults <- dplyr::tbl_df(tableResults)
-    }
-
 
 }
 
 
   # If the IRR is to be calculated by group or by code,
-  # it"s slightly more complicated.
+  # it's slightly more complicated.
   else{
     listResults <- list()
 
@@ -135,7 +110,7 @@ watchme_ira <- function(results_list, names_list=NULL,
         for (object in 1:length(results_list)){
           # filter only for the group
           # and then look whether any code for this group
-          temp <- results_list[[object]]$booleanCodes
+          temp <- results_list[[object]][, dico_ref$Code]
           temp <- temp[, filter_(dico_ref,
                                 interp( ~Group == group))$
                          Code]
@@ -201,8 +176,8 @@ watchme_ira <- function(results_list, names_list=NULL,
 
           tableResults <- NULL
           for (i in 1:nrow(pairs)){
-            rater1 <- pairs$rater1[i]
-            rater2 <- pairs$rater2[i]
+            rater1 <- as.character(pairs$rater1[i])
+            rater2 <- as.character(pairs$rater2[i])
 
             results <- kappa2(dat[, c(rater1, rater2)], "unweighted")
             temp <- data.frame(method = results$method,
@@ -230,16 +205,15 @@ watchme_ira <- function(results_list, names_list=NULL,
 
     if (by_code){
 
-      for (j in 1:ncol(results_list[[1]]$booleanCodes)){
-        code <- names(results_list[[1]]$booleanCodes)[j]
+      for (code in dico_ref$Code){
         dat <- data.frame(rep(NA,
-                              length(results_list[[1]]$
-                                       booleanCodes[,code])))
+                              nrow(results_list[[1]])))
+
         for (i in 1:length(results_list)){
           dat <- cbind(dat,
-                       results_list[[i]]$booleanCodes[,code])
+                       results_list[[i]][, code])
         }
-        dat <- as.data.frame(dat[,2:ncol(dat)])
+        dat <- as.data.frame(dat[, 2:ncol(dat)])
         names(dat) <- names_list
         if (length(results_list)  ==  2){
           results <- kappa2(dat, "unweighted")
@@ -292,8 +266,8 @@ watchme_ira <- function(results_list, names_list=NULL,
           pairs$"rater2" <- as.character(pairs$"rater2")
           tableResults <- NULL
           for (i in 1:nrow(pairs)){
-            rater1 <- pairs$rater1[i]
-            rater2 <- pairs$rater2[i]
+            rater1 <- as.character(pairs$rater1[i])
+            rater2 <- as.character(pairs$rater2[i])
             results <- kappa2(dat[, c(rater1, rater2)], "unweighted")
             temp <- data.frame(method = results$method,
                                pictures = results$subjects,
@@ -327,6 +301,7 @@ watchme_ira <- function(results_list, names_list=NULL,
 
   }
 
+  tableResults <- dplyr::tbl_df(tableResults)
   return(tableResults)
 
 }
@@ -337,3 +312,37 @@ df[, dico_ref$Code] %>%
                 .collate = "cols") %>%
   select_(quote(codes))
 }
+
+compare_all_onetoone <- function(dat){
+
+  pairs <- as.data.frame(t(combn(names(dat), 2)))
+  names(pairs) <- c("rater1", "rater2")
+
+  tableResults <- purrr::by_row(pairs, irr_all_onetoone, dat) %>%
+    select_(quote(.out)) %>%
+    dplyr::bind_rows() %>%
+    silent_unnest_(quote(.out))
+
+  tableResults <- tableResults$"result"
+  }
+
+irr_all_onetoone <- function(pair, dat){
+
+  rater1 <- as.character(pair$rater1)
+  rater2 <- as.character(pair$rater2)
+
+  results <- irr::kappa2(dat[, c(rater1, rater2)],
+                         "unweighted")
+
+  data.frame(method = results$"method",
+             pictures = results$"subjects",
+             agreedOn = sum(
+               dat[,rater1]  ==  dat[,rater2]),
+             rater1 = rater1,
+             rater2 = rater2,
+             Kappa = results$"value",
+             z = results$"statistic",
+             pValue = results$"p.value")
+}
+
+silent_unnest_ <- purrr::quietly(tidyr::unnest_)

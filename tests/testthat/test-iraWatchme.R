@@ -30,7 +30,7 @@ test_that("watchme_ira outputs the right type of results depending on the option
                                        "z" , "pValue"  )))
   expect_that(as.character(output$method), equals("Fleiss' Kappa for m Raters"))
 
-  output <- watchme_ira(listWC2, names_list = names_list, oneToOne = TRUE)
+  output <- watchme_ira(listWC2, names_list = names_list, one_to_one = TRUE)
   expect_that(output, is_a("tbl_df"))
   expect_that(names(output), equals(c( "method", "pictures", "agreedOn", "rater1", "rater2",
                                        "Kappa",
@@ -41,15 +41,15 @@ test_that("watchme_ira outputs the right type of results depending on the option
   data("IO2")
 
   listWC <- list(IO1, IO2)
-  output <- watchme_ira(listWC, names_list = c("Cain", "Abel"), byCode = TRUE)
+  output <- watchme_ira(listWC, names_list = c("Cain", "Abel"), by_code = TRUE)
   expect_that(output, is_a("tbl_df"))
-  expect_that(nrow(output), equals(ncol(IO1$booleanCodes)))
+  expect_that(nrow(output), equals(nrow(attr(IO1, "dico"))))
   expect_that(ncol(output), equals(11))
   expect_that(as.character(output$method[1]), equals("Cohen's Kappa for 2 Raters (Weights: unweighted)"))
 
   output <- watchme_ira(listWC, names_list = c("Cain", "Abel"), byGroup = TRUE)
   expect_that(output, is_a("tbl_df"))
-  expect_that(nrow(output), equals(length(levels(factor(IO1$dicoCoding$Group)))))
+  expect_that(nrow(output), equals(length(unique(attr(IO1, "dico")$Group))))
   expect_that(ncol(output), equals(9))
   expect_that(names(output), equals(c( "method", "pictures", "agreedOn", "raters", "ratersNames", "Kappa",
                                             "z" , "pValue", "group"  )))
@@ -68,16 +68,16 @@ test_that("It works for several combinations of arguments", {
   data("IO1")
   data("IO2")
   listWC3 <- list(IO1, IO2, IO2)
-  output <- watchme_ira(listWC3, names_list = c("Riri", "Fifi", "Loulou"), byGroup = TRUE, byCode  =  FALSE, oneToOne  =  FALSE)
+  output <- watchme_ira(listWC3, names_list = c("Riri", "Fifi", "Loulou"), byGroup = TRUE, by_code  =  FALSE, one_to_one  =  FALSE)
   expect_that(output, is_a("tbl_df"))
 
-  output <- watchme_ira(listWC3, names_list = c("Riri", "Fifi", "Loulou"), byGroup = FALSE, byCode  =  TRUE, oneToOne  =  FALSE)
+  output <- watchme_ira(listWC3, names_list = c("Riri", "Fifi", "Loulou"), byGroup = FALSE, by_code  =  TRUE, one_to_one  =  FALSE)
   expect_that(output, is_a("tbl_df"))
 
-  output <- watchme_ira(listWC3, names_list = c("Riri", "Fifi", "Loulou"), byGroup = TRUE, byCode  =  FALSE, oneToOne  =  TRUE)
+  output <- watchme_ira(listWC3, names_list = c("Riri", "Fifi", "Loulou"), byGroup = TRUE, by_code  =  FALSE, one_to_one  =  TRUE)
   expect_that(output, is_a("tbl_df"))
 
-  output <- watchme_ira(listWC3, names_list = c("Riri", "Fifi", "Loulou"), byGroup = FALSE, byCode  =  TRUE, oneToOne  =  TRUE)
+  output <- watchme_ira(listWC3, names_list = c("Riri", "Fifi", "Loulou"), byGroup = FALSE, by_code  =  TRUE, one_to_one  =  TRUE)
   expect_that(output, is_a("tbl_df"))
 
 
