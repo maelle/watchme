@@ -7,7 +7,7 @@
 watchme_plot_raw(df)
 }
 \arguments{
-\item{df}{}
+\item{df}{A \code{tibble} created by \code{watchme_prepare_data}.}
 }
 \value{
 a \code{ggplot}.

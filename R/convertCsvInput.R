@@ -34,10 +34,11 @@
 #' class(wearableCamImagesObject)
 
 #' @export
-watchme_prepare_data <- function(path_results, sep_results, quote_sign = "\'",
-                         participant_id = "no_id",
-                         path_dico, sep_dico,
-                         tz = "Asia/Kolkata") {
+watchme_prepare_data <- function(path_results, sep_results,
+                                 quote_sign = "\'",
+                                 participant_id = "no_id",
+                                 path_dico, sep_dico,
+                                 tz = "Asia/Kolkata") {
     ########################################################
     # Get dico coding
     ########################################################

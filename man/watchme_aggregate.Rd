@@ -19,9 +19,9 @@ Creates a table with events from the image level annotation information.
 }
 \examples{
 data('coding_example')
-eventTable <- watchme_aggregate(df = coding_example)
-eventTable
-eventTable2 <- watchme_aggregate(df = coding_example, min_no_pictures = 2)
-eventTable2
+event_table <- watchme_aggregate(df = coding_example)
+event_table
+event_table2 <- watchme_aggregate(df = coding_example, min_no_pictures = 2)
+event_table2
 }
 

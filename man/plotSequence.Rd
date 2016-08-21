@@ -4,12 +4,12 @@
 \alias{plotSequence}
 \title{Plot sequences of events}
 \usage{
-plotSequence(eventTable, doNotUseCode = NULL, xAxis = "time",
+plotSequence(event_table, doNotUseCode = NULL, xAxis = "time",
   facettingGroup = FALSE, facettingCoder = FALSE, dicoCoding = NULL,
   cbbPaletteYes = TRUE)
 }
 \arguments{
-\item{eventTable}{a table of events created with the\code{toEventLevel} function (or having the same structure).}
+\item{event_table}{a table of events created with the\code{toEventLevel} function (or having the same structure).}
 
 \item{doNotUseCode}{a vector of codes that you do not want to see on the graph, e.g. if you have both codes
 for categories and subcategories you may want to not plot categories.}
@@ -35,14 +35,14 @@ Plot sequences of events
 \examples{
 data('dummyWearableCamImages')
 library('ggplot2')
-eventTable <- toEventLevel(wearableCamImagesObject=dummyWearableCamImages)
-plotSequence(eventTable, dicoCoding = dummyWearableCamImages$dicoCoding)
-plotSequence(eventTable, xAxis='picture', facettingGroup=TRUE,
+event_table <- toEventLevel(wearableCamImagesObject=dummyWearableCamImages)
+plotSequence(event_table, dicoCoding = dummyWearableCamImages$dicoCoding)
+plotSequence(event_table, xAxis='picture', facettingGroup=TRUE,
 dicoCoding = dummyWearableCamImages$dicoCoding)
 data('IO1')
 data('IO2')
-eventTableCoders <- bindCoders(list(IO1, IO2), minDuration = 1)
-plotSequence(eventTableCoders, facettingGroup = TRUE, facettingCoder = TRUE,
+event_tableCoders <- bindCoders(list(IO1, IO2), minDuration = 1)
+plotSequence(event_tableCoders, facettingGroup = TRUE, facettingCoder = TRUE,
 dicoCoding=IO1$dicoCoding)
 }
 

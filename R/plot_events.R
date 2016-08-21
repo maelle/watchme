@@ -1,6 +1,6 @@
 #' Plot
 #'
-#' @param df
+#' @param df A \code{tibble} created by \code{watchme_prepare_data}.
 #'
 #' @return a \code{ggplot}.
 #' @export
