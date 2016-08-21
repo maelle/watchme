@@ -33,17 +33,7 @@ watchme_combine_results <- function(results_list,
   # check they have the same length and times
   ########################################################
 
-  lengthRef <- nrow(results_list[[1]])
-  lengthsCodes <- vapply(results_list, nrow, 1)
-  if (any(lengthsCodes != lengthRef)){
-    stop("There should be the same number of pictures in each wearableCamImages object!")# nolint
-  }
-
-  times <- do.call("cbind", lapply(results_list,
-                                   "[[", "image_time"))
-  if(any(lapply(apply(times,1, unique), length) > 1)){
-    stop("All objects should have the same imageTime field, at least one difference here!")# nolint
-  }
+  watchme_check_list(results_list)
 
 
   ########################################################
@@ -58,7 +48,7 @@ watchme_combine_results <- function(results_list,
   ########################################################
   df <- results_list %>%
     Reduce(function(df1, df2){
-      left_join(dtf1, dtf2, by = c("image_path", "image_time", "participant_id"))
+      dplyr::left_join(dtf1, dtf2, by = c("image_path", "image_time", "participant_id"))
     }, .)
 
   attr(df, "dico") <- dico

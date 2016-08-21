@@ -1,81 +1,75 @@
-#' Calculates interrater agreement using the irr package. A unit of comparison is one picture.
+#' Calculates interrater agreement using the irr package. The unit of comparison is one picture.
 #' @importFrom irr kappa2 kappam.fleiss
 #' @importFrom dplyr tbl_df filter_
-#' @importFrom data.table setattr
-#' @param wearableCamImagesList a list of \code{wearableCamImages} objects.
-#' @param namesList (optional) a vector of names for the coders. It must be the same length as wearableCamImagesList
+#' @param results_list a list of \code{tibble}  created by \code{watchme_prepare_data}.
+#' @param names_list (optional) a vector of names for the coders. It must be the same length as results_list
 #' and contains different names.
-#' @param oneToOne a boolean indicating whether Cohen's kappa should be calculated for each possible
+#' @param one_to_one a boolean indicating whether Cohen's kappa should be calculated for each possible
 #' pair of coders in case of more than 2 coders,
 #' instead of Fleiss's Kappa for all coders at the same time.
 #' @param byGroup boolean indicating whether the IRR should be calculated for each group of codes separately. The meaning is, agreement = giving a code of the same group.
-#' @param byCode boolean indicating whether the IRR should be calculated for each code separately. If both
-#' byGroup and byCode are FALSE annotations are compared as they are.
+#' @param by_code boolean indicating whether the IRR should be calculated for each code separately. If both
+#' byGroup and by_code are FALSE annotations are compared as they are.
 #' @return  A \code{tbl_df} presenting the results of a call to the \code{irr} function.
 #' If there are only two raters the called function is \code{kappa2}, unweighted.
-#'  If there are more than two raters and \code{oneToOne} is \code{FALSE}, the called function is \code{kappam.fleiss}.
+#'  If there are more than two raters and \code{one_to_one} is \code{FALSE}, the called function is \code{kappam.fleiss}.
 #' @examples
 #' data('IO1')
 #' data('IO2')
-#' listWC <- list(IO1, IO2)
-#' namesList <- c('Cain', 'Abel')
-#' iraWatchme(listWC, namesList=namesList)
-#' listWC2 <- list(IO1, IO1, IO2)
-#' namesList <- c('Riri', 'Fifi', 'Loulou')
-#' iraWatchme(listWC2, namesList=namesList)
-#' iraWatchme(listWC2, namesList=namesList, oneToOne=TRUE)
-#' iraWatchme(listWC, namesList=c('Cain', 'Abel'), oneToOne=TRUE, byCode=TRUE)
-#' iraWatchme(listWC, namesList=c('Cain', 'Abel'), oneToOne=TRUE, byGroup=TRUE)
+#' results_list <- list(IO1, IO2)
+#' names_list <- c('Cain', 'Abel')
+#' watchme_ira(results_list, names_list=names_list)
+#' results_list2 <- list(IO1, IO1, IO2)
+#' names_list <- c('Riri', 'Fifi', 'Loulou')
+#' watchme_ira(results_list2, names_list=names_list)
+#' watchme_ira(results_list2, names_list=names_list, one_to_one=TRUE)
+#' watchme_ira(results_list, names_list=c('Cain', 'Abel'), one_to_one=TRUE, by_code=TRUE)
+#' watchme_ira(results_list, names_list=c('Cain', 'Abel'), one_to_one=TRUE, byGroup=TRUE)
 
 #' @export
-iraWatchme <- function(wearableCamImagesList, namesList=NULL,
-                       oneToOne=FALSE, byGroup=FALSE,
-                       byCode=FALSE){
-  # some sanity checks, see utils.R
-  checkList(wearableCamImagesList = wearableCamImagesList,
-            namesList = namesList)
-  # give a default namesList is there is none
-  if (is.null(namesList)){
-    namesList <- as.character(1:length(wearableCamImagesList))
+watchme_ira <- function(results_list, names_list=NULL,
+                       one_to_one=FALSE, byGroup=FALSE,
+                       by_code=FALSE){
+  # some checks, see utils.R
+  # and take one dicoCoding (they're all the same)
+  watchme_check_list(results_list,
+                     names_list = names_list)
+
+  dico_ref <- watchme_check_dicos(results_list)
+  # give a default names_list is there is none
+  if (is.null(names_list)){
+    names_list <- as.character(1:length(results_list))
   }
 
-  # take one dicoCoding (they're all the same)
-  dicoRef <- wearableCamImagesList[[1]]$dicoCoding
 
   # Easy, simply compares the equality of annotations
-    if ( !byGroup & !byCode){
+    if ( !byGroup & !by_code){
     # create the table for comparing
-    dat <- NULL
-    for (i in 1:length(wearableCamImagesList)){
-      dat <- cbind(dat, as.factor(wearableCamImagesList[[i]]$codes))
-    }
+    dat <- purrr::map(results_list, create_string_for_comparison,
+                      dico_ref) %>%
+      dplyr::bind_cols()
 
-    dat <- as.data.frame(dat)
-    dat <- dplyr::tbl_df(dat)
      # make sure the levels are the same
     # even if one coder has not used one code
-    names(dat) <- namesList
-    levelsAll <- unique(unlist(lapply(dat, levels)))
-    for (i in 1:length(wearableCamImagesList)){
-      setattr(dat[,i], "levels", levelsAll)
-    }
+    names(dat) <- names_list
 
-    if (length(wearableCamImagesList) == 2){
+
+    if (length(results_list) == 2){
       results <- irr::kappa2(dat, "unweighted")
       tableResults <- data.frame(method = results$method,
                                  pictures = results$subjects,
                                  agreedOn = sum(dat[,1] == dat[,2]),
                                  raters = results$raters,
                                  ratersNames =
-                                   paste(namesList[[1]], "and",
-                                         namesList[[2]], sep=" "),
+                                   paste(names_list[[1]], "and",
+                                         names_list[[2]], sep=" "),
                                  Kappa = results$value,
                                  z = results$statistic,
                                  pValue = results$p.value)
       tableResults <- dplyr::tbl_df(tableResults)
     }
 
-    if (length(wearableCamImagesList) > 2 & !oneToOne){
+    if (length(results_list) > 2 & !one_to_one){
 
       results <- irr::kappam.fleiss(dat)
 
@@ -90,16 +84,16 @@ iraWatchme <- function(wearableCamImagesList, namesList=NULL,
                                  pictures = results$subjects,
                                  agreedOn = agreedOn,
                                  raters = results$raters,
-                                 ratersNames = toString(namesList),
+                                 ratersNames = toString(names_list),
                                  Kappa = results$value,
                                  z = results$statistic,
                                  pValue = results$p.value)
       tableResults <- dplyr::tbl_df(tableResults)
     }
 
-    if (length(wearableCamImagesList) > 2 & oneToOne){
+    if (length(results_list) > 2 & one_to_one){
 
-      pairs <- as.data.frame(t(combn(namesList, 2)))
+      pairs <- as.data.frame(t(combn(names_list, 2)))
       names(pairs) <- c("rater1", "rater2")
 
       tableResults <- NULL
@@ -134,15 +128,15 @@ iraWatchme <- function(wearableCamImagesList, namesList=NULL,
   else{
     listResults <- list()
 
-    if (byGroup & !byCode){
-      for (group in unique(dicoRef$Group)){
+    if (byGroup & !by_code){
+      for (group in unique(dico_ref$Group)){
         dat <- NULL
         namesDat <- NULL
-        for (object in 1:length(wearableCamImagesList)){
+        for (object in 1:length(results_list)){
           # filter only for the group
           # and then look whether any code for this group
-          temp <- wearableCamImagesList[[object]]$booleanCodes
-          temp <- temp[, filter_(dicoRef,
+          temp <- results_list[[object]]$booleanCodes
+          temp <- temp[, filter_(dico_ref,
                                 interp( ~Group == group))$
                          Code]
           temp <- as.data.frame(temp)
@@ -150,21 +144,21 @@ iraWatchme <- function(wearableCamImagesList, namesList=NULL,
 
          # bind, one column per coder
          dat <- cbind(dat, as.factor(temp))
-         namesDat <- c(namesDat, namesList[object])
+         namesDat <- c(namesDat, names_list[object])
         }
         dat <- as.data.frame(dat)
         names(dat) <- namesDat
         dat <- tbl_df(dat)
 
-        if (length(wearableCamImagesList) == 2){
+        if (length(results_list) == 2){
           results <- irr::kappa2(dat, "unweighted")
           tableResults <- data.frame(method = results$method,
                                      pictures = results$subjects,
                                      agreedOn = sum(dat[,1] == dat[,2]),
                                      raters = results$raters,
                                      ratersNames =
-                                       paste(namesList[[1]], "and",
-                                             namesList[[2]],
+                                       paste(names_list[[1]], "and",
+                                             names_list[[2]],
                                              sep = " "),
                                      Kappa = results$value,
                                      z = results$statistic,
@@ -175,7 +169,7 @@ iraWatchme <- function(wearableCamImagesList, namesList=NULL,
 
         # more than two coders, but kappam.fleiss
         # (global measure of agreement)
-        if (length(wearableCamImagesList) > 2 & !oneToOne){
+        if (length(results_list) > 2 & !one_to_one){
 
           results <- irr::kappam.fleiss(dat)
 
@@ -190,7 +184,7 @@ iraWatchme <- function(wearableCamImagesList, namesList=NULL,
                                      pictures = results$subjects,
                                      agreedOn = agreedOn,
                                      raters = results$raters,
-                                     ratersNames = toString(namesList),
+                                     ratersNames = toString(names_list),
                                      Kappa = results$value,
                                      z = results$statistic,
                                      pValue = results$p.value,
@@ -200,9 +194,9 @@ iraWatchme <- function(wearableCamImagesList, namesList=NULL,
 
         # more than two coders
         # and results for each pair
-        if (length(wearableCamImagesList) > 2 & oneToOne){
+        if (length(results_list) > 2 & one_to_one){
 
-          pairs <- as.data.frame(t(combn(namesList, 2)))
+          pairs <- as.data.frame(t(combn(names_list, 2)))
           names(pairs) <- c("rater1", "rater2")
 
           tableResults <- NULL
@@ -234,20 +228,20 @@ iraWatchme <- function(wearableCamImagesList, namesList=NULL,
       listResults <- do.call("rbind", listResults)
     }
 
-    if (byCode){
+    if (by_code){
 
-      for (j in 1:ncol(wearableCamImagesList[[1]]$booleanCodes)){
-        code <- names(wearableCamImagesList[[1]]$booleanCodes)[j]
+      for (j in 1:ncol(results_list[[1]]$booleanCodes)){
+        code <- names(results_list[[1]]$booleanCodes)[j]
         dat <- data.frame(rep(NA,
-                              length(wearableCamImagesList[[1]]$
+                              length(results_list[[1]]$
                                        booleanCodes[,code])))
-        for (i in 1:length(wearableCamImagesList)){
+        for (i in 1:length(results_list)){
           dat <- cbind(dat,
-                       wearableCamImagesList[[i]]$booleanCodes[,code])
+                       results_list[[i]]$booleanCodes[,code])
         }
         dat <- as.data.frame(dat[,2:ncol(dat)])
-        names(dat) <- namesList
-        if (length(wearableCamImagesList)  ==  2){
+        names(dat) <- names_list
+        if (length(results_list)  ==  2){
           results <- kappa2(dat, "unweighted")
           tableResults <- data.frame(method = results$method,
                                      pictures = results$subjects,
@@ -258,8 +252,8 @@ iraWatchme <- function(wearableCamImagesList, namesList=NULL,
                                        dat[,1] == FALSE & dat[,2] == TRUE),
                                      raters = results$raters,
                                      ratersNames = paste(
-                                       namesList[[1]], "and",
-                                       namesList[[2]], sep=" "),
+                                       names_list[[1]], "and",
+                                       names_list[[2]], sep=" "),
                                      Kappa = results$value,
                                      z = results$statistic,
                                      pValue = results$p.value,
@@ -267,7 +261,7 @@ iraWatchme <- function(wearableCamImagesList, namesList=NULL,
           tableResults <- dplyr::tbl_df(tableResults)
         }
 
-        if (length(wearableCamImagesList) > 2 & !oneToOne){
+        if (length(results_list) > 2 & !one_to_one){
 
           results <- kappam.fleiss(dat)
 
@@ -282,7 +276,7 @@ iraWatchme <- function(wearableCamImagesList, namesList=NULL,
                                      pictures = results$subjects,
                                      agreedOn = agreedOn,
                                      raters = results$raters,
-                                     ratersNames = toString(namesList),
+                                     ratersNames = toString(names_list),
                                      Kappa = results$value,
                                      z = results$statistic,
                                      pValue = results$p.value,
@@ -290,9 +284,9 @@ iraWatchme <- function(wearableCamImagesList, namesList=NULL,
           tableResults <- dplyr::tbl_df(tableResults)
         }
 
-        if (length(wearableCamImagesList) > 2 & oneToOne){
+        if (length(results_list) > 2 & one_to_one){
 
-          pairs <- as.data.frame(t(combn(namesList, 2)))
+          pairs <- as.data.frame(t(combn(names_list, 2)))
           names(pairs) <- c("rater1", "rater2")
           pairs$"rater1" <- as.character(pairs$"rater1")
           pairs$"rater2" <- as.character(pairs$"rater2")
@@ -335,4 +329,11 @@ iraWatchme <- function(wearableCamImagesList, namesList=NULL,
 
   return(tableResults)
 
+}
+
+create_string_for_comparison <- function(df, dico_ref){
+df[, dico_ref$Code] %>%
+  purrr::by_row(toString, .to = "codes",
+                .collate = "cols") %>%
+  select_(quote(codes))
 }

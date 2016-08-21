@@ -12,7 +12,7 @@
 #' @param quote_sign the quote argument of read.table for the results, default is "\'"
 #' @return A \code{tibble} with
 #' \itemize{
-#' \item participantID Name or ID number of the participant (character)
+#' \item participant_id Name or ID number of the participant (character)
 #' \item image_time Path or name of the image in order to be able to identify duplicates (character)
 #' \item image_time Time and date of each image (POSIXt)
 #' \item booleanCodes columns of boolean, indicating if a given code was given to a given picture. codes is a condensed form of this.
