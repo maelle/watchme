@@ -4,22 +4,24 @@ library("dplyr")
 #################################################################################################
 context("bindObjects")
 #################################################################################################
-test_that("bindObjects checks things",{
-  data(IO1)
-  data(dummyWearableCamImages)
-  listWM <- list(IO1, dummyWearableCamImages)
-  expect_error(combineObjects(listWM),
-               "There should be the same number of pictures in each wearableCamImages object!") # nolint
-  IO3 <- IO1$clone()
-  IO3$timeDate[1] <- ymd_hms("2015-02-02 02:02:02")
-  listWM <- list(IO1, IO3)
-  expect_error(combineObjects(listWM),
-               "All objects should have the same imageTime field, at least one difference here!") # nolint
 
-})
 
-test_that("bindObjects return a wearableCamImages-object", {
-  data(listWM)
-  object <- combineObjects(listWM, codeException = c("non codable"))
-  expect_that(object, is_a("wearableCamImages"))
+test_that("bindObjects return a tibble-object", {
+  passes <- c("CK", "IO", "OP", "PM", "TP")
+
+  create_pass_results <- function(pass){
+    path_results <- system.file('extdata', paste0("oneday_", pass, ".csv"), package = 'watchme')
+    sep_results <- '\t'
+    path_dico <-  system.file('extdata', paste0("dico_coding_2016_01_", pass, ".csv"), package = 'watchme')
+    sep_dico <- ';'
+
+    results <- watchme_prepare_data(path_results = path_results, sep_results = sep_results,
+                                    path_dico = path_dico, sep_dico = sep_dico)
+    results$image_path <- gsub("\"", "", results$image_path)
+    results
+  }
+
+  results_list <- passes %>% purrr::map(create_pass_results)
+  oneday_results <- watchme_combine_results(results_list, common_codes = "non_codable")
+  expect_is(oneday_results, "tbl_df")
   })

@@ -25,12 +25,12 @@ test_that("the dates in toEventLevel are not invented or shifted", {
 
 
 test_that("toEventLevel outputs a data table with the right variables", {
-  data("dummyWearableCamImages")
+  data("coding_example")
   eventTable <- watchme_aggregate(df=coding_example)
 
   expect_that(names(eventTable), equals(c("event_code", "start_time", "end_time",
                                           "no_pictures", "start_picture", "end_picture",
                                           "group",
-                                          "activity")))
+                                          "meaning")))
 
 })

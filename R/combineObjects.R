@@ -25,8 +25,24 @@
 #' @export
 #'
 #' @examples
-#' data(listWM)
-#' object <- watchme_combine_results(listWM, common_codes = c("non codable"))
+#' passes <- c("CK", "IO", "OP", "PM", "TP")
+#'
+#' create_pass_results <- function(pass){
+#'   path_results <- system.file('extdata', paste0("oneday_", pass, ".csv"), package = 'watchme')
+#'   sep_results <- '\t'
+#'   path_dico <-  system.file('extdata', paste0("dico_coding_2016_01_", pass, ".csv"), package = 'watchme')
+#'   sep_dico <- ';'
+#'
+#'   results <- watchme_prepare_data(path_results = path_results, sep_results = sep_results,
+#'                                   path_dico = path_dico, sep_dico = sep_dico)
+#'   results$image_path <- gsub("\"", "", results$image_path)
+#'   results
+#' }
+#'
+#' results_list <- passes %>% purrr::map(create_pass_results)
+#' oneday_results <- watchme_combine_results(results_list, common_codes = "non_codable")
+#' oneday_results
+
 watchme_combine_results <- function(results_list,
                            common_codes = c("non codable")){
   ########################################################
@@ -48,7 +64,13 @@ watchme_combine_results <- function(results_list,
   ########################################################
   df <- results_list %>%
     Reduce(function(df1, df2){
-      dplyr::left_join(dtf1, dtf2, by = c("image_path", "image_time", "participant_id"))
+      df <- dplyr::left_join(df1, df2, by = c("image_path", "image_time", "participant_id"))
+
+      for(code in common_codes){
+        df[, code] <- df1[, code]|df2[, code]
+        df <- dplyr::select_(df, paste0("-", code, ".x"), paste0("-", code, ".y"))
+      }
+     df
     }, .)
 
   attr(df, "dico") <- dico

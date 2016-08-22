@@ -35,7 +35,11 @@ and not in the other, the code is assigned to the image in the resulting object.
 The code does not look for conflicts.
 }
 \examples{
-data(listWM)
-object <- watchme_combine_results(listWM, common_codes = c("non codable"))
+path_results <- system.file('extdata', 'oneday_CK.csv', package = 'watchme')
+sep_results <- ','
+path_dico <-  system.file('extdata', 'dico_pinocchio.csv', package = 'watchme')
+sep_dico <- ';'
+data_pictures <- watchme_prepare_data(path_results=path_results, sep_results=sep_results,
+              path_dico=path_dico, sep_dico=sep_dico)
 }
 
