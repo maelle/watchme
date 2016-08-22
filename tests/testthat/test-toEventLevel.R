@@ -9,7 +9,7 @@ context("toEventLevel")
 
 test_that("toEventLevel outputs a data table", {
   data("coding_example")
-  eventTable <- watchme_aggregate(df=coding_example)
+  eventTable <- watchme_aggregate(df = coding_example)
 
   expect_that(eventTable, is_a("tbl_df"))
 
@@ -17,7 +17,7 @@ test_that("toEventLevel outputs a data table", {
 
 test_that("the dates in toEventLevel are not invented or shifted", {
   data("coding_example")
-  eventTable <- watchme_aggregate(df=coding_example)
+  eventTable <- watchme_aggregate(df = coding_example)
 
   expect_true(all(eventTable$start_time %in% coding_example$image_time))
   expect_true(all(eventTable$end_time %in% coding_example$image_time))

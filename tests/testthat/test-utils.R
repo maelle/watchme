@@ -6,8 +6,8 @@ context("utils")
 #################################################################################################
 
 test_that("utils want at least two coders",{
-  data("IO1")
-  expect_error(bindCoders(list(IO1)),
+  data("coding1")
+  expect_error(watchme_aggregate(list(coding1)),
                "Do not bother using this function if you only have one wearableCamImages object.")
 })
 
@@ -30,7 +30,7 @@ test_that("utils uses namesList well", {
 
 test_that("utils checks comparability",{
   data("dummyWearableCamImages")
-  expect_error(iraWatchme(list(dummyWearableCamImages, IO2)),
+  expect_error(iraWatchme(list(dummyWearableCamImages,coding2)),
                "There should be the same number of pictures in each wearableCamImages object!")
   data("dummyWearableCamImages")
   dummyWearableCamImages2 <- dummyWearableCamImages$clone()

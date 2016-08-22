@@ -17,7 +17,7 @@
 #' @export
 watchme_aggregate <- function(df, min_no_pictures = 1) {
     # Extract dicoCoding
-    dicoCoding <- attr(df, "dicoCoding")
+    dicoCoding <- attr(df, "dico")
 
     nCodes <- nrow(dicoCoding)
 
