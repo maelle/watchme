@@ -16,6 +16,7 @@
 #' \item index of the last picture in the event
 #' \item group of the code
 #' \item meaning of the code
+#' \item the attribute \code{dico} \code{tibble} for defining the codes with at least Code and Meaning column, possibly Group column for having groups of codes (e.g. sport encompasses running and swimming)
 #' } event index, , ,  and event_code (character).
 #' @examples
 #' data('coding_example')
@@ -26,13 +27,13 @@
 
 #' @export
 watchme_aggregate <- function(df, min_no_pictures = 1) {
-    # Extract dicoCoding
-    dicoCoding <- attr(df, "dico")
+    # Extract dico
+  dico <- attr(df, "dico")
 
-    nCodes <- nrow(dicoCoding)
+    nCodes <- nrow(dico)
 
     # Transformation
-    df %>%
+    df <- df %>%
       mutate_(index = interp(~1:nrow(df))) %>%
       select_(~ image_time,  ~ index, ~ everything()) %>%
       select_(quote(- image_path), quote(- participant_id)) %>%
@@ -47,7 +48,7 @@ watchme_aggregate <- function(df, min_no_pictures = 1) {
                  no_pictures = interp(~ length(image_time)),
                  start_picture = interp(~ min(index)),
                  end_picture = interp(~ max(index))) %>%
-      dplyr::left_join(dicoCoding,
+      dplyr::left_join(dico,
                        by = c("event_code" = "Code")) %>%
       select_(~ (- group)) %>%
       mutate_(group = interp(~ Group)) %>%
@@ -57,4 +58,8 @@ watchme_aggregate <- function(df, min_no_pictures = 1) {
       arrange_(~ event_code) %>%
       filter_(interp(~ no_pictures >= min_no_pictures)) %>%
       ungroup()
+
+    attr(df, "dico") <- dico
+
+    df
 }

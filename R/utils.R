@@ -59,6 +59,25 @@ compare_dicos <- function(df, dico_ref){
 }
 
 
+# create a column with all TRUE/FALSE pasted,
+# if the same codes were given to a picture
+# then they are the same for the coders
+create_string_for_comparison <- function(df, dico_ref){
 
+  df[, dico_ref$Code] %>%
+    purrr::by_row(toString, .to = "codes",
+                  .collate = "cols") %>%
+    select_(quote(codes))
+}
 
+count_unique_elements <- function(x){
+  length(unique(x))
+}
 
+count_unique_elements2 <- function(x){
+  length(unique(t(x)))
+}
+
+count_agreed_on <- function(dat){
+  sum(apply(dat, 1, count_unique_elements) == 1)
+}

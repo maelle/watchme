@@ -1,92 +1,49 @@
 #' Plot sequences of events
 #'
-#' @importFrom ggplot2 geom_rect scale_fill_manual scale_colour_manual facet_grid element_blank
-#' @import RColorBrewer
-#' @param event_table a table of events created with the\code{toEventLevel} function (or having the same structure).
-#' @param doNotUseCode a vector of codes that you do not want to see on the graph, e.g. if you have both codes
-#' for categories and subcategories you may want to not plot categories.
-#' @param xAxis either 'time' or 'picture' index as x axis variable.
-#' @param facettingGroup boolean indicating whether there should be one plot per group of activities
-#'  (as defined in the dicoCoding)
-#' @param facettingCoder boolean indicating whether there should be one plot per coder
-#'  (use only if you have a coder column!)
-#' @param dicoCoding (optional) if you want consistent color definitons across several event tables, please provide the dicoCoding.
-#' @param cbbPaletteYes boolean if dicoCoding provided and >=7 different activities, you can opt for a colorblind-friendly palette.
+#' @param event_table a table of events created with the\code{toEventLevel} function (or having the same structure),
+#'  including dico as attribute.
+#' @param x_axis either 'time' or 'picture' index as x axis variable.
 #' @return A \code{ggplot2} graph.
 #' @examples
-#' data('dummyWearableCamImages')
+#' data('coding1')
 #' library('ggplot2')
-#' event_table <- toEventLevel(wearableCamImagesObject=dummyWearableCamImages)
-#' plotSequence(event_table, dicoCoding = dummyWearableCamImages$dicoCoding)
-#' plotSequence(event_table, xAxis='picture', facettingGroup=TRUE,
-#' dicoCoding = dummyWearableCamImages$dicoCoding)
-#' data('IO1')
-#' data('IO2')
-#' event_tableCoders <- bindCoders(list(IO1, IO2), minDuration = 1)
-#' plotSequence(event_tableCoders, facettingGroup = TRUE, facettingCoder = TRUE,
-#' dicoCoding=IO1$dicoCoding)
+#' event_table <- watchme_aggregate(df = coding1)
+#' watchme_plot_sequence(event_table)
+#' watchme_plot_sequence(event_table, x_axis = "picture")
+
 
 #' @export
-plotSequence <- function(event_table, doNotUseCode = NULL, xAxis = "time",
-                         facettingGroup = FALSE, facettingCoder = FALSE,
-    dicoCoding = NULL, cbbPaletteYes = TRUE) {
+watchme_plot_sequence <- function(event_table, x_axis = "time") {
 
-  if(is.null(dicoCoding)){
-    stop("Provide a dicoCoding.")
+  dico <- attr(event_table, "dico")
+
+  if(is.null(dico)){
+    stop("Provide a dico.")
   }
 
-  dicoCoding$Meaning <- as.factor(dicoCoding$Meaning)
+  dico <- dplyr::mutate_(dico,
+                         Meaning = lazyeval::interp(~as.factor(Meaning)))
 
-    if (!"coder" %in% names(event_table) & facettingCoder == TRUE) {
-        stop("You can't facet by coder if you do not have several coders")
-    }
-    # The palette with black:
-    cbbPalette <- c("#000000", "#E69F00", "#56B4E9", "#009E73",
-                    "#0072B2", "#D55E00", "#CC79A7", "#F0E442")
-    p <- ggplot(event_table[!event_table$eventCode %in% doNotUseCode, ])
-    if (xAxis == "time") {
-        p <- p + geom_rect(aes(xmin = startTime, xmax = endTime,
-                               ymin = 0, ymax = 2, fill = activity,
-                               colour = activity),
+ p <- ggplot(event_table)
+
+    if (x_axis == "time") {
+        p <- p + geom_rect(aes(xmin = start_time, xmax = end_time,
+                               ymin = 0, ymax = 2, fill = meaning,
+                               colour = meaning),
             alpha = 1)
     }
-    if (xAxis == "picture") {
-        p <- p + geom_rect(aes(xmin = startPicture, xmax = endPicture,
-                               ymin = 0, ymax = 2, fill = activity,
-                               colour = activity),
+    if (x_axis == "picture") {
+        p <- p + geom_rect(aes(xmin = start_picture, xmax = end_picture,
+                               ymin = 0, ymax = 2, fill = meaning,
+                               colour = meaning),
             alpha = 1)
-    }
-    if (!is.null(dicoCoding)) {
-        if (cbbPaletteYes) {
-            p <- p + scale_fill_manual(drop = TRUE,
-                                       limits = levels(dicoCoding$Meaning),
-                                       values = cbbPalette) +
-              scale_colour_manual(drop = TRUE,
-                limits = levels(dicoCoding$Meaning), values = cbbPalette)
-        } else {
-          colourCount <- length(unique(dicoCoding$Meaning))
-          getPalette <- colorRampPalette(brewer.pal(9, "Set1"))
-          colValues <- getPalette(colourCount)
-
-            p <- p + scale_fill_manual(drop = TRUE,
-                                       values=colValues) +
-              scale_colour_manual(drop = TRUE,
-                                  values=colValues)
-        }
     }
     p <- p + theme(axis.line.y = element_blank(),
                    axis.ticks.y = element_blank(),
                    axis.text.y = element_blank(),
                    panel.grid.minor.y = element_blank(),
-        panel.grid.major.y = element_blank())
-    if (facettingGroup & !facettingCoder) {
-        p <- p + facet_grid(group ~ .)
-    }
-    if (!facettingGroup & facettingCoder) {
-        p <- p + facet_grid(coder ~ .)
-    }
-    if (facettingGroup & facettingCoder) {
-        p <- p + facet_grid(coder ~ group)
-    }
+        panel.grid.major.y = element_blank()) +
+      scale_fill_viridis(discrete = TRUE) +
+      scale_color_viridis(discrete = TRUE)
     return(p)
 }

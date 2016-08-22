@@ -9,15 +9,16 @@ context("outputDifferences")
 
 
 test_that("outputDifferences gives no difference if equal",{
-  expect_equal(nrow(outputDifferences(list(IO1, IO1))), 0)
+  data("coding1")
+  expect_equal(nrow(watchme_output_differences(list(coding1, coding1))), 0)
 })
 
 test_that("outputDifferences gives differences if there are some",{
-  data(IO1)
-  data(IO2)
-  listObjects <- list(IO1, IO2)
-  namesList <- c("coder1", "coder2")
-  skip_on_appveyor()
-  expect_that(outputDifferences(listObjects, namesList),
+  data(coding1)
+  data(coding2)
+  results_list <- list(coding1, coding2)
+  names_list <- c("coder1", "coder2")
+
+  expect_that(watchme_output_differences(results_list, names_list),
               is_a("tbl_df"))
 })
