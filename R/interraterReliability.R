@@ -1,35 +1,36 @@
-#' Calculates interrater agreement using the irr package. The unit of comparison is one picture.
+#' Calculates interrater agreement using the \code{irr} package. The unit of comparison is one picture.
 #' @importFrom irr kappa2 kappam.fleiss
 #' @importFrom dplyr tbl_df filter_
-#' @param results_list a list of \code{tibble}  created by \code{watchme_prepare_data}.
+#' @param results_list a list of \code{tibble} created by \code{watchme_prepare_data}.
 #' @param names_list (optional) a vector of names for the coders. It must be the same length as results_list
 #' and contains different names.
 #' @param one_to_one a boolean indicating whether Cohen's kappa should be calculated for each possible
 #' pair of coders in case of more than 2 coders,
 #' instead of Fleiss's Kappa for all coders at the same time.
-#' @param byGroup boolean indicating whether the IRR should be calculated for each group of codes separately. The meaning is, agreement = giving a code of the same group.
-#' @param by_code boolean indicating whether the IRR should be calculated for each code separately. If both
-#' byGroup and by_code are FALSE annotations are compared as they are.
+#' @param by_code boolean indicating whether the IRR should be calculated for each code separately, or for annotations as a whole.
 #' @return  A \code{tbl_df} presenting the results of a call to the \code{irr} function.
 #' If there are only two raters the called function is \code{kappa2}, unweighted.
-#'  If there are more than two raters and \code{one_to_one} is \code{FALSE}, the called function is \code{kappam.fleiss}.
+#' If there are more than two raters and \code{one_to_one} is \code{FALSE}, the called function is \code{kappam.fleiss}.
 #' @examples
-#' data('IO1')
-#' data('IO2')
-#' results_list <- list(IO1, IO2)
+#' data('coding1')
+#' data('coding2')
+#' # With two coders
+#' results_list <- list(coding1, coding2)
 #' names_list <- c('Cain', 'Abel')
-#' watchme_ira(results_list, names_list=names_list)
-#' results_list2 <- list(IO1, IO1, IO2)
-#' names_list <- c('Riri', 'Fifi', 'Loulou')
-#' watchme_ira(results_list2, names_list=names_list)
-#' watchme_ira(results_list2, names_list=names_list, one_to_one=TRUE)
-#' watchme_ira(results_list, names_list=c('Cain', 'Abel'), one_to_one=TRUE, by_code=TRUE)
-#' watchme_ira(results_list, names_list=c('Cain', 'Abel'), one_to_one=TRUE, byGroup=TRUE)
+#' watchme_ira(results_list, names_list = names_list)
+#' watchme_ira(results_list, names_list = names_list, by_code = TRUE)
+#' # With three coders
+#' results_list2 <- list(coding1, coding1, coding2)
+#' names_list2 <- c('Riri', 'Fifi', 'Loulou')
+#' watchme_ira(results_list2, names_list = names_list2, one_to_one = FALSE)
+#' watchme_ira(results_list2, names_list = names_list2, one_to_one = TRUE)
+#' watchme_ira(results_list2, names_list = names_list2, one_to_one = FALSE, by_code = TRUE)
+#' watchme_ira(results_list2, names_list = names_list2, one_to_one = TRUE, by_code = TRUE)
 
 #' @export
-watchme_ira <- function(results_list, names_list=NULL,
-                       one_to_one=FALSE, byGroup=FALSE,
-                       by_code=FALSE){
+watchme_ira <- function(results_list, names_list = NULL,
+                       one_to_one = TRUE,
+                       by_code = FALSE){
   # some checks, see utils.R
   # and take one dicoCoding (they're all the same)
   watchme_check_list(results_list,
@@ -42,270 +43,71 @@ watchme_ira <- function(results_list, names_list=NULL,
   }
 
 
-  # Easy, simply compares the equality of annotations
-    if ( !byGroup & !by_code){
+  # Compares the equality of annotations as a whole
+    if (!by_code){
     # create the table for comparing
     dat <- purrr::map(results_list, create_string_for_comparison,
                       dico_ref) %>%
       dplyr::bind_cols()
 
-     # make sure the levels are the same
-    # even if one coder has not used one code
     names(dat) <- names_list
 
+    # one to one comparison
+    if(one_to_one){
+      dat_pairs <- combn(dat, 2, simplify = FALSE)
 
-    if (length(results_list) == 2){
-      results <- irr::kappa2(dat, "unweighted")
-      tableResults <- data.frame(method = results$method,
-                                 pictures = results$subjects,
-                                 agreedOn = sum(dat[,1] == dat[,2]),
-                                 raters = results$raters,
-                                 ratersNames =
-                                   paste(names_list[[1]], "and",
-                                         names_list[[2]], sep=" "),
-                                 Kappa = results$value,
-                                 z = results$statistic,
-                                 pValue = results$p.value)
-      tableResults <- dplyr::tbl_df(tableResults)
+      tableResults <- dat_pairs %>%
+        purrr::map(calculate_irr, irr_function = irr::kappa2,
+                   arg_function_irr = "unweighted")
+      tableResults <- quietly_bind_rows(tableResults)$"result"
+    }else{
+      # ira for the group
+      tableResults <- list(dat) %>%
+        purrr::map(calculate_irr, irr_function = irr::kappam.fleiss)
+      tableResults <- quietly_bind_rows(tableResults)$"result"
     }
 
-    if (length(results_list) > 2 & !one_to_one){
-
-      results <- irr::kappam.fleiss(dat)
-
-      lengthOfUnique <- function(x){
-        return(length(unique(x)))
-      }
-
-      agreedOn <- sum(apply(dat, 1, lengthOfUnique) == 1)
-
-
-      tableResults <- data.frame(method = results$method,
-                                 pictures = results$subjects,
-                                 agreedOn = agreedOn,
-                                 raters = results$raters,
-                                 ratersNames = toString(names_list),
-                                 Kappa = results$value,
-                                 z = results$statistic,
-                                 pValue = results$p.value)
-      tableResults <- dplyr::tbl_df(tableResults)
-    }
-
-    if (length(results_list) > 2 & one_to_one){
-        tableResults <- compare_all_onetoone(dat)
-      }
 
 }
 
 
-  # If the IRR is to be calculated by group or by code,
-  # it's slightly more complicated.
+  # If the IRA is to be calculated by code
   else{
-    listResults <- list()
+    tableResults <- list()
+    for(code in dico_ref$Code){
+      dat <- purrr::map(results_list, dplyr::select_,
+                        code) %>%
+        dplyr::bind_cols()
+      names(dat) <- names_list
+      dat_pairs <- combn(dat, 2, simplify = FALSE)
 
-    if (byGroup & !by_code){
-      for (group in unique(dico_ref$Group)){
-        dat <- NULL
-        namesDat <- NULL
-        for (object in 1:length(results_list)){
-          # filter only for the group
-          # and then look whether any code for this group
-          temp <- results_list[[object]][, dico_ref$Code]
-          temp <- temp[, filter_(dico_ref,
-                                interp( ~Group == group))$
-                         Code]
-          temp <- as.data.frame(temp)
-          temp <- (apply(temp, 1, sum) >= 1)
-
-         # bind, one column per coder
-         dat <- cbind(dat, as.factor(temp))
-         namesDat <- c(namesDat, names_list[object])
-        }
-        dat <- as.data.frame(dat)
-        names(dat) <- namesDat
-        dat <- tbl_df(dat)
-
-        if (length(results_list) == 2){
-          results <- irr::kappa2(dat, "unweighted")
-          tableResults <- data.frame(method = results$method,
-                                     pictures = results$subjects,
-                                     agreedOn = sum(dat[,1] == dat[,2]),
-                                     raters = results$raters,
-                                     ratersNames =
-                                       paste(names_list[[1]], "and",
-                                             names_list[[2]],
-                                             sep = " "),
-                                     Kappa = results$value,
-                                     z = results$statistic,
-                                     pValue = results$p.value,
-                                     group = group)
-          tableResults <- dplyr::tbl_df(tableResults)
-        }
-
-        # more than two coders, but kappam.fleiss
-        # (global measure of agreement)
-        if (length(results_list) > 2 & !one_to_one){
-
-          results <- irr::kappam.fleiss(dat)
-
-          lengthOfUnique <- function(x){
-            return(length(unique(x)))
-          }
-
-          agreedOn <- sum(apply(dat, 1, lengthOfUnique) == 1)
-
-
-          tableResults <- data.frame(method = results$method,
-                                     pictures = results$subjects,
-                                     agreedOn = agreedOn,
-                                     raters = results$raters,
-                                     ratersNames = toString(names_list),
-                                     Kappa = results$value,
-                                     z = results$statistic,
-                                     pValue = results$p.value,
-                                     group = group)
-          tableResults <- dplyr::tbl_df(tableResults)
-        }
-
-        # more than two coders
-        # and results for each pair
-        if (length(results_list) > 2 & one_to_one){
-
-          pairs <- as.data.frame(t(combn(names_list, 2)))
-          names(pairs) <- c("rater1", "rater2")
-
-          tableResults <- NULL
-          for (i in 1:nrow(pairs)){
-            rater1 <- as.character(pairs$rater1[i])
-            rater2 <- as.character(pairs$rater2[i])
-
-            results <- kappa2(dat[, c(rater1, rater2)], "unweighted")
-            temp <- data.frame(method = results$method,
-                               pictures = results$subjects,
-                               agreedOn = sum(dat[,rater1] ==
-                                                dat[,rater2]),
-                               rater1 = rater1,
-                               rater2 = rater2,
-                               Kappa = results$value,
-                               z = results$statistic,
-                               pValue = results$p.value,
-                               group = group)
-            tableResults <- rbind(tableResults, temp)
-          }
-
-          tableResults <- dplyr::tbl_df(tableResults)
-        }
-
-
-        listResults[[as.character(group)]] <- tableResults
-
+      if(one_to_one){
+        tableResults[[code]] <- dat_pairs %>%
+          purrr::map(calculate_irr, irr_function = irr::kappa2,
+                     arg_function_irr = "unweighted")
+      }else{
+        tableResults[[code]] <- list(dat) %>%
+          purrr::map(calculate_irr, irr_function = irr::kappam.fleiss,
+                     arg_function_irr = NULL)
       }
-      listResults <- do.call("rbind", listResults)
+
+      tableResults[[code]] <-   quietly_bind_rows(tableResults[[code]])$"result"
+      tableResults[[code]] <- tableResults[[code]] %>%
+        dplyr::mutate_(code = ~code) %>%
+        dplyr::select_(~code, ~everything())
     }
 
-    if (by_code){
-
-      for (code in dico_ref$Code){
-        dat <- data.frame(rep(NA,
-                              nrow(results_list[[1]])))
-
-        for (i in 1:length(results_list)){
-          dat <- cbind(dat,
-                       results_list[[i]][, code])
-        }
-        dat <- as.data.frame(dat[, 2:ncol(dat)])
-        names(dat) <- names_list
-        if (length(results_list)  ==  2){
-          results <- kappa2(dat, "unweighted")
-          tableResults <- data.frame(method = results$method,
-                                     pictures = results$subjects,
-                                     agreedOn = sum(dat[,1] == dat[,2]),
-                                     rater1YesRater2No=sum(
-                                       dat[,1] == TRUE & dat[,2] == FALSE),
-                                     rater1NoRater2Yes=sum(
-                                       dat[,1] == FALSE & dat[,2] == TRUE),
-                                     raters = results$raters,
-                                     ratersNames = paste(
-                                       names_list[[1]], "and",
-                                       names_list[[2]], sep=" "),
-                                     Kappa = results$value,
-                                     z = results$statistic,
-                                     pValue = results$p.value,
-                                     code = code)
-          tableResults <- dplyr::tbl_df(tableResults)
-        }
-
-        if (length(results_list) > 2 & !one_to_one){
-
-          results <- kappam.fleiss(dat)
-
-          lengthOfUnique <- function(x){
-            return(length(unique(x)))
-          }
-
-          agreedOn <- sum(apply(dat, 1, lengthOfUnique) == 1)
-
-
-          tableResults <- data.frame(method = results$method,
-                                     pictures = results$subjects,
-                                     agreedOn = agreedOn,
-                                     raters = results$raters,
-                                     ratersNames = toString(names_list),
-                                     Kappa = results$value,
-                                     z = results$statistic,
-                                     pValue = results$p.value,
-                                     code = code)
-          tableResults <- dplyr::tbl_df(tableResults)
-        }
-
-        if (length(results_list) > 2 & one_to_one){
-
-          pairs <- as.data.frame(t(combn(names_list, 2)))
-          names(pairs) <- c("rater1", "rater2")
-          pairs$"rater1" <- as.character(pairs$"rater1")
-          pairs$"rater2" <- as.character(pairs$"rater2")
-          tableResults <- NULL
-          for (i in 1:nrow(pairs)){
-            rater1 <- as.character(pairs$rater1[i])
-            rater2 <- as.character(pairs$rater2[i])
-            results <- kappa2(dat[, c(rater1, rater2)], "unweighted")
-            temp <- data.frame(method = results$method,
-                               pictures = results$subjects,
-                               agreedOn = sum(dat[,rater1] == dat[,rater2]),
-                               rater1YesRater2No =
-                                 sum(dat[,rater1] == TRUE &
-                                       dat[,rater2] == FALSE),
-                               rater1NoRater2Yes =
-                                 sum(dat[,rater1] == FALSE &
-                                       dat[,rater2] == TRUE),
-                               rater1 = rater1,
-                               rater2 = rater2,
-                               Kappa = results$value,
-                               z = results$statistic,
-                               pValue = results$p.value,
-                               code = code)
-            tableResults <- rbind(tableResults, temp)
-          }
-
-          tableResults <- dplyr::tbl_df(tableResults)
-        }
-
-
-        listResults[[code]] <- tableResults
-
-      }
-      listResults <- dplyr::tbl_df(do.call("rbind", listResults))
-    }
-
-    tableResults <- listResults
-
+    tableResults <- quietly_bind_rows(tableResults)$"result"
   }
 
-  tableResults <- dplyr::tbl_df(tableResults)
+  tableResults <- tibble::as_tibble(tableResults)
   return(tableResults)
 
 }
 
+# create a column with all TRUE/FALSE pasted,
+# if the same codes were given to a picture
+# then they are the same for the coders
 create_string_for_comparison <- function(df, dico_ref){
 df[, dico_ref$Code] %>%
   purrr::by_row(toString, .to = "codes",
@@ -313,36 +115,28 @@ df[, dico_ref$Code] %>%
   select_(quote(codes))
 }
 
-compare_all_onetoone <- function(dat){
+quietly_bind_rows <- purrr::quietly(dplyr::bind_rows)
 
-  pairs <- as.data.frame(t(combn(names(dat), 2)))
-  names(pairs) <- c("rater1", "rater2")
-
-  tableResults <- purrr::by_row(pairs, irr_all_onetoone, dat) %>%
-    select_(quote(.out)) %>%
-    dplyr::bind_rows() %>%
-    silent_unnest_(quote(.out))
-
-  tableResults <- tableResults$"result"
-  }
-
-irr_all_onetoone <- function(pair, dat){
-
-  rater1 <- as.character(pair$rater1)
-  rater2 <- as.character(pair$rater2)
-
-  results <- irr::kappa2(dat[, c(rater1, rater2)],
-                         "unweighted")
-
-  data.frame(method = results$"method",
-             pictures = results$"subjects",
-             agreedOn = sum(
-               dat[,rater1]  ==  dat[,rater2]),
-             rater1 = rater1,
-             rater2 = rater2,
-             Kappa = results$"value",
-             z = results$"statistic",
-             pValue = results$"p.value")
+count_unique_elements <- function(x){
+  length(unique(x))
 }
 
-silent_unnest_ <- purrr::quietly(tidyr::unnest_)
+count_agreed_on <- function(dat){
+  sum(apply(dat, 1, count_unique_elements) == 1)
+}
+
+calculate_irr <- function(data_pairs, irr_function, arg_function_irr = NULL){
+
+  if(is.null(arg_function_irr)){
+    results <- irr_function(data_pairs)
+  }else{
+    results <- irr_function(data_pairs, arg_function_irr)
+  }
+  data.frame(method = results$method,
+             pictures = results$subjects,
+             agreed_on = count_agreed_on(data_pairs),
+             raters = toString(names(data_pairs)),
+             Kappa = results$value,
+             z = results$statistic,
+             p_value = results$p.value)
+}

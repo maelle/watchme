@@ -2,13 +2,13 @@
 % Please edit documentation in R/interraterReliability.R
 \name{watchme_ira}
 \alias{watchme_ira}
-\title{Calculates interrater agreement using the irr package. The unit of comparison is one picture.}
+\title{Calculates interrater agreement using the \code{irr} package. The unit of comparison is one picture.}
 \usage{
-watchme_ira(results_list, names_list = NULL, one_to_one = FALSE,
-  byGroup = FALSE, by_code = FALSE)
+watchme_ira(results_list, names_list = NULL, one_to_one = TRUE,
+  by_code = FALSE)
 }
 \arguments{
-\item{results_list}{a list of \code{tibble}  created by \code{watchme_prepare_data}.}
+\item{results_list}{a list of \code{tibble} created by \code{watchme_prepare_data}.}
 
 \item{names_list}{(optional) a vector of names for the coders. It must be the same length as results_list
 and contains different names.}
@@ -17,30 +17,30 @@ and contains different names.}
 pair of coders in case of more than 2 coders,
 instead of Fleiss's Kappa for all coders at the same time.}
 
-\item{byGroup}{boolean indicating whether the IRR should be calculated for each group of codes separately. The meaning is, agreement = giving a code of the same group.}
-
-\item{by_code}{boolean indicating whether the IRR should be calculated for each code separately. If both
-byGroup and by_code are FALSE annotations are compared as they are.}
+\item{by_code}{boolean indicating whether the IRR should be calculated for each code separately, or for annotations as a whole.}
 }
 \value{
 A \code{tbl_df} presenting the results of a call to the \code{irr} function.
 If there are only two raters the called function is \code{kappa2}, unweighted.
- If there are more than two raters and \code{one_to_one} is \code{FALSE}, the called function is \code{kappam.fleiss}.
+If there are more than two raters and \code{one_to_one} is \code{FALSE}, the called function is \code{kappam.fleiss}.
 }
 \description{
-Calculates interrater agreement using the irr package. The unit of comparison is one picture.
+Calculates interrater agreement using the \code{irr} package. The unit of comparison is one picture.
 }
 \examples{
-data('IO1')
-data('IO2')
-results_list <- list(IO1, IO2)
+data('coding1')
+data('coding2')
+# With two coders
+results_list <- list(coding1, coding2)
 names_list <- c('Cain', 'Abel')
-watchme_ira(results_list, names_list=names_list)
-results_list2 <- list(IO1, IO1, IO2)
-names_list <- c('Riri', 'Fifi', 'Loulou')
-watchme_ira(results_list2, names_list=names_list)
-watchme_ira(results_list2, names_list=names_list, one_to_one=TRUE)
-watchme_ira(results_list, names_list=c('Cain', 'Abel'), one_to_one=TRUE, by_code=TRUE)
-watchme_ira(results_list, names_list=c('Cain', 'Abel'), one_to_one=TRUE, byGroup=TRUE)
+watchme_ira(results_list, names_list = names_list)
+watchme_ira(results_list, names_list = names_list, by_code = TRUE)
+# With three coders
+results_list2 <- list(coding1, coding1, coding2)
+names_list2 <- c('Riri', 'Fifi', 'Loulou')
+watchme_ira(results_list2, names_list = names_list2, one_to_one = FALSE)
+watchme_ira(results_list2, names_list = names_list2, one_to_one = TRUE)
+watchme_ira(results_list2, names_list = names_list2, one_to_one = FALSE, by_code = TRUE)
+watchme_ira(results_list2, names_list = names_list2, one_to_one = TRUE, by_code = TRUE)
 }
 

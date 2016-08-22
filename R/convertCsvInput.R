@@ -39,12 +39,17 @@ watchme_prepare_data <- function(path_results, sep_results,
                                  participant_id = "no_id",
                                  path_dico, sep_dico,
                                  tz = "Asia/Kolkata") {
+
     ########################################################
     # Get dico coding
     ########################################################
     dico <- read.csv(path_dico, sep = sep_dico, header = TRUE)
     dico <- dplyr::mutate_each_(dico, dplyr::funs_("tolower"),
                                       c("Code", "Meaning", "Group"))
+
+    dico <- dplyr::mutate_each_(dico, dplyr::funs_("gsub", args = list(pattern = " ",
+                                                                       replacement = "_")),
+                                c("Code", "Meaning", "Group"))
 
     ########################################################
     # open results
@@ -121,4 +126,8 @@ grep_code <- function(df, code){
   df %>% dplyr::mutate_(.dots = setNames(list(mutateCall),
                                          code)) %>%
     dplyr::select_(~dplyr::matches(code))
+}
+
+eliminate_spaces <- function(x){
+  gsub(" ", "_", x)
 }
