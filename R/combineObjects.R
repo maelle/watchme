@@ -57,7 +57,7 @@ watchme_combine_results <- function(results_list,
   ########################################################
   dico <- unique(do.call("rbind",
                         lapply(results_list,
-                               "[[", "dico")))
+                               get_dico)))
 
   ########################################################
   # join
@@ -75,4 +75,8 @@ watchme_combine_results <- function(results_list,
 
   attr(df, "dico") <- dico
   return(df)
+}
+
+get_dico <- function(df){
+  attr(df, "dico")
 }

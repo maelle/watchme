@@ -24,4 +24,5 @@ test_that("bindObjects return a tibble-object", {
   results_list <- passes %>% purrr::map(create_pass_results)
   oneday_results <- watchme_combine_results(results_list, common_codes = "non_codable")
   expect_is(oneday_results, "tbl_df")
+  expect_is(attr(oneday_results, "dico"), "data.frame")
   })
