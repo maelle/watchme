@@ -6,7 +6,17 @@
 #' @importFrom tidyr gather
 #' @param df the data created by using \code{watchme_prepare_data}
 #' @param min_no_pictures the minimal number of images for defining an event. Default is 1.
-#' @return A \code{tbl_df} with event index, start time (POSIXt), end time (POSIXt) and event_code (character).
+#' @return A \code{tbl_df} with
+#' \itemize{
+#' \item event code
+#' \item start time (POSIXt)
+#' \item end time (POSIXt)
+#' \item no of pictures in the event
+#' \item index of the first picture in the event
+#' \item index of the last picture in the event
+#' \item group of the code
+#' \item meaning of the code
+#' } event index, , ,  and event_code (character).
 #' @examples
 #' data('coding_example')
 #' event_table <- watchme_aggregate(df = coding_example)
@@ -42,7 +52,7 @@ watchme_aggregate <- function(df, min_no_pictures = 1) {
       select_(~ (- group)) %>%
       mutate_(group = interp(~ Group)) %>%
       select_(~ (- Group)) %>%
-      mutate_(activity = interp(~ as.factor(Meaning))) %>%
+      mutate_(meaning = interp(~ as.factor(Meaning))) %>%
       select_(~ (- Meaning)) %>%
       arrange_(~ event_code) %>%
       filter_(interp(~ no_pictures >= min_no_pictures)) %>%

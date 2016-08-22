@@ -16,7 +16,8 @@ watchme_check_list <- function(results_list, names_list = NULL){
   }
 
   if (length(results_list) == 1){
-    stop("Do not bother using this function if you only have one tibble.")# nolint
+    stop(call. = FALSE,
+         "Do not bother using this function if you only have one tibble.")# nolint
   }
 
   if (!is.null(names_list)){
@@ -34,20 +35,27 @@ watchme_check_list <- function(results_list, names_list = NULL){
 
 watchme_check_dicos <- function(results_list){
 
-  # check that all objects used the same dicoCoding
+  # check that all objects used the same dico
 
   dico_ref <- attr(results_list[[1]], "dico")
 
   if (any(vapply(results_list, compare_dicos, dico_ref = dico_ref,
                  FUN.VALUE = TRUE) == FALSE)){
-    stop("All tibbles  should have the same dicoCoding!")# nolint
+    stop(call. = FALSE,
+         "All tibbles should have the same dico!")# nolint
   }
 
   dico_ref
 }
 
 compare_dicos <- function(df, dico_ref){
-  all(attr(df, "dico") == dico_ref)
+  val1 <- nrow(attr(df, "dico")) == nrow(dico_ref)
+  if(val1){
+    all(attr(df, "dico") == dico_ref)
+  }else{
+    FALSE
+  }
+
 }
 
 

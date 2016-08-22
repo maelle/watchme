@@ -12,7 +12,17 @@ watchme_aggregate(df, min_no_pictures = 1)
 \item{min_no_pictures}{the minimal number of images for defining an event. Default is 1.}
 }
 \value{
-A \code{tbl_df} with event index, start time (POSIXt), end time (POSIXt) and event_code (character).
+A \code{tbl_df} with
+\itemize{
+\item event code
+\item start time (POSIXt)
+\item end time (POSIXt)
+\item no of pictures in the event
+\item index of the first picture in the event
+\item index of the last picture in the event
+\item group of the code
+\item meaning of the code
+} event index, , ,  and event_code (character).
 }
 \description{
 Creates a table with events from the image level annotation information.
