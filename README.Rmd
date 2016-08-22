@@ -23,7 +23,7 @@ install_github("masalmon/watchme", build_vignettes=TRUE)
 
 ```{r, echo=FALSE, warning=FALSE, message=FALSE}
 library("knitr")
-
+library("dplyr")
 ```
 
 # Introduction
@@ -133,7 +133,7 @@ The function `watchme_aggregate` takes two arguments: a `tibble` created by `wat
 data("coding_example")
 eventTable <- watchme_aggregate(df = coding_example)
 knitr::kable(head(eventTable))
-eventTable2 <- watchme_aggregate(df = coding_example, minDuration = 2)
+eventTable2 <- watchme_aggregate(df = coding_example, min_no_pictures = 2)
 knitr::kable(head(eventTable2))
 ```
 
@@ -193,16 +193,13 @@ watchme_output_differences(results_list = results_list,
 
 ## Assess interrater agreement
 
-Nowadays the state of the art is to use Cohen's kappa for codes attributed to pictures, even if they are not independent (Aiden Doherty's personal communication). In the package we provide a function for calculating interrater agreement (or IRR) this way, which is called `iraWatchme`. It uses functions of the R `irr` package. It allows using several possibilities for defining what codes are to be compared:
+Nowadays the state of the art is to use Cohen's kappa for codes attributed to pictures, even if they are not independent (Aiden Doherty's personal communication). In the package we provide a function for calculating interrater agreement (or IRR) this way, which is called `watchme_ira`. It uses functions of the [R `irr` package](https://cran.r-project.org/web/packages/irr/index.html). It allows using several possibilities for defining what codes are to be compared:
 
 * one could compare the global annotations of all files, i.e. all codes at the same time. For instance compare washingYourTeeth; readingABook to washingYourTeeh; readingAMagazine for picture 1 between coder A and coder B. This is the default option.
 
+* one could look separately at each code using binary variables. For instance for washingYourTeeth comparing TRUE to TRUE and for readingABook TRUE to FALSE. For this one needs to set the `by_code` argument to TRUE.
 
-* one could simply want to compare the use of one group of codes for pictures. E.g., for all pictures, do raters agree on using a cooking code or not using it? In this case, "cooking on LPG stove" and "cutting vegetables" are an agreement.
-
-* one could look separately at each code using binary variables. For instance for washingYourTeeth comparing TRUE to TRUE and for readingABook TRUE to FALSE. For this one needs to set the `byGroup` argument to TRUE but the `byCode` argument to FALSE.
-
-In the case in which wants to compare results provided by more than two coders, another choice to be made is whether all coders are to be compared together using Fleiss Kappa, or one to one using Cohen's kappa. This is set with the `oneToOne` Boolean argument.
+In the case in which wants to compare results provided by more than two coders, another choice to be made is whether all coders are to be compared together using Fleiss Kappa, or one to one using Cohen's kappa. This is set with the `one_to_one` `logical` argument.
 
 The comparison one wants to make depends on the context of the calculation of the IRR. When developping a new list of annotations one wants to see interrater agreement for each code, later when may want to report a single figure for the whole list of annotations.
 
@@ -211,29 +208,20 @@ Below are a few examples for two coders to be compared.
 The default is to compare all annotations together.
 
 ```{r, warning=FALSE, message=FALSE, fig.width=10} 
-library("xtable")
-data("IO1")
-data("IO2")
-listWC <- list(IO1, IO2)
-namesList <- c("Cain", "Abel")
-IRR <- iraWatchme(listWC, namesList=namesList)
-kable(IRR)
+data('coding1')
+data('coding2')
+# With two coders
+results_list <- list(coding1, coding2)
+names_list <- c('Cain', 'Abel')
+ira_all <- watchme_ira(results_list, names_list = names_list)
+kable(ira_all)
 ```
 
-Here we compare annotations by group of codes. The agreement here means giving a code of the same group (or not giving any code) for each picture.
+Here we compare annotations by code.
 
 ```{r, warning=FALSE, message=FALSE, fig.width=10, results="asis"} 
-IRR <- iraWatchme(listWC, namesList=c("Cain", "Abel"), oneToOne=TRUE, byGroup=TRUE)
-kable(IRR)
-```
-
-
-Here we compare annotations by code. The agreement here means to agree for each code on whether it is present or not. It is useful to spot if a code often leads to disagreements. Below the "mixed" code leads to only disagreements.
-
-
-```{r, warning=FALSE, message=FALSE, fig.width=10, results="asis"} 
-IRR <- iraWatchme(listWC, namesList=c("Cain", "Abel"), oneToOne=TRUE, byCode=TRUE)
-kable(IRR)
+ira_codes <- watchme_ira(results_list, names_list = names_list, by_code = TRUE)
+kable(ira_codes)
 ```
 
 
@@ -241,12 +229,11 @@ kable(IRR)
 And then for more than two coders. If we do the comparison one by one, the resulting table has as many lines as there are possible pairs of coders. Here we compare all annotations together but even when comparing more than two coders you can do it by group of codes or by code.
 
 ```{r, warning=FALSE, message=FALSE, fig.width=10} 
-listWC2 <- list(IO1, IO2, IO2)
-namesList <- c("Riri", "Fifi", "Loulou")
-IRR <- iraWatchme(listWC2, namesList=namesList)
-kable(IRR)
-IRR2 <- iraWatchme(listWC2, namesList=namesList, oneToOne=TRUE)
-kable(IRR2)
+results_list2 <- list(coding1, coding1, coding2)
+names_list2 <- c('Riri', 'Fifi', 'Loulou')
+watchme_ira(results_list2, names_list = names_list2, one_to_one = FALSE)
+watchme_ira(results_list2, names_list = names_list2, one_to_one = TRUE)
+
 ```
 
 
