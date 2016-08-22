@@ -48,9 +48,7 @@ dico
     ## 6  03A             Eating     1
     ## 7  01.            Cooking    99
 
--   A table of coding results. The columns are
-
-\*\* name/nothing, image\_path/X.Filename.With.Ext, image\_time/EXIF.Date.Taken..Y.m.d\_H.M.S., annotation/IPTC.Keywords, as provided by a SQL query of the Doherty database. In this case the column name is a repetition of the participant name. The column image\_path indicates the path to the picture, or its name. It only needs to be unique for each picture. The column image\_time gives the date and time at which the picture was taken. The column annotation gives the code(s) associated with the picture. They can be pasted one after another, since we will use grepl() for finding the unique X-digit identifiers, or they can be on separate lines, since all codes for one picture identified by one picture\_name will be merged.
+-   A table of coding results. The columns are name/nothing, image\_path/X.Filename.With.Ext, image\_time/EXIF.Date.Taken..Y.m.d\_H.M.S., annotation/IPTC.Keywords, as provided by a SQL query of the Doherty database. In this case the column name is a repetition of the participant name. The column image\_path indicates the path to the picture, or its name. It only needs to be unique for each picture. The column image\_time gives the date and time at which the picture was taken. The column annotation gives the code(s) associated with the picture. They can be pasted one after another, since we will use grepl() for finding the unique X-digit identifiers, or they can be on separate lines, since all codes for one picture identified by one picture\_name will be merged.
 
 ``` r
 path_results <- system.file("extdata", "image_level_pinocchio.csv", package = "watchme")
@@ -120,7 +118,7 @@ The object has the following variables:
 
 The function used to create such an object is called `watchme_prepare_data`.
 
-For finding both inputs and interpreting them the `watchme_prepare_data` function needs to know the paths to each file, `path_results` and `path_dico` and the separator used in each of them, `sep_results` and `sep_dico`. For the file with coding results, it is important to say whether date are given in the "ymd" (year, month, day, no matter the separator) or "dmy" (day, month, year, no matter the separator), the default being "ymd".
+For finding both inputs and interpreting them the `watchme_prepare_data` function needs to know the paths to each file, `path_results` and `path_dico` and the separator used in each of them, `sep_results` and `sep_dico`.
 
 Below we illustrate the use of `watchme_prepare_data`.
 
@@ -329,24 +327,29 @@ And then for more than two coders. If we do the comparison one by one, the resul
 ``` r
 results_list2 <- list(coding1, coding1, coding2)
 names_list2 <- c('Riri', 'Fifi', 'Loulou')
-watchme_ira(results_list2, names_list = names_list2, one_to_one = FALSE)
+watchme_ira(results_list2, names_list = names_list2, one_to_one = FALSE) %>%
+  kable()
 ```
 
-    ## # A tibble: 1 x 7
-    ##                       method pictures agreed_on             raters
-    ##                       <fctr>    <int>     <int>             <fctr>
-    ## 1 Fleiss' Kappa for m Raters     1263      1230 Riri, Fifi, Loulou
-    ## # ... with 3 more variables: Kappa <dbl>, z <dbl>, p_value <dbl>
+| method                     |  pictures|  agreed\_on| raters             |      Kappa|         z|  p\_value|
+|:---------------------------|---------:|-----------:|:-------------------|----------:|---------:|---------:|
+| Fleiss' Kappa for m Raters |      1263|        1230| Riri, Fifi, Loulou |  0.8964106|  63.90226|         0|
 
 ``` r
-watchme_ira(results_list2, names_list = names_list2, one_to_one = TRUE)
+watchme_ira(results_list2, names_list = names_list2, one_to_one = TRUE)%>%
+  kable()
 ```
 
-    ## # A tibble: 3 x 7
-    ##                                             method pictures agreed_on
-    ##                                             <fctr>    <int>     <int>
-    ## 1 Cohen's Kappa for 2 Raters (Weights: unweighted)     1263      1263
-    ## 2 Cohen's Kappa for 2 Raters (Weights: unweighted)     1263      1230
-    ## 3 Cohen's Kappa for 2 Raters (Weights: unweighted)     1263      1230
-    ## # ... with 4 more variables: raters <chr>, Kappa <dbl>, z <dbl>,
-    ## #   p_value <dbl>
+| method                                           |  pictures|  agreed\_on| raters       |      Kappa|         z|  p\_value|
+|:-------------------------------------------------|---------:|-----------:|:-------------|----------:|---------:|---------:|
+| Cohen's Kappa for 2 Raters (Weights: unweighted) |      1263|        1263| Riri, Fifi   |  1.0000000|  43.18003|         0|
+| Cohen's Kappa for 2 Raters (Weights: unweighted) |      1263|        1230| Riri, Loulou |  0.8456533|  34.38220|         0|
+| Cohen's Kappa for 2 Raters (Weights: unweighted) |      1263|        1230| Fifi, Loulou |  0.8456533|  34.38220|         0|
+
+Meta
+----
+
+-   Please [report any issues or bugs](https://github.com/masalmon/watchme/issues).
+-   License: GPL
+-   Get citation information for `opencage` in R doing `citation(package = 'watchme')`
+-   Please note that this project is released with a [Contributor Code of Conduct](CONDUCT.md). By participating in this project you agree to abide by its terms.

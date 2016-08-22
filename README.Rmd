@@ -54,9 +54,7 @@ dico
 ```
 
 
-* A table of coding results. The columns are
-
-** name/nothing,	image_path/X.Filename.With.Ext,	image_time/EXIF.Date.Taken..Y.m.d_H.M.S.,	annotation/IPTC.Keywords, as provided by a SQL query of the Doherty database. In this case the column name is a repetition of the participant name. The column image_path indicates the path to the picture, or its name. It only needs to be unique for each picture. The column image_time gives the date and time at which the picture was taken. The column annotation gives the code(s) associated with the picture. They can be pasted one after another, since we will use grepl() for finding the unique X-digit identifiers, or they can be on separate lines, since all codes for one picture identified by one picture_name will be merged.
+* A table of coding results. The columns are name/nothing,	image_path/X.Filename.With.Ext,	image_time/EXIF.Date.Taken..Y.m.d_H.M.S.,	annotation/IPTC.Keywords, as provided by a SQL query of the Doherty database. In this case the column name is a repetition of the participant name. The column image_path indicates the path to the picture, or its name. It only needs to be unique for each picture. The column image_time gives the date and time at which the picture was taken. The column annotation gives the code(s) associated with the picture. They can be pasted one after another, since we will use grepl() for finding the unique X-digit identifiers, or they can be on separate lines, since all codes for one picture identified by one picture_name will be merged.
 
 ```{r, warning=FALSE, message=FALSE}
 path_results <- system.file("extdata", "image_level_pinocchio.csv", package = "watchme")
@@ -93,7 +91,7 @@ The object has the following variables:
 
 The function used to create such an object is called `watchme_prepare_data`.
 
-For finding both inputs and interpreting them the `watchme_prepare_data` function needs to know the paths to each file, `path_results` and `path_dico` and the separator used in each of them, `sep_results` and `sep_dico`. For the file with coding results, it is important to say whether date are given in the "ymd" (year, month, day, no matter the separator) or "dmy" (day, month, year, no matter the separator), the default being "ymd".
+For finding both inputs and interpreting them the `watchme_prepare_data` function needs to know the paths to each file, `path_results` and `path_dico` and the separator used in each of them, `sep_results` and `sep_dico`. 
 
 Below we illustrate the use of `watchme_prepare_data`.
 
@@ -231,10 +229,20 @@ And then for more than two coders. If we do the comparison one by one, the resul
 ```{r, warning=FALSE, message=FALSE, fig.width=10} 
 results_list2 <- list(coding1, coding1, coding2)
 names_list2 <- c('Riri', 'Fifi', 'Loulou')
-watchme_ira(results_list2, names_list = names_list2, one_to_one = FALSE)
-watchme_ira(results_list2, names_list = names_list2, one_to_one = TRUE)
+watchme_ira(results_list2, names_list = names_list2, one_to_one = FALSE) %>%
+  kable()
+
+watchme_ira(results_list2, names_list = names_list2, one_to_one = TRUE)%>%
+  kable()
 
 ```
+
+## Meta
+
+* Please [report any issues or bugs](https://github.com/masalmon/watchme/issues).
+* License: GPL
+* Get citation information for `opencage` in R doing `citation(package = 'watchme')`
+* Please note that this project is released with a [Contributor Code of Conduct](CONDUCT.md). By participating in this project you agree to abide by its terms.
 
 
 
