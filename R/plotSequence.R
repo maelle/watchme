@@ -27,15 +27,15 @@ watchme_plot_sequence <- function(event_table, x_axis = "time") {
  p <- ggplot(event_table)
 
     if (x_axis == "time") {
-        p <- p + geom_rect(aes(xmin = start_time, xmax = end_time,
-                               ymin = 0, ymax = 2, fill = meaning,
-                               colour = meaning),
+        p <- p + geom_rect(aes_string(xmin = "start_time", xmax = "end_time",
+                               ymin = 0, ymax = 2, fill = "meaning",
+                               colour = "meaning"),
             alpha = 1)
     }
     if (x_axis == "picture") {
-        p <- p + geom_rect(aes(xmin = start_picture, xmax = end_picture,
-                               ymin = 0, ymax = 2, fill = meaning,
-                               colour = meaning),
+        p <- p + geom_rect(aes_string(xmin = "start_picture", xmax = "end_picture",
+                               ymin = 0, ymax = 2, fill = "meaning",
+                               colour = "meaning"),
             alpha = 1)
     }
     p <- p + theme(axis.line.y = element_blank(),
@@ -43,7 +43,7 @@ watchme_plot_sequence <- function(event_table, x_axis = "time") {
                    axis.text.y = element_blank(),
                    panel.grid.minor.y = element_blank(),
         panel.grid.major.y = element_blank()) +
-      scale_fill_viridis(discrete = TRUE) +
-      scale_color_viridis(discrete = TRUE)
+        scale_fill_viridis(discrete = TRUE) +
+        scale_color_viridis(discrete = TRUE)
     return(p)
 }

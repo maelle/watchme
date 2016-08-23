@@ -24,22 +24,28 @@
 #' The code does not look for conflicts.
 #'
 #' @examples
+#' library("dplyr")
 #' passes <- c("CK", "IO", "OP", "PM", "TP")
 #'
 #' create_pass_results <- function(pass){
-#'   path_results <- system.file('extdata', paste0("oneday_", pass, ".csv"), package = 'watchme')
+#'   path_results <- system.file('extdata', paste0("oneday_", pass, ".csv"),
+#'   package = 'watchme')
 #'   sep_results <- "\t"
-#'   path_dico <-  system.file('extdata', paste0("dico_coding_2016_01_", pass, ".csv"), package = 'watchme')
+#'   path_dico <-  system.file('extdata', paste0("dico_coding_2016_01_", pass, ".csv"),
+#'    package = 'watchme')
 #'   sep_dico <- ';'
 #'
-#'   results <- watchme_prepare_data(path_results = path_results, sep_results = sep_results,
-#'                                   path_dico = path_dico, sep_dico = sep_dico)
+#'   results <- watchme_prepare_data(path_results = path_results,
+#'                                   sep_results = sep_results,
+#'                                   path_dico = path_dico,
+#'                                   sep_dico = sep_dico)
 #'   results$image_path <- gsub('\"', "", results$image_path)
 #'   results
 #' }
 #'
 #' results_list <- passes %>% purrr::map(create_pass_results)
-#' oneday_results <- watchme_combine_results(results_list, common_codes = "non_codable")
+#' oneday_results <- watchme_combine_results(results_list,
+#' common_codes = "non_codable")
 #' oneday_results
 #' @export
 #'
@@ -64,8 +70,7 @@ watchme_combine_results <- function(results_list,
   ########################################################
   # join
   ########################################################
-  df <- results_list %>%
-    Reduce(function(df1, df2){
+  df <-  Reduce(function(df1, df2){
       df <- dplyr::left_join(df1, df2, by = c("image_path", "image_time", "participant_id"))
 
       for(code in common_codes){
@@ -73,7 +78,7 @@ watchme_combine_results <- function(results_list,
         df <- dplyr::select_(df, paste0("-", code, ".x"), paste0("-", code, ".y"))
       }
      df
-    }, .)
+    }, results_list)
 
   attr(df, "dico") <- dico
   return(df)

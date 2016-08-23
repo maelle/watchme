@@ -72,7 +72,7 @@ watchme_prepare_data <- function(path_results, sep_results,
       resultsCoding <- resultsCoding[,1:3]
     }
     # keep only rows with image_path
-    resultsCoding <- dplyr::filter(resultsCoding, image_path!= "")
+    resultsCoding <- dplyr::filter_(resultsCoding, lazyeval::interp(~image_path!= ""))
 
 
     # if several rows for one image, merge annotation
