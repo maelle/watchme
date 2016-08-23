@@ -34,4 +34,23 @@ For\code{common_codes} codes, the annotation are merged: if an image has such a 
 and not in the other, the code is assigned to the image in the resulting object.
 The code does not look for conflicts.
 }
+\examples{
+passes <- c("CK", "IO", "OP", "PM", "TP")
+
+create_pass_results <- function(pass){
+  path_results <- system.file('extdata', paste0("oneday_", pass, ".csv"), package = 'watchme')
+  sep_results <- "\\t"
+  path_dico <-  system.file('extdata', paste0("dico_coding_2016_01_", pass, ".csv"), package = 'watchme')
+  sep_dico <- ';'
+
+  results <- watchme_prepare_data(path_results = path_results, sep_results = sep_results,
+                                  path_dico = path_dico, sep_dico = sep_dico)
+  results$image_path <- gsub('\\"', "", results$image_path)
+  results
+}
+
+results_list <- passes \%>\% purrr::map(create_pass_results)
+oneday_results <- watchme_combine_results(results_list, common_codes = "non_codable")
+oneday_results
+}
 
