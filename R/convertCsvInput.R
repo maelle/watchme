@@ -10,6 +10,7 @@
 #' @param sep_dico the separator in the file with the list of annotations
 #' @param tz timezone
 #' @param quote_sign the quote argument of read.table for the results, default is "\'"
+#' @param participant_id participant ID, if available.
 #' @return A \code{tibble} with
 #' \itemize{
 #' \item participant_id Name or ID number of the participant (character)
@@ -80,6 +81,9 @@ watchme_prepare_data <- function(path_results, sep_results,
     resultsCoding <- dplyr::mutate_(resultsCoding,
                              participant_id = ~participant_id)
 
+    # replace spaces by "_"
+    resultsCoding <- dplyr::mutate_(resultsCoding,
+                                    annotation = lazyeval::inerp(~gsub(" ", "_", annotation)))
     ########################################################
     # convert time date
     ########################################################

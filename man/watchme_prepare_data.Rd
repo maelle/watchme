@@ -14,6 +14,8 @@ watchme_prepare_data(path_results, sep_results, quote_sign = "'",
 
 \item{quote_sign}{the quote argument of read.table for the results, default is "\'"}
 
+\item{participant_id}{participant ID, if available.}
+
 \item{path_dico}{the path to the file with the list of annotations}
 
 \item{sep_dico}{the separator in the file with the list of annotations}
