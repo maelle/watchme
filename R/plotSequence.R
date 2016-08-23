@@ -21,7 +21,7 @@ watchme_plot_sequence <- function(event_table, x_axis = "time") {
     stop("Provide a dico.")
   }
 
-  dico <- dplyr::mutate_(dico,
+  dico <-dplyr::mutate_(dico,
                          Meaning = lazyeval::interp(~as.factor(Meaning)))
 
  p <- ggplot(event_table)

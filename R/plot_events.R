@@ -13,8 +13,9 @@
 watchme_plot_raw <- function(df){
   dico <- attr(df, "dico")
   # nolint start
-  dataPlot <- df %>%
-    tidyr::gather_("code", "value", dico$Code) %>%
+  dataPlot <- suppressWarnings(tidyr::gather_(df, "code",
+                                              "value", dico$Code))
+  dataPlot <- dataPlot %>%
     dplyr::filter_(~ value == TRUE) %>%
     dplyr::mutate_(code = interp(~factor(code, levels = dico$Code,
                                   ordered = TRUE))) %>%
@@ -24,8 +25,15 @@ dataPlot <- suppressWarnings(left_join(dataPlot,
                                        dico, by = c("code" = "Code")))
 
   p <- ggplot(dataPlot) +
-    geom_point(aes_string("image_time", "Meaning", col = "Group")) +
+    geom_point(aes_string("image_time", "Meaning", col = "Group"),
+               shape = 108, size = 2) +
     scale_color_viridis(discrete = TRUE) +
+    scale_x_datetime(date_breaks = "1 hour",
+                     labels = scales::date_format(format = "%Y-%b-%d %H:%M:%S",
+                                                  tz = lubridate::tz(dataPlot$image_time))) +
+    xlab("Time") +
+    ylab("") +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1))+
     facet_grid(Group ~ ., scales = "free_y")
 
   return(p)

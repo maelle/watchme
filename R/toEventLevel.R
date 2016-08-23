@@ -35,9 +35,9 @@ watchme_aggregate <- function(df, min_no_pictures = 1) {
     df <- df %>%
       dplyr::mutate_(index = interp(~1:nrow(df))) %>%
       dplyr::select_(~ image_time,  ~ index, ~ dplyr::everything()) %>%
-      dplyr::select_(quote(- image_path), quote(- participant_id)) %>%
-      tidyr::gather_("event_code", "boolean",
-                     dico$Code) %>%
+      dplyr::select_(quote(- image_path), quote(- participant_id))
+    df <- suppressWarnings(tidyr::gather_(df, "event_code", "boolean",
+                     dico$Code)) %>%
       dplyr::filter_(~ boolean) %>%
       dplyr::mutate_(group = interp(~ c(0, cumsum(diff(index) != 1)) )) %>%
       dplyr::group_by_(~ event_code,

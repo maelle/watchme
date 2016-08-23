@@ -5,6 +5,7 @@ date: "`r Sys.Date()`"
 output:
   md_document:
     variant: markdown_github
+    toc: true
 ---
 
 [![Build Status](https://travis-ci.org/masalmon/watchme.svg)](https://travis-ci.org/masalmon/watchme)
@@ -106,6 +107,13 @@ results_table <- watchme_prepare_data(path_results=path_results, sep_results=sep
 results_table
 ```
 
+The data frame can be plotted:
+
+
+```{r}
+watchme_plot_raw(results_table)
+
+```
 
 # From the coding results to table of events
 

@@ -49,7 +49,8 @@ create_pass_results <- function(pass){
   results <- watchme_prepare_data(path_results = path_results,
                                   sep_results = sep_results,
                                   path_dico = path_dico,
-                                  sep_dico = sep_dico)
+                                  sep_dico = sep_dico,
+                                  tz = "Asia/Kolkata")
   results$image_path <- gsub('\\"', "", results$image_path)
   results
 }

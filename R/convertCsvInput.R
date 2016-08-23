@@ -93,9 +93,11 @@ watchme_prepare_data <- function(path_results, sep_results,
 
     resultsCoding <-mutate_(resultsCoding,
                             image_time = lazyeval::interp(~lubridate::parse_date_time(
-                              as.character(image_time), tz = tz,
+                              as.character(image_time),
                               orders = c("ymd_hms", "mdy_hms"))))
-
+    resultsCoding <-mutate_(resultsCoding,
+                            image_time = lazyeval::interp(~lubridate::force_tz(
+                              image_time, tzone = tz)))
     ########################################################
     # Find all codes
     ########################################################
