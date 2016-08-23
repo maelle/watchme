@@ -4,6 +4,8 @@
 #' @importFrom dplyr tbl_df mutate_ group_by_ summarize_ ungroup
 #' @importFrom tidyr gather
 #' @importFrom lazyeval interp
+#' @importFrom stats setNames
+#' @importFrom utils combn read.csv read.table
 #' @param path_results the path to the file with coding results
 #' @param sep_results the separator in the file with coding results
 #' @param path_dico the path to the file with the list of annotations

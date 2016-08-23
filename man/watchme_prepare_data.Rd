@@ -45,10 +45,11 @@ which we could even add to the package.
 \examples{
 path_results <- system.file('extdata', 'image_level_pinocchio.csv', package = 'watchme')
 sep_results <- ','
-path_dico <-  system.file('extdata', 'dico_pinocchio.csv', package = 'watchme')
+path_dico <-  system.file('extdata', 'dicoCoding_pinocchio.csv', package = 'watchme')
 sep_dico <- ';'
 data_pictures <- watchme_prepare_data(path_results=path_results, sep_results=sep_results,
               path_dico=path_dico, sep_dico=sep_dico)
-class(wearableCamImagesObject)
+data_pictures
+attr(data_pictures, "dico")
 }
 
