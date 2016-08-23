@@ -94,7 +94,7 @@ watchme_ira <- function(results_list, names_list = NULL,
       tableResults[[code]] <-   quietly_bind_rows(tableResults[[code]])$"result"
       tableResults[[code]] <- tableResults[[code]] %>%
         dplyr::mutate_(code = ~code) %>%
-        dplyr::select_(~code, ~everything())
+        dplyr::select_(~code, ~dplyr::everything())
     }
 
     tableResults <- quietly_bind_rows(tableResults)$"result"
