@@ -19,7 +19,8 @@ Imports: dplyr,
     tidyr,
     lazyeval,
     purrr,
-    tibble
+    tibble,
+    scales
 Suggests: knitr,
     rmarkdown,
     testthat,
