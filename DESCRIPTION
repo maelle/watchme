@@ -20,7 +20,8 @@ Imports: dplyr,
     lazyeval,
     purrr,
     tibble,
-    scales
+    scales,
+    readr
 Suggests: knitr,
     rmarkdown,
     testthat,

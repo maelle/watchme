@@ -59,9 +59,10 @@ watchme_prepare_data <- function(path_results, sep_results,
     # open results
     ########################################################
 
-    resultsCoding <- read.table(path_results, sep = sep_results,
-                                header = TRUE, quote = quote_sign)
-
+    resultsCoding <- readr::read_delim(path_results,
+                                       delim = sep_results,
+                                       col_names = TRUE,
+                                       quote = quote_sign)
 
 
     # When it comes from XnView MP, wrong names
