@@ -24,10 +24,12 @@ watchme_plot_raw <- function(df){
 dataPlot <- suppressWarnings(left_join(dataPlot,
                                        dico, by = c("code" = "Code")))
 
+  values_col <-  viridis_pal()(length(unique(dico$Group)))
+  names(values_col) <- unique(dico$Group)
   p <- ggplot(dataPlot) +
     geom_point(aes_string("image_time", "Meaning", col = "Group"),
                shape = 108, size = 2) +
-    scale_color_viridis(discrete = TRUE) +
+    scale_color_manual(values = values_col) +
     scale_x_datetime(date_breaks = "1 hour",
                      labels = scales::date_format(format = "%Y-%b-%d %H:%M:%S",
                                                   tz = lubridate::tz(dataPlot$image_time))) +
