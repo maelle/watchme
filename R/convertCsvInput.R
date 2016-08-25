@@ -59,10 +59,10 @@ watchme_prepare_data <- function(path_results, sep_results,
     # open results
     ########################################################
 
-    resultsCoding <- readr::read_delim(path_results,
+    resultsCoding <- suppressWarnings(readr::read_delim(path_results,
                                        delim = sep_results,
                                        col_names = TRUE,
-                                       quote = quote_sign)
+                                       quote = quote_sign))
 
 
     # When it comes from XnView MP, wrong names

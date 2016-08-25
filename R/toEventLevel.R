@@ -15,6 +15,7 @@
 #' \item index of the last picture in the event
 #' \item group of the code
 #' \item meaning of the code
+#' \item duration of the event in seconds
 #' \item the attribute \code{dico} \code{tibble} for defining the codes with at least Code and Meaning column, possibly Group column for having groups of codes (e.g. sport encompasses running and swimming)
 #' } event index, , ,  and event_code (character).
 #' @examples
@@ -56,7 +57,10 @@ watchme_aggregate <- function(df, min_no_pictures = 1) {
       dplyr::select_(~ (- Meaning)) %>%
       dplyr::arrange_(~ event_code) %>%
       dplyr::filter_(interp(~ no_pictures >= min_no_pictures)) %>%
-      dplyr::ungroup()
+      dplyr::ungroup()%>%
+      dplyr::mutate_(duration = lazyeval::interp(~as.numeric(difftime(end_time,
+                                                                     start_time,
+                                                                     units = "secs"))))
 
     attr(df, "dico") <- dico
 

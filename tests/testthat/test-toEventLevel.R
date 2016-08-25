@@ -31,6 +31,6 @@ test_that("toEventLevel outputs a data table with the right variables", {
   expect_that(names(eventTable), equals(c("event_code", "start_time", "end_time",
                                           "no_pictures", "start_picture", "end_picture",
                                           "group",
-                                          "meaning")))
+                                          "meaning", "duration")))
 
 })
