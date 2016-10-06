@@ -13,6 +13,8 @@
 #' @param tz timezone
 #' @param quote_sign the quote argument of read.table for the results, default is "\'"
 #' @param participant_id participant ID, if available.
+#' @param robust_reading FALSE by default. When TRUE the annotation column is the
+#' whole line: the file is read once for finding photo paths and times, and once again for finding code.
 #' @return A \code{tibble} with
 #' \itemize{
 #' \item participant_id Name or ID number of the participant (character)
@@ -42,7 +44,8 @@ watchme_prepare_data <- function(path_results, sep_results,
                                  quote_sign = "\'",
                                  participant_id = "no_id",
                                  path_dico, sep_dico,
-                                 tz = "Asia/Kolkata") {
+                                 tz = "Asia/Kolkata",
+                                 robust_reading = FALSE) {
 
     ########################################################
     # Get dico coding
@@ -64,7 +67,6 @@ watchme_prepare_data <- function(path_results, sep_results,
                                        col_names = TRUE,
                                        quote = quote_sign))
 
-
     # When it comes from XnView MP, wrong names
     if(grepl("Filename", names(resultsCoding)[1])){
       names(resultsCoding) <- c("image_path",
@@ -72,15 +74,26 @@ watchme_prepare_data <- function(path_results, sep_results,
                                 "annotation")
       resultsCoding <- resultsCoding[,1:3]
     }
-    # keep only rows with image_path
-    resultsCoding <- dplyr::filter_(resultsCoding, lazyeval::interp(~image_path!= ""))
+
+    if(robust_reading){
+      resultsCoding <- select_(resultsCoding, quote(- annotation))
+      annotation <- suppressWarnings(readr::read_delim(path_results,
+                                                       delim = "[",
+                                                       skip = 1,
+                                                       col_names = "annotation",
+                                                       quote = quote_sign))
+      resultsCoding <- bind_cols(resultsCoding, annotation)
+    }else{
+      # keep only rows with image_path
+      resultsCoding <- dplyr::filter_(resultsCoding, lazyeval::interp(~image_path!= ""))
 
 
-    # if several rows for one image, merge annotation
-    resultsCoding <- resultsCoding %>%
-      group_by_(~ image_path,~ image_time) %>%  # nolint
-      summarize_(annotation = interp(~ toString(annotation))) %>%
-      ungroup()
+      # if several rows for one image, merge annotation
+      resultsCoding <- resultsCoding %>%
+        group_by_(~ image_path,~ image_time) %>%  # nolint
+        summarize_(annotation = interp(~ toString(annotation))) %>%
+        ungroup()
+    }
 
     resultsCoding <- dplyr::mutate_(resultsCoding,
                              participant_id = ~participant_id)

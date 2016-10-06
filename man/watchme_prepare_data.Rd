@@ -5,7 +5,8 @@
 \title{Creates a wearableCamImages object from information read in a csv file.}
 \usage{
 watchme_prepare_data(path_results, sep_results, quote_sign = "'",
-  participant_id = "no_id", path_dico, sep_dico, tz = "Asia/Kolkata")
+  participant_id = "no_id", path_dico, sep_dico, tz = "Asia/Kolkata",
+  robust_reading = FALSE)
 }
 \arguments{
 \item{path_results}{the path to the file with coding results}
@@ -21,6 +22,9 @@ watchme_prepare_data(path_results, sep_results, quote_sign = "'",
 \item{sep_dico}{the separator in the file with the list of annotations}
 
 \item{tz}{timezone}
+
+\item{robust_reading}{FALSE by default. When TRUE the annotation column is the
+whole line: the file is read once for finding photo paths and times, and once again for finding code.}
 }
 \value{
 A \code{tibble} with
