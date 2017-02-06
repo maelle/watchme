@@ -1,0 +1,164 @@
+---
+title: "Data conversion, summarizing and plotting"
+author: "M. Salmon and other CHAI project members"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette   
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+
+---
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+library("knitr")
+library("dplyr")
+```
+
+# Introduction
+
+This package aims at supporting the analysis of annotation results of wearable camera images. The workflow is as follows: 
+
+* participants of a study wear a camera that automatically produces pictures;
+
+* these pictures are then annotated by coders using a list of annotations;
+
+* the results of these annotations are then used to e.g. reconstruct the sequence of activities of a person during the day, or link it to pollution exposure.
+
+This R package supports the last step. This vignette covers the questions "How to convert raw files? How to summarize the data? How to plot the data?". There's another vignette dedicated to interrater agreement.
+
+# Data structure
+
+The structure of data in the package is adapted to data produced using the Doherty Sensecam Browser for annotation (see https://sensecambrowser.codeplex.com/) or with data produced using the XnView MP software. However, you can probably re-format your raw data to use the converting function.
+
+The data needed for using the package are:
+
+* A table of possible annotations, called `dico`. It contains three columns Code, Meaning, Group. The Code is the unique X-digit identifier of an activity. The Meaning, preferably in a single word such as washingYourTeeth, explains the code. The Group allows to group activities into meaningful categories, i.e. washingYourTeeth and washingYourHands could be in the hygiene Group whereas eatingRealFood and snackingOnCheapChocolate could be in the eating Group. If you do not use abbreviations, Code and Meaning can be equal.
+
+```{r}
+path_dico <-  system.file("extdata", "dicoCoding_pinocchio.csv", package = "watchme")
+sep_dico <- ";"
+dico <- read.table(path_dico, sep = sep_dico, header=TRUE)
+dico
+```
+
+
+* A table of coding results. The columns are name/nothing,	image_path/X.Filename.With.Ext,	image_time/EXIF.Date.Taken..Y.m.d_H.M.S.,	annotation/IPTC.Keywords, as provided by a SQL query of the Doherty database. In this case the column name is a repetition of the participant name. The column image_path indicates the path to the picture, or its name. It only needs to be unique for each picture. The column image_time gives the date and time at which the picture was taken, in the format "YMD HMS". The column annotation gives the code(s) associated with the picture. They can be pasted one after another, since we will use grepl() for finding the unique X-digit identifiers, or they can be on separate lines, since all codes for one picture identified by one picture_name will be merged.
+
+These are the two formats the package were created for:
+
+```{r, warning=FALSE, message=FALSE}
+path_results <- system.file("extdata", "image_level_pinocchio.csv", package = "watchme")
+sep_results <- ","
+coding_results <- read.table(path_results, sep = sep_results, header = TRUE)
+coding_results <- dplyr::tbl_df(coding_results)
+coding_results
+
+
+path_results <- system.file("extdata", "sample_coding1.csv", package = "watchme")
+sep_results <- "\t"
+coding_results <- read.table(path_results, sep = sep_results, header = TRUE,
+                    quote  =  "\'")
+coding_results <- dplyr::tbl_df(coding_results)
+coding_results
+```
+
+# From input data to `tibble` data.frames
+
+Using both these inputs, we create a tibble on which operations will be performed.
+
+The object has the following variables:
+
+* participant_id, Name or ID number of the participant (character)
+
+* image_time, Path or name of the image in order to be able to identify duplicates (character)
+
+* image_time, Time and date of each image (POSIXt)
+
+* booleanCodes, columns of boolean, indicating if a given code was given to a given picture. codes is a condensed form of this.
+
+* `the attribute` dico, `tibble` for defining the codes with at least Code and Meaning column, and Group column for having groups of codes (e.g. sport encompasses running and swimming)
+
+
+The function used to create such an object is called `watchme_prepare_data`.
+
+For finding both inputs and interpreting them the `watchme_prepare_data` function needs to know the paths to each file, `path_results` and `path_dico` and the separator used in each of them, `sep_results` and `sep_dico`, as well as the timezone corresponding to `image_time`. 
+
+Below we illustrate the use of `watchme_prepare_data`.
+
+```{r, warning=FALSE, message=FALSE}
+library("watchme")
+path_results <- system.file("extdata", "image_level_pinocchio.csv", package = "watchme")
+sep_results <- ","
+path_dico <-  system.file("extdata", "dicoCoding_pinocchio.csv", package = "watchme")
+sep_dico <- ";"
+results_table <- watchme_prepare_data(path_results=path_results, sep_results=sep_results,
+              path_dico=path_dico, sep_dico=sep_dico, tz = "Asia/Kolkata")
+results_table
+```
+
+
+# From the coding results to table of events
+
+Using the annotations from the images, when can easily deduce a sequence of events. For instance having two subsequent pictures of washingYourTeeth taken at respectively t1 and t2 could be interpreted as having a washingYourTeeth event from t1 to t2. The `watchme_aggregate` allows the conversion from a `wearableCamImages` object to a table (`dplyr` class `tbl_df`) with
+
+* event index from 1 to the number of events
+
+* start time (`POSIXt`), 
+
+* end time (`POSIXt`), 
+
+* eventCode (`character`),
+
+* startPicture and endPicture,
+
+* noOfPictures in the event.
+
+If pictures have several codes, then there can be synchronous events.
+
+The function `watchme_aggregate` takes two arguments: a `tibble` created by `watchme_prepare_data` and a minimal duration for the events, in pictures, which is called `minDuration`. Below are two examples.
+
+```{r, warning=FALSE, message=FALSE}
+data("coding_example")
+eventTable <- watchme_aggregate(df = coding_example)
+knitr::kable(head(eventTable))
+eventTable2 <- watchme_aggregate(df = coding_example, min_no_pictures = 2)
+knitr::kable(head(eventTable2))
+```
+
+# Plotting a table of events
+
+The package provides a function using the R `ggplot2` package for plotting sequences of events.
+
+
+
+Below are two examples.
+
+```{r, warning=FALSE, message=FALSE, fig.width=10}
+data("coding1")
+event_table <- watchme_aggregate(df = coding1)
+watchme_plot_sequence(event_table)
+watchme_plot_sequence(event_table, x_axis = "picture")
+
+```
+
+For plotting results from more than one coder, one could do this:
+
+```{r, warning=FALSE, message=FALSE, fig.width=10} 
+data("coding1")
+data("coding2")
+dico <- attr(coding1, "dico")
+event_table1 <- watchme_aggregate(df = coding1)
+event_table1 <- mutate(event_table1, coder = "coder1")
+
+event_table2 <- watchme_aggregate(df = coding2)
+event_table2 <- mutate(event_table2, coder = "coder2")
+
+event_table <- dplyr::bind_rows(event_table1, event_table2)
+
+attr(event_table, "dico") <- dico
+watchme_plot_sequence(event_table) +
+  facet_grid(coder ~ .)
+```
+
+
