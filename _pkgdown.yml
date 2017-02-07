@@ -1,0 +1,47 @@
+title: watchme
+
+templates:
+  params:
+    bootswatch: cerulean
+
+reference:
+  - title: Data conversion
+    contents:
+    - watchme_prepare_data
+    - watchme_combine_results
+    - watchme_aggregate
+  - title: Data visualization
+    contents:
+    - watchme_plot_raw
+    - watchme_plot_sequence
+  - title: Comparison of raters
+    contents:
+    - watchme_output_differences
+    - watchme_ira
+  - title: Example datasets
+    contents:
+    - coding_example
+    - coding1
+    - coding2
+
+articles:
+  - title: Data conversion, summarizing and plotting
+    contents:
+    - intro
+  - title: Calculating interrater agreement
+    contents:
+    - interrater_agreement
+
+navbar:
+  title: watchme
+  type: default
+  left:
+  - text: Home
+    href: index.html
+  - text: Overview
+    href: articles/index.html
+  - text: Reference
+    href: reference/index.html
+  right:
+  - icon: fa-github fa-lg
+    href: https://github.com/masalmon/watchme

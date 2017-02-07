@@ -1,7 +1,6 @@
 #' Combine objects with same pictures but different codes
 #'
 #' @importFrom dplyr tbl_df mutate_ group_by_ summarize_ ungroup
-#' @importFrom tidyr gather
 #' @importFrom lazyeval interp
 #' @param results_list a list of \code{tibble}  created by \code{watchme_prepare_data}.
 #' @param common_codes One or several codes that are common between the objects.

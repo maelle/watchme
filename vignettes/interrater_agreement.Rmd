@@ -1,5 +1,5 @@
 ---
-title: "Calculate interrater agreement"
+title: "Calculating interrater agreement"
 author: "M. Salmon and other CHAI project members"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette   
@@ -21,6 +21,7 @@ An important aspect of coding images is having a list of annotations that provid
 In the package there is a function for getting the times and codes of pictures for which coders disagree, which might be useful for exploring differences when e.g. training coders.
 
 ```{r, warning=FALSE, message=FALSE} 
+library("watchme")
 data("coding1")
 data("coding2")
 results_list <- list(coding1, coding2)

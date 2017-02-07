@@ -1,7 +1,6 @@
 #' Outputs images for which codes are different among coders
 #'
 #' @importFrom dplyr tbl_df mutate_ arrange_ group_by_ left_join filter_ summarize_ select_
-#' @importFrom tidyr gather spread
 #' @param results_list a list of \code{tibble} created by \code{watchme_prepare_data}.
 #' @param names_list (optional) a vector of names for the coders. It must be the same length as results_list
 #' and contains different names.
