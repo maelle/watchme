@@ -52,6 +52,10 @@ In the CHAI project, filenames contain the village ID, the participant ID, the d
 We wrote this function
 
 ```r
+library("purrr")
+library("dplyr")
+library("readr")
+library("tidyr")
 prepare_data_from_df <- function(df, path){
   print(df$filename)
   path_results <- paste0(getwd(), path, df$filename)
@@ -108,7 +112,23 @@ Now there is a list in each line that contains all 5 coding results data.frames 
 We admit it's a quite ugly code but it did its job.
 
 ```r
-
+watchme_combine_results2 <- function(df, common_codes){
+  output <- watchme_combine_results(df, common_codes = common_codes) 
+  dico <- attr(output, "dico")
+  output <- separate_(output,
+                      "participant_id", 
+                      into = c("villageID",
+                               "participant_id",
+                               "session",
+                               "repeated",
+                               "date",
+                               "deviceType",
+                               "deviceID"),
+                      sep = ",") %>%
+    mutate_(date = lazyeval::interp(~ymd(date)))
+  attr(output, "dico") <- dico
+  output
+}
 problem <- tibble()
 notgood <- NULL
 participant_days <- unique(select(tables_participantdays, participantID, date))
@@ -155,7 +175,79 @@ if(nrow(problem) > 0){
                                                  common_codes = c("non_codable"))))
 ```
 
+The table was then unnested and saved. It was still intermediary because we needed to remove calibration pics.
 
+
+```r
+
+tables_participantdays <- ungroup(tables_participantdays)
+tables_participantdays <- select(tables_participantdays, - date)
+tables_participantdays <- unnest(tables_participantdays, table)
+tables_participantdays <- select(tables_participantdays, - participant_id)
+
+tables_participantdays <- mutate(tables_participantdays, image_time = as.character(image_time))
+write_csv(tables_participantdays, path = "intermediary_data/autographer_coding.csv")
+
+```
+
+## Remove calibration pics
+
+At the beginning of each measurements session the autographer was used to take pictures of a clock. This pictures were not included in the study. For each participant-day we knew the name of the first "real" picture of the day and removed the others.
+
+```r
+autographer <- read_csv("intermediary_data/autographer_coding.csv")
+
+############################################################
+#                                                          #
+#                     calibration pics                     #
+#                                                          #
+############################################################
+calibration <- read_csv("raw_data/calibration_pics.csv")
+names(calibration) <- c("filename", "startlabel")
+calibration <- mutate(calibration, startlabel = gsub("\\\t", "", startlabel))
+calibration <- mutate(calibration, filename = paste0(filename, ".csv"))
+calibration <- mutate(calibration, filename = gsub("-", "_", filename))
+calibration <- by_row(calibration, function(df){
+  output <- parse_filename(df$filename)
+  select_(output, quote(- filename))
+}) %>%
+  unnest(.out) 
+calibration <- mutate(calibration, calibpic = TRUE)
+calibration <- mutate(calibration, participantday = paste(participantID, date))
+calibration <- arrange(calibration, participantday)
+
+
+############################################################
+#                                                          #
+#                     find first pic                       #
+#                                                          #
+############################################################
+
+autographerbis <- mutate(autographer, participantday = paste(participantID, date))
+autographerbis <- arrange(autographerbis, participantday)
+calibration <- filter(calibration, participantday %in%autographerbis$participantday)
+
+autographerbis <- split(autographerbis, autographerbis$participantday)
+
+
+calibrationbis <- split(calibration, calibration$participantday)
+
+findpics <- function(coding_df, calibration_df){
+  firstpic <- min(which(grepl(calibration_df$startlabel[1], coding_df$image_path)))
+  coding_df[firstpic:nrow(coding_df),]
+}
+
+autographerbis <- map2(autographerbis, calibrationbis, findpics)
+autographerbis <- bind_rows(autographerbis)
+
+############################################################
+#                                                          #
+#                           save                           #
+#                                                          #
+############################################################
+
+write_csv(autographerbis, path = "final_data/autographer_coding.csv")
+```
 
 # Data checks
 
@@ -163,10 +255,98 @@ if(nrow(problem) > 0){
 
 After each session, the autographer camera produces a file which is a table of all images times and paths. We checked that the number of annotated pictures was equal to the number of pictures according to this file. In the cases where it was not, it was checked whether the pictures had been deleted for a good reason, e.g. privacy issue or their belonging to another participant-day whose pictures had not been removed from the camera yet.
 
-## Checks based on code
+This is how we extracted the number of images from the autographer file.
+
+```r
+# get paths
+files <- dir(paste0(getwd(), "/raw_data/ImageDat/"))
+files <- files[grepl("dat", files)]
+files <- chaimagic::batch_parse_filename(files)
+files <- files$dataOk
+
+find_count <- function(df){
+  # open imageDAT file
+  imagedat <- xml2::read_xml(paste0(getwd(), "/raw_data/ImageDat/", df$filename[1]))
+
+  # count lines
+  recs <- xml2::xml_find_all(imagedat, "//Image")
+  return(length(xml2::xml_text(recs)))
+  
+}
+
+# now add columns with count
+files <- files %>% 
+  by_row(find_count, .to = "no_of_pics", .collate = "col")
+
+write_csv(files, path = "raw_data/imageDAT.csv")
+```
+
+## Checks based on codes
 
 ### Compulsory codes
 
+For each pic, it was compulsory to have exactly one of the following codes: non_codable, indoors, outdoors, in_vehicle, mixed (neither indoors nor outdoors, e.g. on a doorstep). This is how we identified problematic pics, whose annotations were corrected by the same coder who had coded the pass (except one coder who had by then left the study) until there was no issue.
+
+```r
+autographer <- purrr::by_row(autographer,
+              function(df){
+                sum(df$non_codable + df$indoors + df$outdoors + df$mixed + df$in_vehicle)
+              }, .to = "loc_info", .collate = "cols")
+
+filter(autographer, loc_info %in% c(0, 2)) %>%
+       select(participantID, date, image_time, image_path, non_codable, indoors, outdoors,
+              mixed, in_vehicle, loc_info) %>%
+  write_csv("raw_data/problems/not_one_location.csv")
+```
+
 ### Codes incompatibility
+
+We also had checks based on codes incompatibility only: it was impossible to have more than 1 code for the group occupation or more than 1 code for the group travel. For both groups, it was possible to have 0 or 1 code. This is how we find problematic pics.
+
+```r
+############################################################
+#                                                          #
+#                          travel                          #
+#                                                          #
+############################################################
+autographer <- filter(autographer, !non_codable)
+# Travel by bus;Travel by bus;Travel
+# Travel by bicycle;Travel by bicycle;Travel
+# Travel by auto;Travel by auto;Travel
+# Travel by motorcycle;Travel by motorcycle;Travel
+# Participant presence on road;Participant presence on road;Travel
+autographer <- purrr::by_row(autographer,
+                             function(df){
+                               sum(df$travel_by_bus + df$travel_by_bicycle + df$travel_by_auto + df$travel_by_motorcycle +
+                                     df$participant_presence_on_road)
+                             }, .to = "travel_info", .collate = "cols")
+filter(autographer, travel_info == 2) %>%
+  select(participantID, date, image_time, image_path, 
+         dplyr::contains("travel"), participant_presence_on_road, travel_info) %>%
+  write_csv("raw_data/problems/not_one_travel.csv")
+  
+############################################################
+#                                                          #
+#                        occupation                        #
+#                                                          #
+############################################################
+
+# Presence at Office or Shop;Presence at Office or Shop;Occupation
+# Presence at Work Field;Presence at Work Field;Occupation
+# Presence in Industry;Presence in Industry;Occupation
+# Presence in Informal Work;Presence in Informal Work;Occupation
+autographer <- purrr::by_row(autographer,
+                             function(df){
+                               sum(df$presence_at_office_or_shop + df$presence_in_industry + 
+                                     df$presence_in_informal_work  +
+                                     df$presence_at_work_field)
+                             }, .to = "occup_info", .collate = "cols")
+filter(autographer, occup_info == 2) %>%
+  select(participantID, date, image_time, image_path, 
+         presence_at_office_or_shop, presence_in_industry,
+         presence_in_informal_work, presence_at_work_field,
+         occup_info) %>%
+  write_csv("raw_data/problems/not_one_occup.csv")
+```
 
 ## Comparisons between coders

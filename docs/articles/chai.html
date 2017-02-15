@@ -252,7 +252,11 @@ names_list &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="
 <h2 class="hasAnchor">
 <html><body><a href="#conversion-of-all-files" class="anchor"> </a></body></html>Conversion of all files</h2>
 <p>We wrote this function</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">prepare_data_from_df &lt;-<span class="st"> </span>function(df, path){
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(<span class="st">"purrr"</span>)
+<span class="kw">library</span>(<span class="st">"dplyr"</span>)
+<span class="kw">library</span>(<span class="st">"readr"</span>)
+<span class="kw">library</span>(<span class="st">"tidyr"</span>)
+prepare_data_from_df &lt;-<span class="st"> </span>function(df, path){
   <span class="kw">print</span>(df$filename)
   path_results &lt;-<span class="st"> </span><span class="kw">paste0</span>(<span class="kw">getwd</span>(), path, df$filename)
   sep_results &lt;-<span class="st"> "</span><span class="ch">\t</span><span class="st">"</span>
@@ -293,7 +297,23 @@ tables_participantdays &lt;-<span class="st"> </span>tables_participantdays %&gt
 <html><body><a href="#binding-of-the-5-passes-of-each-day" class="anchor"> </a></body></html>Binding of the 5 passes of each day</h2>
 <p>Now there is a list in each line that contains all 5 coding results data.frames from that participant-day. They are then combined after identifying problematic participant-days where e.g. one of the passes had less pictures than the others. Such problematic files were corrected until there was no formatting issues at all.</p>
 <p>We admit it’s a quite ugly code but it did its job.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">watchme_combine_results2 &lt;-<span class="st"> </span>function(df, common_codes){
+  output &lt;-<span class="st"> </span><span class="kw"><a href="../reference/watchme_combine_results.html">watchme_combine_results</a></span>(df, <span class="dt">common_codes =</span> common_codes) 
+  dico &lt;-<span class="st"> </span><span class="kw">attr</span>(output, <span class="st">"dico"</span>)
+  output &lt;-<span class="st"> </span><span class="kw">separate_</span>(output,
+                      <span class="st">"participant_id"</span>, 
+                      <span class="dt">into =</span> <span class="kw">c</span>(<span class="st">"villageID"</span>,
+                               <span class="st">"participant_id"</span>,
+                               <span class="st">"session"</span>,
+                               <span class="st">"repeated"</span>,
+                               <span class="st">"date"</span>,
+                               <span class="st">"deviceType"</span>,
+                               <span class="st">"deviceID"</span>),
+                      <span class="dt">sep =</span> <span class="st">","</span>) %&gt;%
+<span class="st">    </span><span class="kw">mutate_</span>(<span class="dt">date =</span> lazyeval::<span class="kw">interp</span>(~<span class="kw">ymd</span>(date)))
+  <span class="kw">attr</span>(output, <span class="st">"dico"</span>) &lt;-<span class="st"> </span>dico
+  output
+}
 problem &lt;-<span class="st"> </span><span class="kw">tibble</span>()
 notgood &lt;-<span class="st"> </span><span class="ot">NULL</span>
 participant_days &lt;-<span class="st"> </span><span class="kw">unique</span>(<span class="kw">select</span>(tables_participantdays, participantID, date))
@@ -338,6 +358,72 @@ if(<span class="kw">nrow</span>(problem) &gt;<span class="st"> </span><span clas
   tables_participantdays &lt;-<span class="st"> </span>tables_participantdays[-<span class="st"> </span>notgood,] %&gt;%
 <span class="st">    </span><span class="kw">mutate</span>(<span class="dt">table =</span> <span class="kw">list</span>(<span class="kw">watchme_combine_results2</span>(table[[<span class="dv">1</span>]],
                                                  <span class="dt">common_codes =</span> <span class="kw">c</span>(<span class="st">"non_codable"</span>))))</code></pre></div>
+<p>The table was then unnested and saved. It was still intermediary because we needed to remove calibration pics.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">
+tables_participantdays &lt;-<span class="st"> </span><span class="kw">ungroup</span>(tables_participantdays)
+tables_participantdays &lt;-<span class="st"> </span><span class="kw">select</span>(tables_participantdays, -<span class="st"> </span>date)
+tables_participantdays &lt;-<span class="st"> </span><span class="kw">unnest</span>(tables_participantdays, table)
+tables_participantdays &lt;-<span class="st"> </span><span class="kw">select</span>(tables_participantdays, -<span class="st"> </span>participant_id)
+
+tables_participantdays &lt;-<span class="st"> </span><span class="kw">mutate</span>(tables_participantdays, <span class="dt">image_time =</span> <span class="kw">as.character</span>(image_time))
+<span class="kw">write_csv</span>(tables_participantdays, <span class="dt">path =</span> <span class="st">"intermediary_data/autographer_coding.csv"</span>)</code></pre></div>
+</div>
+<div id="remove-calibration-pics" class="section level2">
+<h2 class="hasAnchor">
+<html><body><a href="#remove-calibration-pics" class="anchor"> </a></body></html>Remove calibration pics</h2>
+<p>At the beginning of each measurements session the autographer was used to take pictures of a clock. This pictures were not included in the study. For each participant-day we knew the name of the first “real” picture of the day and removed the others.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">autographer &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span class="st">"intermediary_data/autographer_coding.csv"</span>)
+
+############################################################
+<span class="co">#                                                          #</span>
+<span class="co">#                     calibration pics                     #</span>
+<span class="co">#                                                          #</span>
+############################################################
+calibration &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span class="st">"raw_data/calibration_pics.csv"</span>)
+<span class="kw">names</span>(calibration) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">"filename"</span>, <span class="st">"startlabel"</span>)
+calibration &lt;-<span class="st"> </span><span class="kw">mutate</span>(calibration, <span class="dt">startlabel =</span> <span class="kw">gsub</span>(<span class="st">"</span><span class="ch">\\\t</span><span class="st">"</span>, <span class="st">""</span>, startlabel))
+calibration &lt;-<span class="st"> </span><span class="kw">mutate</span>(calibration, <span class="dt">filename =</span> <span class="kw">paste0</span>(filename, <span class="st">".csv"</span>))
+calibration &lt;-<span class="st"> </span><span class="kw">mutate</span>(calibration, <span class="dt">filename =</span> <span class="kw">gsub</span>(<span class="st">"-"</span>, <span class="st">"_"</span>, filename))
+calibration &lt;-<span class="st"> </span><span class="kw">by_row</span>(calibration, function(df){
+  output &lt;-<span class="st"> </span><span class="kw">parse_filename</span>(df$filename)
+  <span class="kw">select_</span>(output, <span class="kw">quote</span>(-<span class="st"> </span>filename))
+}) %&gt;%
+<span class="st">  </span><span class="kw">unnest</span>(.out) 
+calibration &lt;-<span class="st"> </span><span class="kw">mutate</span>(calibration, <span class="dt">calibpic =</span> <span class="ot">TRUE</span>)
+calibration &lt;-<span class="st"> </span><span class="kw">mutate</span>(calibration, <span class="dt">participantday =</span> <span class="kw">paste</span>(participantID, date))
+calibration &lt;-<span class="st"> </span><span class="kw">arrange</span>(calibration, participantday)
+
+
+############################################################
+<span class="co">#                                                          #</span>
+<span class="co">#                     find first pic                       #</span>
+<span class="co">#                                                          #</span>
+############################################################
+
+autographerbis &lt;-<span class="st"> </span><span class="kw">mutate</span>(autographer, <span class="dt">participantday =</span> <span class="kw">paste</span>(participantID, date))
+autographerbis &lt;-<span class="st"> </span><span class="kw">arrange</span>(autographerbis, participantday)
+calibration &lt;-<span class="st"> </span><span class="kw">filter</span>(calibration, participantday %in%autographerbis$participantday)
+
+autographerbis &lt;-<span class="st"> </span><span class="kw">split</span>(autographerbis, autographerbis$participantday)
+
+
+calibrationbis &lt;-<span class="st"> </span><span class="kw">split</span>(calibration, calibration$participantday)
+
+findpics &lt;-<span class="st"> </span>function(coding_df, calibration_df){
+  firstpic &lt;-<span class="st"> </span><span class="kw">min</span>(<span class="kw">which</span>(<span class="kw">grepl</span>(calibration_df$startlabel[<span class="dv">1</span>], coding_df$image_path)))
+  coding_df[firstpic:<span class="kw">nrow</span>(coding_df),]
+}
+
+autographerbis &lt;-<span class="st"> </span><span class="kw">map2</span>(autographerbis, calibrationbis, findpics)
+autographerbis &lt;-<span class="st"> </span><span class="kw">bind_rows</span>(autographerbis)
+
+############################################################
+<span class="co">#                                                          #</span>
+<span class="co">#                           save                           #</span>
+<span class="co">#                                                          #</span>
+############################################################
+
+<span class="kw">write_csv</span>(autographerbis, <span class="dt">path =</span> <span class="st">"final_data/autographer_coding.csv"</span>)</code></pre></div>
 </div>
 </div>
 <div id="data-checks" class="section level1">
@@ -347,17 +433,93 @@ if(<span class="kw">nrow</span>(problem) &gt;<span class="st"> </span><span clas
 <h2 class="hasAnchor">
 <html><body><a href="#number-of-images" class="anchor"> </a></body></html>Number of images</h2>
 <p>After each session, the autographer camera produces a file which is a table of all images times and paths. We checked that the number of annotated pictures was equal to the number of pictures according to this file. In the cases where it was not, it was checked whether the pictures had been deleted for a good reason, e.g. privacy issue or their belonging to another participant-day whose pictures had not been removed from the camera yet.</p>
+<p>This is how we extracted the number of images from the autographer file.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># get paths</span>
+files &lt;-<span class="st"> </span><span class="kw">dir</span>(<span class="kw">paste0</span>(<span class="kw">getwd</span>(), <span class="st">"/raw_data/ImageDat/"</span>))
+files &lt;-<span class="st"> </span>files[<span class="kw">grepl</span>(<span class="st">"dat"</span>, files)]
+files &lt;-<span class="st"> </span>chaimagic::<span class="kw">batch_parse_filename</span>(files)
+files &lt;-<span class="st"> </span>files$dataOk
+
+find_count &lt;-<span class="st"> </span>function(df){
+  <span class="co"># open imageDAT file</span>
+  imagedat &lt;-<span class="st"> </span>xml2::<span class="kw">read_xml</span>(<span class="kw">paste0</span>(<span class="kw">getwd</span>(), <span class="st">"/raw_data/ImageDat/"</span>, df$filename[<span class="dv">1</span>]))
+
+  <span class="co"># count lines</span>
+  recs &lt;-<span class="st"> </span>xml2::<span class="kw">xml_find_all</span>(imagedat, <span class="st">"//Image"</span>)
+  <span class="kw">return</span>(<span class="kw">length</span>(xml2::<span class="kw">xml_text</span>(recs)))
+  
+}
+
+<span class="co"># now add columns with count</span>
+files &lt;-<span class="st"> </span>files %&gt;%<span class="st"> </span>
+<span class="st">  </span><span class="kw">by_row</span>(find_count, <span class="dt">.to =</span> <span class="st">"no_of_pics"</span>, <span class="dt">.collate =</span> <span class="st">"col"</span>)
+
+<span class="kw">write_csv</span>(files, <span class="dt">path =</span> <span class="st">"raw_data/imageDAT.csv"</span>)</code></pre></div>
 </div>
-<div id="checks-based-on-code" class="section level2">
+<div id="checks-based-on-codes" class="section level2">
 <h2 class="hasAnchor">
-<html><body><a href="#checks-based-on-code" class="anchor"> </a></body></html>Checks based on code</h2>
+<html><body><a href="#checks-based-on-codes" class="anchor"> </a></body></html>Checks based on codes</h2>
 <div id="compulsory-codes" class="section level3">
 <h3 class="hasAnchor">
 <html><body><a href="#compulsory-codes" class="anchor"> </a></body></html>Compulsory codes</h3>
+<p>For each pic, it was compulsory to have exactly one of the following codes: non_codable, indoors, outdoors, in_vehicle, mixed (neither indoors nor outdoors, e.g. on a doorstep). This is how we identified problematic pics, whose annotations were corrected by the same coder who had coded the pass (except one coder who had by then left the study) until there was no issue.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">autographer &lt;-<span class="st"> </span>purrr::<span class="kw">by_row</span>(autographer,
+              function(df){
+                <span class="kw">sum</span>(df$non_codable +<span class="st"> </span>df$indoors +<span class="st"> </span>df$outdoors +<span class="st"> </span>df$mixed +<span class="st"> </span>df$in_vehicle)
+              }, <span class="dt">.to =</span> <span class="st">"loc_info"</span>, <span class="dt">.collate =</span> <span class="st">"cols"</span>)
+
+<span class="kw">filter</span>(autographer, loc_info %in%<span class="st"> </span><span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">2</span>)) %&gt;%
+<span class="st">       </span><span class="kw">select</span>(participantID, date, image_time, image_path, non_codable, indoors, outdoors,
+              mixed, in_vehicle, loc_info) %&gt;%
+<span class="st">  </span><span class="kw">write_csv</span>(<span class="st">"raw_data/problems/not_one_location.csv"</span>)</code></pre></div>
 </div>
 <div id="codes-incompatibility" class="section level3">
 <h3 class="hasAnchor">
 <html><body><a href="#codes-incompatibility" class="anchor"> </a></body></html>Codes incompatibility</h3>
+<p>We also had checks based on codes incompatibility only: it was impossible to have more than 1 code for the group occupation or more than 1 code for the group travel. For both groups, it was possible to have 0 or 1 code. This is how we find problematic pics.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">############################################################
+<span class="co">#                                                          #</span>
+<span class="co">#                          travel                          #</span>
+<span class="co">#                                                          #</span>
+############################################################
+autographer &lt;-<span class="st"> </span><span class="kw">filter</span>(autographer, !non_codable)
+<span class="co"># Travel by bus;Travel by bus;Travel</span>
+<span class="co"># Travel by bicycle;Travel by bicycle;Travel</span>
+<span class="co"># Travel by auto;Travel by auto;Travel</span>
+<span class="co"># Travel by motorcycle;Travel by motorcycle;Travel</span>
+<span class="co"># Participant presence on road;Participant presence on road;Travel</span>
+autographer &lt;-<span class="st"> </span>purrr::<span class="kw">by_row</span>(autographer,
+                             function(df){
+                               <span class="kw">sum</span>(df$travel_by_bus +<span class="st"> </span>df$travel_by_bicycle +<span class="st"> </span>df$travel_by_auto +<span class="st"> </span>df$travel_by_motorcycle +
+<span class="st">                                     </span>df$participant_presence_on_road)
+                             }, <span class="dt">.to =</span> <span class="st">"travel_info"</span>, <span class="dt">.collate =</span> <span class="st">"cols"</span>)
+<span class="kw">filter</span>(autographer, travel_info ==<span class="st"> </span><span class="dv">2</span>) %&gt;%
+<span class="st">  </span><span class="kw">select</span>(participantID, date, image_time, image_path, 
+         dplyr::<span class="kw">contains</span>(<span class="st">"travel"</span>), participant_presence_on_road, travel_info) %&gt;%
+<span class="st">  </span><span class="kw">write_csv</span>(<span class="st">"raw_data/problems/not_one_travel.csv"</span>)
+  
+############################################################
+<span class="co">#                                                          #</span>
+<span class="co">#                        occupation                        #</span>
+<span class="co">#                                                          #</span>
+############################################################
+
+<span class="co"># Presence at Office or Shop;Presence at Office or Shop;Occupation</span>
+<span class="co"># Presence at Work Field;Presence at Work Field;Occupation</span>
+<span class="co"># Presence in Industry;Presence in Industry;Occupation</span>
+<span class="co"># Presence in Informal Work;Presence in Informal Work;Occupation</span>
+autographer &lt;-<span class="st"> </span>purrr::<span class="kw">by_row</span>(autographer,
+                             function(df){
+                               <span class="kw">sum</span>(df$presence_at_office_or_shop +<span class="st"> </span>df$presence_in_industry +<span class="st"> </span>
+<span class="st">                                     </span>df$presence_in_informal_work  +
+<span class="st">                                     </span>df$presence_at_work_field)
+                             }, <span class="dt">.to =</span> <span class="st">"occup_info"</span>, <span class="dt">.collate =</span> <span class="st">"cols"</span>)
+<span class="kw">filter</span>(autographer, occup_info ==<span class="st"> </span><span class="dv">2</span>) %&gt;%
+<span class="st">  </span><span class="kw">select</span>(participantID, date, image_time, image_path, 
+         presence_at_office_or_shop, presence_in_industry,
+         presence_in_informal_work, presence_at_work_field,
+         occup_info) %&gt;%
+<span class="st">  </span><span class="kw">write_csv</span>(<span class="st">"raw_data/problems/not_one_occup.csv"</span>)</code></pre></div>
 </div>
 </div>
 <div id="comparisons-between-coders" class="section level2">
@@ -384,12 +546,13 @@ if(<span class="kw">nrow</span>(problem) &gt;<span class="st"> </span><span clas
 <li><a href="#parsing-of-filenames">Parsing of filenames</a></li>
       <li><a href="#conversion-of-all-files">Conversion of all files</a></li>
       <li><a href="#binding-of-the-5-passes-of-each-day">Binding of the 5 passes of each day</a></li>
+      <li><a href="#remove-calibration-pics">Remove calibration pics</a></li>
       </ul>
 </li>
       <li>
 <a href="#data-checks">Data checks</a><ul class="nav nav-pills nav-stacked">
 <li><a href="#number-of-images">Number of images</a></li>
-      <li><a href="#checks-based-on-code">Checks based on code</a></li>
+      <li><a href="#checks-based-on-codes">Checks based on codes</a></li>
       <li><a href="#comparisons-between-coders">Comparisons between coders</a></li>
       </ul>
 </li>
