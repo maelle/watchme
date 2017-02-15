@@ -58,7 +58,7 @@ path_results <- system.file("extdata", "image_level_pinocchio.csv", package = "w
 sep_results <- ","
 coding_results <- read.table(path_results, sep = sep_results, header = TRUE)
 coding_results <- dplyr::tbl_df(coding_results)
-coding_results
+coding_results %>% head() %>% knitr::kable()
 
 
 path_results <- system.file("extdata", "sample_coding1.csv", package = "watchme")
@@ -66,29 +66,28 @@ sep_results <- "\t"
 coding_results <- read.table(path_results, sep = sep_results, header = TRUE,
                     quote  =  "\'")
 coding_results <- dplyr::tbl_df(coding_results)
-coding_results
+coding_results %>% head() %>% knitr::kable()
 ```
 
 # From input data to `tibble` data.frames
 
-Using both these inputs, we create a tibble on which operations will be performed.
+Using both these inputs, we create a `tibble` on which operations will be performed.
 
-The object has the following variables:
+The `tibble` has the following variables:
 
 * participant_id, Name or ID number of the participant (character)
 
-* image_time, Path or name of the image in order to be able to identify duplicates (character)
+* image_path, Path or name of the image in order to be able to identify duplicates (character)
 
 * image_time, Time and date of each image (POSIXt)
 
-* booleanCodes, columns of boolean, indicating if a given code was given to a given picture. codes is a condensed form of this.
+* Columns of boolean, indicating if a given code was given to a given picture.
 
-* `the attribute` dico, `tibble` for defining the codes with at least Code and Meaning column, and Group column for having groups of codes (e.g. sport encompasses running and swimming)
+* `the attribute` dico, which is a `tibble`.
 
+The function used to create such a `tibble` is called `watchme_prepare_data`.
 
-The function used to create such an object is called `watchme_prepare_data`.
-
-For finding both inputs and interpreting them the `watchme_prepare_data` function needs to know the paths to each file, `path_results` and `path_dico` and the separator used in each of them, `sep_results` and `sep_dico`, as well as the timezone corresponding to `image_time`. 
+For finding both inputs and interpreting them the `watchme_prepare_data` function needs to know the paths to each file, `path_results` and `path_dico` and the separator used in each of them, `sep_results` and `sep_dico`, as well as the timezone corresponding to `image_time`. `sep_results` and `sep_dico` might seem to be a bit of a hassle but we wanted to accomodate for different formats.
 
 Below we illustrate the use of `watchme_prepare_data`.
 
@@ -100,29 +99,32 @@ path_dico <-  system.file("extdata", "dicoCoding_pinocchio.csv", package = "watc
 sep_dico <- ";"
 results_table <- watchme_prepare_data(path_results=path_results, sep_results=sep_results,
               path_dico=path_dico, sep_dico=sep_dico, tz = "Asia/Kolkata")
-results_table
+results_table %>% head() %>% knitr::kable()
 ```
 
+In the case of the CHAI project, we had many coding results files from XnView MP and some of them had annotations spread over several columns. Because of this we added the `robust_reading` option which is FALSE by default. When TRUE each results file is read twice, once for finding image_time and image_path, once for finding annotation by considering each line as a single variable. This way we didn't need to care too much about the number of columns of annotations, even if in theory it should have been one column only.
 
 # From the coding results to table of events
 
 Using the annotations from the images, when can easily deduce a sequence of events. For instance having two subsequent pictures of washingYourTeeth taken at respectively t1 and t2 could be interpreted as having a washingYourTeeth event from t1 to t2. The `watchme_aggregate` allows the conversion from a `wearableCamImages` object to a table (`dplyr` class `tbl_df`) with
 
-* event index from 1 to the number of events
+* event_code, group, meaning
 
-* start time (`POSIXt`), 
+* start_time (`POSIXt`), 
 
-* end time (`POSIXt`), 
+* end_time (`POSIXt`), 
 
 * eventCode (`character`),
 
-* startPicture and endPicture,
+* start_picture and end_picture,
 
-* noOfPictures in the event.
+* no_pictures in the event,
+
+* duration in seconds.
 
 If pictures have several codes, then there can be synchronous events.
 
-The function `watchme_aggregate` takes two arguments: a `tibble` created by `watchme_prepare_data` and a minimal duration for the events, in pictures, which is called `minDuration`. Below are two examples.
+The function `watchme_aggregate` takes two arguments: a `tibble` created by `watchme_prepare_data` and a minimal duration for the events, in pictures, which is called `min_no_pictures`. Below are two examples.
 
 ```{r, warning=FALSE, message=FALSE}
 data("coding_example")

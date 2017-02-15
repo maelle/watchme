@@ -122,12 +122,8 @@ The code does not look for conflicts.</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>library</span>(<span class='st'>"dplyr"</span>)</div><div class='output co'>#&gt; <span class='message'></span>
-#&gt; <span class='message'>Attaching package: ‘dplyr’</span></div><div class='output co'>#&gt; <span class='message'>The following objects are masked from ‘package:stats’:</span>
-#&gt; <span class='message'></span>
-#&gt; <span class='message'>    filter, lag</span></div><div class='output co'>#&gt; <span class='message'>The following objects are masked from ‘package:base’:</span>
-#&gt; <span class='message'></span>
-#&gt; <span class='message'>    intersect, setdiff, setequal, union</span></div><div class='input'><span class='no'>passes</span> <span class='kw'>&lt;-</span> <span class='fu'>c</span>(<span class='st'>"CK"</span>, <span class='st'>"IO"</span>, <span class='st'>"OP"</span>, <span class='st'>"PM"</span>, <span class='st'>"TP"</span>)
+    <pre class="examples"><div class='input'><span class='fu'>library</span>(<span class='st'>"dplyr"</span>)
+<span class='no'>passes</span> <span class='kw'>&lt;-</span> <span class='fu'>c</span>(<span class='st'>"CK"</span>, <span class='st'>"IO"</span>, <span class='st'>"OP"</span>, <span class='st'>"PM"</span>, <span class='st'>"TP"</span>)
 
 <span class='no'>create_pass_results</span> <span class='kw'>&lt;-</span> <span class='kw'>function</span>(<span class='no'>pass</span>){
   <span class='no'>path_results</span> <span class='kw'>&lt;-</span> <span class='fu'>system.file</span>(<span class='st'>'extdata'</span>, <span class='fu'>paste0</span>(<span class='st'>"oneday_"</span>, <span class='no'>pass</span>, <span class='st'>".csv"</span>),

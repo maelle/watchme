@@ -112,58 +112,120 @@ dico</code></pre></div>
 sep_results &lt;-<span class="st"> ","</span>
 coding_results &lt;-<span class="st"> </span><span class="kw">read.table</span>(path_results, <span class="dt">sep =</span> sep_results, <span class="dt">header =</span> <span class="ot">TRUE</span>)
 coding_results &lt;-<span class="st"> </span>dplyr::<span class="kw">tbl_df</span>(coding_results)
-coding_results</code></pre></div>
-<pre><code>## # A tibble: 981 × 4
-##         name
-##       &lt;fctr&gt;
-## 1  pinocchio
-## 2  pinocchio
-## 3  pinocchio
-## 4  pinocchio
-## 5  pinocchio
-## 6  pinocchio
-## 7  pinocchio
-## 8  pinocchio
-## 9  pinocchio
-## 10 pinocchio
-## # ... with 971 more rows, and 3 more variables: image_path &lt;fctr&gt;,
-## #   image_time &lt;fctr&gt;, annotation &lt;fctr&gt;</code></pre>
+coding_results %&gt;%<span class="st"> </span><span class="kw">head</span>() %&gt;%<span class="st"> </span>knitr::<span class="kw">kable</span>()</code></pre></div>
+<table class="table">
+<thead><tr class="header">
+<th align="left">name</th>
+<th align="left">image_path</th>
+<th align="left">image_time</th>
+<th align="left">annotation</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">pinocchio</td>
+<td align="left"></td>
+<td align="left">1991-01-23 08:02:00</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">pinocchio</td>
+<td align="left">B00000000_21I6LW_20150603_084228E.JPG</td>
+<td align="left">2015-06-03 08:42:28</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">pinocchio</td>
+<td align="left">015-06-04 08-36-32\B00000001_21I6LW_20150603_084228E.JPG</td>
+<td align="left">2015-06-03 08:42:28</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">pinocchio</td>
+<td align="left">015-06-04 08-36-32\B00000002_21I6LW_20150603_084236E.JPG</td>
+<td align="left">2015-06-03 08:42:36</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">pinocchio</td>
+<td align="left">B00000003_21I6LW_20150603_084313E.JPG</td>
+<td align="left">2015-06-03 08:43:13</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">pinocchio</td>
+<td align="left">B00000004_21I6LW_20150603_084349E.JPG</td>
+<td align="left">2015-06-03 08:43:49</td>
+<td align="left"></td>
+</tr>
+</tbody>
+</table>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">path_results &lt;-<span class="st"> </span><span class="kw">system.file</span>(<span class="st">"extdata"</span>, <span class="st">"sample_coding1.csv"</span>, <span class="dt">package =</span> <span class="st">"watchme"</span>)
 sep_results &lt;-<span class="st"> "</span><span class="ch">\t</span><span class="st">"</span>
 coding_results &lt;-<span class="st"> </span><span class="kw">read.table</span>(path_results, <span class="dt">sep =</span> sep_results, <span class="dt">header =</span> <span class="ot">TRUE</span>,
                     <span class="dt">quote  =</span>  <span class="st">"</span><span class="ch">\'</span><span class="st">"</span>)
 coding_results &lt;-<span class="st"> </span>dplyr::<span class="kw">tbl_df</span>(coding_results)
-coding_results</code></pre></div>
-<pre><code>## # A tibble: 1,263 × 4
-##                       X.Filename.With.Ext EXIF.Date.Taken..Y.m.d_H.M.S.
-##                                    &lt;fctr&gt;                        &lt;fctr&gt;
-## 1  "B00000000_21I6LW_20150612_115011E.JPG           2015-06-12_11-49-56
-## 2  "B00000001_21I6LW_20150612_115012E.JPG           2015-06-12_11-49-59
-## 3  "B00000002_21I6LW_20150612_115013E.JPG           2015-06-12_11-50-01
-## 4  "B00000003_21I6LW_20150612_115014E.JPG           2015-06-12_11-50-04
-## 5  "B00000004_21I6LW_20150612_115014E.JPG           2015-06-12_11-50-06
-## 6  "B00000005_21I6LW_20150612_115015E.JPG           2015-06-12_11-50-09
-## 7  "B00000006_21I6LW_20150612_115635E.JPG           2015-06-12_11-56-35
-## 8  "B00000007_21I6LW_20150612_115710E.JPG           2015-06-12_11-57-10
-## 9  "B00000008_21I6LW_20150612_120259E.JPG           2015-06-12_12-02-59
-## 10 "B00000009_21I6LW_20150612_120335E.JPG           2015-06-12_12-03-35
-## # ... with 1,253 more rows, and 2 more variables: IPTC.Keywords &lt;fctr&gt;,
-## #   X.... &lt;fctr&gt;</code></pre>
+coding_results %&gt;%<span class="st"> </span><span class="kw">head</span>() %&gt;%<span class="st"> </span>knitr::<span class="kw">kable</span>()</code></pre></div>
+<table class="table">
+<thead><tr class="header">
+<th align="left">X.Filename.With.Ext</th>
+<th align="left">EXIF.Date.Taken..Y.m.d_H.M.S.</th>
+<th align="left">IPTC.Keywords</th>
+<th align="left">X….</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">“B00000000_21I6LW_20150612_115011E.JPG</td>
+<td align="left">2015-06-12_11-49-56</td>
+<td align="left">Non codable</td>
+<td align="left">“,,,</td>
+</tr>
+<tr class="even">
+<td align="left">“B00000001_21I6LW_20150612_115012E.JPG</td>
+<td align="left">2015-06-12_11-49-59</td>
+<td align="left">Non codable</td>
+<td align="left">“,,,</td>
+</tr>
+<tr class="odd">
+<td align="left">“B00000002_21I6LW_20150612_115013E.JPG</td>
+<td align="left">2015-06-12_11-50-01</td>
+<td align="left">Non codable</td>
+<td align="left">“,,,</td>
+</tr>
+<tr class="even">
+<td align="left">“B00000003_21I6LW_20150612_115014E.JPG</td>
+<td align="left">2015-06-12_11-50-04</td>
+<td align="left">Non codable</td>
+<td align="left">“,,,</td>
+</tr>
+<tr class="odd">
+<td align="left">“B00000004_21I6LW_20150612_115014E.JPG</td>
+<td align="left">2015-06-12_11-50-06</td>
+<td align="left">Non codable</td>
+<td align="left">“,,,</td>
+</tr>
+<tr class="even">
+<td align="left">“B00000005_21I6LW_20150612_115015E.JPG</td>
+<td align="left">2015-06-12_11-50-09</td>
+<td align="left">Non codable</td>
+<td align="left">“,,,</td>
+</tr>
+</tbody>
+</table>
 </div>
 <div id="from-input-data-to-tibble-data-frames" class="section level1">
 <h1 class="hasAnchor">
 <html><body><a href="#from-input-data-to-tibble-data-frames" class="anchor"> </a></body></html>From input data to <code>tibble</code> data.frames</h1>
-<p>Using both these inputs, we create a tibble on which operations will be performed.</p>
-<p>The object has the following variables:</p>
+<p>Using both these inputs, we create a <code>tibble</code> on which operations will be performed.</p>
+<p>The <code>tibble</code> has the following variables:</p>
 <ul>
 <li><p>participant_id, Name or ID number of the participant (character)</p></li>
-<li><p>image_time, Path or name of the image in order to be able to identify duplicates (character)</p></li>
+<li><p>image_path, Path or name of the image in order to be able to identify duplicates (character)</p></li>
 <li><p>image_time, Time and date of each image (POSIXt)</p></li>
-<li><p>booleanCodes, columns of boolean, indicating if a given code was given to a given picture. codes is a condensed form of this.</p></li>
-<li><p><code>the attribute</code> dico, <code>tibble</code> for defining the codes with at least Code and Meaning column, and Group column for having groups of codes (e.g. sport encompasses running and swimming)</p></li>
+<li><p>Columns of boolean, indicating if a given code was given to a given picture.</p></li>
+<li><p><code>the attribute</code> dico, which is a <code>tibble</code>.</p></li>
 </ul>
-<p>The function used to create such an object is called <code>watchme_prepare_data</code>.</p>
-<p>For finding both inputs and interpreting them the <code>watchme_prepare_data</code> function needs to know the paths to each file, <code>path_results</code> and <code>path_dico</code> and the separator used in each of them, <code>sep_results</code> and <code>sep_dico</code>, as well as the timezone corresponding to <code>image_time</code>.</p>
+<p>The function used to create such a <code>tibble</code> is called <code>watchme_prepare_data</code>.</p>
+<p>For finding both inputs and interpreting them the <code>watchme_prepare_data</code> function needs to know the paths to each file, <code>path_results</code> and <code>path_dico</code> and the separator used in each of them, <code>sep_results</code> and <code>sep_dico</code>, as well as the timezone corresponding to <code>image_time</code>. <code>sep_results</code> and <code>sep_dico</code> might seem to be a bit of a hassle but we wanted to accomodate for different formats.</p>
 <p>Below we illustrate the use of <code>watchme_prepare_data</code>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(<span class="st">"watchme"</span>)
 path_results &lt;-<span class="st"> </span><span class="kw">system.file</span>(<span class="st">"extdata"</span>, <span class="st">"image_level_pinocchio.csv"</span>, <span class="dt">package =</span> <span class="st">"watchme"</span>)
@@ -172,38 +234,112 @@ path_dico &lt;-<span class="st">  </span><span class="kw">system.file</span>(<sp
 sep_dico &lt;-<span class="st"> ";"</span>
 results_table &lt;-<span class="st"> </span><span class="kw"><a href="../reference/watchme_prepare_data.html">watchme_prepare_data</a></span>(<span class="dt">path_results=</span>path_results, <span class="dt">sep_results=</span>sep_results,
               <span class="dt">path_dico=</span>path_dico, <span class="dt">sep_dico=</span>sep_dico, <span class="dt">tz =</span> <span class="st">"Asia/Kolkata"</span>)
-results_table</code></pre></div>
-<pre><code>## # A tibble: 955 × 10
-##                                                        image_path
-##                                                             &lt;chr&gt;
-## 1  \\2015-06-04 08-36-32\\\\B00000001_21I6LW_20150603_084228E.JPG
-## 2                           B00000000_21I6LW_20150603_084228E.JPG
-## 3  \\2015-06-04 08-36-32\\\\B00000002_21I6LW_20150603_084236E.JPG
-## 4                           B00000003_21I6LW_20150603_084313E.JPG
-## 5                           B00000004_21I6LW_20150603_084349E.JPG
-## 6                           B00000005_21I6LW_20150603_084429E.JPG
-## 7                           B00000006_21I6LW_20150603_084509E.JPG
-## 8                           B00000007_21I6LW_20150603_084624E.JPG
-## 9                           B00000008_21I6LW_20150603_084657E.JPG
-## 10                          B00000009_21I6LW_20150603_084739E.JPG
-## # ... with 945 more rows, and 9 more variables: image_time &lt;dttm&gt;,
-## #   participant_id &lt;chr&gt;, `01a` &lt;lgl&gt;, `01b` &lt;lgl&gt;, `01c` &lt;lgl&gt;,
-## #   `02b` &lt;lgl&gt;, `02a` &lt;lgl&gt;, `03a` &lt;lgl&gt;, `01.` &lt;lgl&gt;</code></pre>
+results_table %&gt;%<span class="st"> </span><span class="kw">head</span>() %&gt;%<span class="st"> </span>knitr::<span class="kw">kable</span>()</code></pre></div>
+<table class="table">
+<thead><tr class="header">
+<th align="left">image_path</th>
+<th align="left">image_time</th>
+<th align="left">participant_id</th>
+<th align="left">01a</th>
+<th align="left">01b</th>
+<th align="left">01c</th>
+<th align="left">02b</th>
+<th align="left">02a</th>
+<th align="left">03a</th>
+<th align="left">01.</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">015-06-04 08-36-32\B00000001_21I6LW_20150603_084228E.JPG</td>
+<td align="left">2015-06-03 08:42:28</td>
+<td align="left">no_id</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="even">
+<td align="left">B00000000_21I6LW_20150603_084228E.JPG</td>
+<td align="left">2015-06-03 08:42:28</td>
+<td align="left">no_id</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="odd">
+<td align="left">015-06-04 08-36-32\B00000002_21I6LW_20150603_084236E.JPG</td>
+<td align="left">2015-06-03 08:42:36</td>
+<td align="left">no_id</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="even">
+<td align="left">B00000003_21I6LW_20150603_084313E.JPG</td>
+<td align="left">2015-06-03 08:43:13</td>
+<td align="left">no_id</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="odd">
+<td align="left">B00000004_21I6LW_20150603_084349E.JPG</td>
+<td align="left">2015-06-03 08:43:49</td>
+<td align="left">no_id</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="even">
+<td align="left">B00000005_21I6LW_20150603_084429E.JPG</td>
+<td align="left">2015-06-03 08:44:29</td>
+<td align="left">no_id</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+</tr>
+</tbody>
+</table>
+<p>In the case of the CHAI project, we had many coding results files from XnView MP and some of them had annotations spread over several columns. Because of this we added the <code>robust_reading</code> option which is FALSE by default. When TRUE each results file is read twice, once for finding image_time and image_path, once for finding annotation by considering each line as a single variable. This way we didn’t need to care too much about the number of columns of annotations, even if in theory it should have been one column only.</p>
 </div>
 <div id="from-the-coding-results-to-table-of-events" class="section level1">
 <h1 class="hasAnchor">
 <html><body><a href="#from-the-coding-results-to-table-of-events" class="anchor"> </a></body></html>From the coding results to table of events</h1>
 <p>Using the annotations from the images, when can easily deduce a sequence of events. For instance having two subsequent pictures of washingYourTeeth taken at respectively t1 and t2 could be interpreted as having a washingYourTeeth event from t1 to t2. The <code>watchme_aggregate</code> allows the conversion from a <code>wearableCamImages</code> object to a table (<code>dplyr</code> class <code>tbl_df</code>) with</p>
 <ul>
-<li><p>event index from 1 to the number of events</p></li>
-<li><p>start time (<code>POSIXt</code>),</p></li>
-<li><p>end time (<code>POSIXt</code>),</p></li>
+<li><p>event_code, group, meaning</p></li>
+<li><p>start_time (<code>POSIXt</code>),</p></li>
+<li><p>end_time (<code>POSIXt</code>),</p></li>
 <li><p>eventCode (<code>character</code>),</p></li>
-<li><p>startPicture and endPicture,</p></li>
-<li><p>noOfPictures in the event.</p></li>
+<li><p>start_picture and end_picture,</p></li>
+<li><p>no_pictures in the event,</p></li>
+<li><p>duration in seconds.</p></li>
 </ul>
 <p>If pictures have several codes, then there can be synchronous events.</p>
-<p>The function <code>watchme_aggregate</code> takes two arguments: a <code>tibble</code> created by <code>watchme_prepare_data</code> and a minimal duration for the events, in pictures, which is called <code>minDuration</code>. Below are two examples.</p>
+<p>The function <code>watchme_aggregate</code> takes two arguments: a <code>tibble</code> created by <code>watchme_prepare_data</code> and a minimal duration for the events, in pictures, which is called <code>min_no_pictures</code>. Below are two examples.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">data</span>(<span class="st">"coding_example"</span>)
 eventTable &lt;-<span class="st"> </span><span class="kw"><a href="../reference/watchme_aggregate.html">watchme_aggregate</a></span>(<span class="dt">df =</span> coding_example)
 knitr::<span class="kw">kable</span>(<span class="kw">head</span>(eventTable))</code></pre></div>
