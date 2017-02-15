@@ -47,7 +47,7 @@ dico
 
     * name,image_path,image_time,annotation (SQL query of the Doherty browser database, in this case the column name is a repetition of the participant name)
     
-    * Filename, EXIF:Date Taken [Y-m-d_H-M-S],	IPTC:Keywords	(XnView MP)
+    * a column name containing the word "Filename", EXIF:Date Taken [Y-m-d_H-M-S],	IPTC:Keywords	(XnView MP)
 
 The column image_path/Filename indicates the path to the picture, or its name. It only needs to be unique for each picture. The column image_time/EXIF:Date Taken [Y-m-d_H-M-S] gives the date and time at which the picture was taken, in the format "YMD HMS". The column annotation/IPTC:Keywords gives the code(s) associated with the picture. They can be pasted one after another, since we will use grepl() for finding the unique X-digit identifiers, or they can be on separate lines, since all codes for one picture identified by one picture_name will be merged.
 

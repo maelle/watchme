@@ -31,6 +31,9 @@ articles:
   - title: Calculating interrater agreement
     contents:
     - interrater_agreement
+  - title: Data processing and analysis in the CHAI project
+    contents:
+    - chai
 
 navbar:
   title: watchme

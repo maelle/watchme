@@ -34,7 +34,7 @@ This R package supports the following taks:
 
 * How to calculate interrater agreement? 
 
-This is a minimalist README, but check out the [package website](http://www.masalmon.eu/watchme/) to find more information [about the functions](http://www.masalmon.eu/watchme/reference/index.html), a vignette about [data conversion, summarizing and plotting](http://www.masalmon.eu/watchme/articles/intro.html), and another one [about interrater agreement](http://www.masalmon.eu/watchme/articles/interrater_agreement.html).
+This is a minimalist README, but check out the [package website](http://www.masalmon.eu/watchme/) to find more information [about the functions](http://www.masalmon.eu/watchme/reference/index.html), a vignette about [data conversion, summarizing and plotting](http://www.masalmon.eu/watchme/articles/intro.html), another one [about interrater agreement](http://www.masalmon.eu/watchme/articles/interrater_agreement.html), and [one vignette](http://www.masalmon.eu/watchme/articles/chai.html) describing data processing in the [CHAI project](http://www.chaiproject.org/).
 
 ## Meta
 
