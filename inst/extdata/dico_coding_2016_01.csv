@@ -1,0 +1,24 @@
+Code;Meaning;Group
+Biomass cooking unit;Biomass cooking unit;Cooking
+LPG stove;LPG stove;Cooking
+Other cooking unit;Other cooking unit;Cooking
+Food preparation;Food preparation;Cooking
+Eating ;Eating ;Cooking
+Presence in the kitchen;Presence in the kitchen;Cooking
+Travel by bus;Travel by bus;Travel
+Travel by bicycle;Travel by bicycle;Travel
+Travel by auto;Travel by auto;Travel
+Travel by motorcycle;Travel by motorcycle;Travel
+Participant presence on road;Participant presence on road;Travel
+Presence at Office or Shop;Presence at Office or Shop;Occupation
+Presence at Work Field;Presence at Work Field;Occupation
+Presence in Industry;Presence in Industry;Occupation
+Presence in Informal Work;Presence in Informal Work;Occupation
+Diesel Generator;Diesel Generator;Presence of other combustion
+Smoking;Smoking;Presence of other combustion
+Visible Flame or Smoke;Visible Flame or Smoke;Presence of other combustion
+Indoors;Indoors;Indoor Outdoor
+Outdoors;Outdoors;Indoor Outdoor
+In Vehicle;In Vehicle;Indoor Outdoor
+Mixed;Mixed;Indoor Outdoor
+Non codable;Non codable;Non codable

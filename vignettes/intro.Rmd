@@ -71,6 +71,8 @@ coding_results %>% head() %>% knitr::kable()
 
 # From input data to `tibble` data.frames
 
+## Conversion
+
 Using both these inputs, we create a `tibble` on which operations will be performed.
 
 The `tibble` has the following variables:
@@ -81,7 +83,7 @@ The `tibble` has the following variables:
 
 * image_time, Time and date of each image (POSIXt)
 
-* Columns of boolean, indicating if a given code was given to a given picture.
+* Columns of Booleans, indicating if a given code was given to a given picture.
 
 * `the attribute` dico, which is a `tibble`.
 
@@ -93,18 +95,29 @@ Below we illustrate the use of `watchme_prepare_data`.
 
 ```{r, warning=FALSE, message=FALSE}
 library("watchme")
-path_results <- system.file("extdata", "image_level_pinocchio.csv", package = "watchme")
-sep_results <- ","
-path_dico <-  system.file("extdata", "dicoCoding_pinocchio.csv", package = "watchme")
+path_results <- system.file("extdata", "sample_coding1.csv", package = "watchme")
+sep_results <- "\t"
+path_dico <-  system.file("extdata", "dico_coding_2016_01.csv", package = "watchme")
 sep_dico <- ";"
 results_table <- watchme_prepare_data(path_results=path_results, sep_results=sep_results,
               path_dico=path_dico, sep_dico=sep_dico, tz = "Asia/Kolkata")
 results_table %>% head() %>% knitr::kable()
 ```
 
-In the case of the CHAI project, we had many coding results files from XnView MP and some of them had annotations spread over several columns. Because of this we added the `robust_reading` option which is FALSE by default. When TRUE each results file is read twice, once for finding image_time and image_path, once for finding annotation by considering each line as a single variable. This way we didn't need to care too much about the number of columns of annotations, even if in theory it should have been one column only.
+In the case of the CHAI project, we had many coding results files from XnView MP and some of them had annotations spread over several columns. Because of this we added the `robust_reading` option which is FALSE by default. When TRUE each results file is read twice, once for finding image_path and image_time (which need to be the first and second column, respectively), once for finding annotation by considering each line as a single variable. This way we didn't need to care too much about the number of columns of annotations, even if in theory it should have been one column only.
+
+## Plotting
+
+There is a default function based on `ggplot2`
+
+
+```{r}
+watchme_plot_raw(results_table)
+```
 
 # From the coding results to table of events
+
+## Conversion
 
 Using the annotations from the images, when can easily deduce a sequence of events. For instance having two subsequent pictures of washingYourTeeth taken at respectively t1 and t2 could be interpreted as having a washingYourTeeth event from t1 to t2. The `watchme_aggregate` allows the conversion from a `wearableCamImages` object to a table (`dplyr` class `tbl_df`) with
 
@@ -113,8 +126,6 @@ Using the annotations from the images, when can easily deduce a sequence of even
 * start_time (`POSIXt`), 
 
 * end_time (`POSIXt`), 
-
-* eventCode (`character`),
 
 * start_picture and end_picture,
 
@@ -134,20 +145,21 @@ eventTable2 <- watchme_aggregate(df = coding_example, min_no_pictures = 2)
 knitr::kable(head(eventTable2))
 ```
 
-# Plotting a table of events
+## Plotting a table of events
 
 The package provides a function using the R `ggplot2` package for plotting sequences of events.
 
 
 
-Below are two examples.
+Below are three examples. In the example we give there's only one group of codes, indoor_outdoor, where codes are incompatible, but if plotting several groups of codes, one can use facetting.
 
 ```{r, warning=FALSE, message=FALSE, fig.width=10}
 data("coding1")
 event_table <- watchme_aggregate(df = coding1)
 watchme_plot_sequence(event_table)
 watchme_plot_sequence(event_table, x_axis = "picture")
-
+watchme_plot_sequence(event_table, x_axis = "picture") +
+  facet_grid(group ~ .)
 ```
 
 For plotting results from more than one coder, one could do this:

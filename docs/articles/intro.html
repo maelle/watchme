@@ -215,22 +215,25 @@ coding_results %&gt;%<span class="st"> </span><span class="kw">head</span>() %&g
 <div id="from-input-data-to-tibble-data-frames" class="section level1">
 <h1 class="hasAnchor">
 <html><body><a href="#from-input-data-to-tibble-data-frames" class="anchor"> </a></body></html>From input data to <code>tibble</code> data.frames</h1>
+<div id="conversion" class="section level2">
+<h2 class="hasAnchor">
+<html><body><a href="#conversion" class="anchor"> </a></body></html>Conversion</h2>
 <p>Using both these inputs, we create a <code>tibble</code> on which operations will be performed.</p>
 <p>The <code>tibble</code> has the following variables:</p>
 <ul>
 <li><p>participant_id, Name or ID number of the participant (character)</p></li>
 <li><p>image_path, Path or name of the image in order to be able to identify duplicates (character)</p></li>
 <li><p>image_time, Time and date of each image (POSIXt)</p></li>
-<li><p>Columns of boolean, indicating if a given code was given to a given picture.</p></li>
+<li><p>Columns of Booleans, indicating if a given code was given to a given picture.</p></li>
 <li><p><code>the attribute</code> dico, which is a <code>tibble</code>.</p></li>
 </ul>
 <p>The function used to create such a <code>tibble</code> is called <code>watchme_prepare_data</code>.</p>
 <p>For finding both inputs and interpreting them the <code>watchme_prepare_data</code> function needs to know the paths to each file, <code>path_results</code> and <code>path_dico</code> and the separator used in each of them, <code>sep_results</code> and <code>sep_dico</code>, as well as the timezone corresponding to <code>image_time</code>. <code>sep_results</code> and <code>sep_dico</code> might seem to be a bit of a hassle but we wanted to accomodate for different formats.</p>
 <p>Below we illustrate the use of <code>watchme_prepare_data</code>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(<span class="st">"watchme"</span>)
-path_results &lt;-<span class="st"> </span><span class="kw">system.file</span>(<span class="st">"extdata"</span>, <span class="st">"image_level_pinocchio.csv"</span>, <span class="dt">package =</span> <span class="st">"watchme"</span>)
-sep_results &lt;-<span class="st"> ","</span>
-path_dico &lt;-<span class="st">  </span><span class="kw">system.file</span>(<span class="st">"extdata"</span>, <span class="st">"dicoCoding_pinocchio.csv"</span>, <span class="dt">package =</span> <span class="st">"watchme"</span>)
+path_results &lt;-<span class="st"> </span><span class="kw">system.file</span>(<span class="st">"extdata"</span>, <span class="st">"sample_coding1.csv"</span>, <span class="dt">package =</span> <span class="st">"watchme"</span>)
+sep_results &lt;-<span class="st"> "</span><span class="ch">\t</span><span class="st">"</span>
+path_dico &lt;-<span class="st">  </span><span class="kw">system.file</span>(<span class="st">"extdata"</span>, <span class="st">"dico_coding_2016_01.csv"</span>, <span class="dt">package =</span> <span class="st">"watchme"</span>)
 sep_dico &lt;-<span class="st"> ";"</span>
 results_table &lt;-<span class="st"> </span><span class="kw"><a href="../reference/watchme_prepare_data.html">watchme_prepare_data</a></span>(<span class="dt">path_results=</span>path_results, <span class="dt">sep_results=</span>sep_results,
               <span class="dt">path_dico=</span>path_dico, <span class="dt">sep_dico=</span>sep_dico, <span class="dt">tz =</span> <span class="st">"Asia/Kolkata"</span>)
@@ -240,18 +243,34 @@ results_table %&gt;%<span class="st"> </span><span class="kw">head</span>() %&gt
 <th align="left">image_path</th>
 <th align="left">image_time</th>
 <th align="left">participant_id</th>
-<th align="left">01a</th>
-<th align="left">01b</th>
-<th align="left">01c</th>
-<th align="left">02b</th>
-<th align="left">02a</th>
-<th align="left">03a</th>
-<th align="left">01.</th>
+<th align="left">biomass_cooking_unit</th>
+<th align="left">lpg_stove</th>
+<th align="left">other_cooking_unit</th>
+<th align="left">food_preparation</th>
+<th align="left">eating_</th>
+<th align="left">presence_in_the_kitchen</th>
+<th align="left">travel_by_bus</th>
+<th align="left">travel_by_bicycle</th>
+<th align="left">travel_by_auto</th>
+<th align="left">travel_by_motorcycle</th>
+<th align="left">participant_presence_on_road</th>
+<th align="left">presence_at_office_or_shop</th>
+<th align="left">presence_at_work_field</th>
+<th align="left">presence_in_industry</th>
+<th align="left">presence_in_informal_work</th>
+<th align="left">diesel_generator</th>
+<th align="left">smoking</th>
+<th align="left">visible_flame_or_smoke</th>
+<th align="left">indoors</th>
+<th align="left">outdoors</th>
+<th align="left">in_vehicle</th>
+<th align="left">mixed</th>
+<th align="left">non_codable</th>
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td align="left">015-06-04 08-36-32\B00000001_21I6LW_20150603_084228E.JPG</td>
-<td align="left">2015-06-03 08:42:28</td>
+<td align="left">“B00000000_21I6LW_20150612_115011E.JPG</td>
+<td align="left">2015-06-12 11:49:56</td>
 <td align="left">no_id</td>
 <td align="left">FALSE</td>
 <td align="left">FALSE</td>
@@ -260,10 +279,26 @@ results_table %&gt;%<span class="st"> </span><span class="kw">head</span>() %&gt
 <td align="left">FALSE</td>
 <td align="left">FALSE</td>
 <td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">TRUE</td>
 </tr>
 <tr class="even">
-<td align="left">B00000000_21I6LW_20150603_084228E.JPG</td>
-<td align="left">2015-06-03 08:42:28</td>
+<td align="left">“B00000001_21I6LW_20150612_115012E.JPG</td>
+<td align="left">2015-06-12 11:49:59</td>
 <td align="left">no_id</td>
 <td align="left">FALSE</td>
 <td align="left">FALSE</td>
@@ -272,10 +307,26 @@ results_table %&gt;%<span class="st"> </span><span class="kw">head</span>() %&gt
 <td align="left">FALSE</td>
 <td align="left">FALSE</td>
 <td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">TRUE</td>
 </tr>
 <tr class="odd">
-<td align="left">015-06-04 08-36-32\B00000002_21I6LW_20150603_084236E.JPG</td>
-<td align="left">2015-06-03 08:42:36</td>
+<td align="left">“B00000002_21I6LW_20150612_115013E.JPG</td>
+<td align="left">2015-06-12 11:50:01</td>
 <td align="left">no_id</td>
 <td align="left">FALSE</td>
 <td align="left">FALSE</td>
@@ -284,10 +335,26 @@ results_table %&gt;%<span class="st"> </span><span class="kw">head</span>() %&gt
 <td align="left">FALSE</td>
 <td align="left">FALSE</td>
 <td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">TRUE</td>
 </tr>
 <tr class="even">
-<td align="left">B00000003_21I6LW_20150603_084313E.JPG</td>
-<td align="left">2015-06-03 08:43:13</td>
+<td align="left">“B00000003_21I6LW_20150612_115014E.JPG</td>
+<td align="left">2015-06-12 11:50:04</td>
 <td align="left">no_id</td>
 <td align="left">FALSE</td>
 <td align="left">FALSE</td>
@@ -296,10 +363,26 @@ results_table %&gt;%<span class="st"> </span><span class="kw">head</span>() %&gt
 <td align="left">FALSE</td>
 <td align="left">FALSE</td>
 <td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">TRUE</td>
 </tr>
 <tr class="odd">
-<td align="left">B00000004_21I6LW_20150603_084349E.JPG</td>
-<td align="left">2015-06-03 08:43:49</td>
+<td align="left">“B00000004_21I6LW_20150612_115014E.JPG</td>
+<td align="left">2015-06-12 11:50:06</td>
 <td align="left">no_id</td>
 <td align="left">FALSE</td>
 <td align="left">FALSE</td>
@@ -308,10 +391,26 @@ results_table %&gt;%<span class="st"> </span><span class="kw">head</span>() %&gt
 <td align="left">FALSE</td>
 <td align="left">FALSE</td>
 <td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">TRUE</td>
 </tr>
 <tr class="even">
-<td align="left">B00000005_21I6LW_20150603_084429E.JPG</td>
-<td align="left">2015-06-03 08:44:29</td>
+<td align="left">“B00000005_21I6LW_20150612_115015E.JPG</td>
+<td align="left">2015-06-12 11:50:09</td>
 <td align="left">no_id</td>
 <td align="left">FALSE</td>
 <td align="left">FALSE</td>
@@ -320,20 +419,47 @@ results_table %&gt;%<span class="st"> </span><span class="kw">head</span>() %&gt
 <td align="left">FALSE</td>
 <td align="left">FALSE</td>
 <td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">TRUE</td>
 </tr>
 </tbody>
 </table>
-<p>In the case of the CHAI project, we had many coding results files from XnView MP and some of them had annotations spread over several columns. Because of this we added the <code>robust_reading</code> option which is FALSE by default. When TRUE each results file is read twice, once for finding image_time and image_path, once for finding annotation by considering each line as a single variable. This way we didn’t need to care too much about the number of columns of annotations, even if in theory it should have been one column only.</p>
+<p>In the case of the CHAI project, we had many coding results files from XnView MP and some of them had annotations spread over several columns. Because of this we added the <code>robust_reading</code> option which is FALSE by default. When TRUE each results file is read twice, once for finding image_path and image_time (which need to be the first and second column, respectively), once for finding annotation by considering each line as a single variable. This way we didn’t need to care too much about the number of columns of annotations, even if in theory it should have been one column only.</p>
+</div>
+<div id="plotting" class="section level2">
+<h2 class="hasAnchor">
+<html><body><a href="#plotting" class="anchor"> </a></body></html>Plotting</h2>
+<p>There is a default function based on <code>ggplot2</code></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/watchme_plot_raw.html">watchme_plot_raw</a></span>(results_table)</code></pre></div>
+<pre><code>## Warning: Removed 1606 rows containing missing values (geom_point).</code></pre>
+<p><img src="intro_files/figure-html/unnamed-chunk-5-1.png" width="672"></p>
+</div>
 </div>
 <div id="from-the-coding-results-to-table-of-events" class="section level1">
 <h1 class="hasAnchor">
 <html><body><a href="#from-the-coding-results-to-table-of-events" class="anchor"> </a></body></html>From the coding results to table of events</h1>
+<div id="conversion-1" class="section level2">
+<h2 class="hasAnchor">
+<html><body><a href="#conversion-1" class="anchor"> </a></body></html>Conversion</h2>
 <p>Using the annotations from the images, when can easily deduce a sequence of events. For instance having two subsequent pictures of washingYourTeeth taken at respectively t1 and t2 could be interpreted as having a washingYourTeeth event from t1 to t2. The <code>watchme_aggregate</code> allows the conversion from a <code>wearableCamImages</code> object to a table (<code>dplyr</code> class <code>tbl_df</code>) with</p>
 <ul>
 <li><p>event_code, group, meaning</p></li>
 <li><p>start_time (<code>POSIXt</code>),</p></li>
 <li><p>end_time (<code>POSIXt</code>),</p></li>
-<li><p>eventCode (<code>character</code>),</p></li>
 <li><p>start_picture and end_picture,</p></li>
 <li><p>no_pictures in the event,</p></li>
 <li><p>duration in seconds.</p></li>
@@ -508,17 +634,20 @@ knitr::<span class="kw">kable</span>(<span class="kw">head</span>(eventTable2))<
 </tbody>
 </table>
 </div>
-<div id="plotting-a-table-of-events" class="section level1">
-<h1 class="hasAnchor">
-<html><body><a href="#plotting-a-table-of-events" class="anchor"> </a></body></html>Plotting a table of events</h1>
+<div id="plotting-a-table-of-events" class="section level2">
+<h2 class="hasAnchor">
+<html><body><a href="#plotting-a-table-of-events" class="anchor"> </a></body></html>Plotting a table of events</h2>
 <p>The package provides a function using the R <code>ggplot2</code> package for plotting sequences of events.</p>
-<p>Below are two examples.</p>
+<p>Below are three examples. In the example we give there’s only one group of codes, indoor_outdoor, where codes are incompatible, but if plotting several groups of codes, one can use facetting.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">data</span>(<span class="st">"coding1"</span>)
 event_table &lt;-<span class="st"> </span><span class="kw"><a href="../reference/watchme_aggregate.html">watchme_aggregate</a></span>(<span class="dt">df =</span> coding1)
 <span class="kw"><a href="../reference/watchme_plot_sequence.html">watchme_plot_sequence</a></span>(event_table)</code></pre></div>
-<p><img src="intro_files/figure-html/unnamed-chunk-6-1.png" width="960"></p>
+<p><img src="intro_files/figure-html/unnamed-chunk-7-1.png" width="960"></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/watchme_plot_sequence.html">watchme_plot_sequence</a></span>(event_table, <span class="dt">x_axis =</span> <span class="st">"picture"</span>)</code></pre></div>
-<p><img src="intro_files/figure-html/unnamed-chunk-6-2.png" width="960"></p>
+<p><img src="intro_files/figure-html/unnamed-chunk-7-2.png" width="960"></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/watchme_plot_sequence.html">watchme_plot_sequence</a></span>(event_table, <span class="dt">x_axis =</span> <span class="st">"picture"</span>) +
+<span class="st">  </span><span class="kw">facet_grid</span>(group ~<span class="st"> </span>.)</code></pre></div>
+<p><img src="intro_files/figure-html/unnamed-chunk-7-3.png" width="960"></p>
 <p>For plotting results from more than one coder, one could do this:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">data</span>(<span class="st">"coding1"</span>)
 <span class="kw">data</span>(<span class="st">"coding2"</span>)
@@ -534,7 +663,8 @@ event_table &lt;-<span class="st"> </span>dplyr::<span class="kw">bind_rows</spa
 <span class="kw">attr</span>(event_table, <span class="st">"dico"</span>) &lt;-<span class="st"> </span>dico
 <span class="kw"><a href="../reference/watchme_plot_sequence.html">watchme_plot_sequence</a></span>(event_table) +
 <span class="st">  </span><span class="kw">facet_grid</span>(coder ~<span class="st"> </span>.)</code></pre></div>
-<p><img src="intro_files/figure-html/unnamed-chunk-7-1.png" width="960"></p>
+<p><img src="intro_files/figure-html/unnamed-chunk-8-1.png" width="960"></p>
+</div>
 </div>
 </div>
   </div>
@@ -545,9 +675,18 @@ event_table &lt;-<span class="st"> </span>dplyr::<span class="kw">bind_rows</spa
       <ul class="nav nav-pills nav-stacked">
 <li><a href="#introduction">Introduction</a></li>
       <li><a href="#data-structure">Data structure</a></li>
-      <li><a href="#from-input-data-to-tibble-data.frames">From input data to <code>tibble</code> data.frames</a></li>
-      <li><a href="#from-the-coding-results-to-table-of-events">From the coding results to table of events</a></li>
+      <li>
+<a href="#from-input-data-to-tibble-data.frames">From input data to <code>tibble</code> data.frames</a><ul class="nav nav-pills nav-stacked">
+<li><a href="#conversion">Conversion</a></li>
+      <li><a href="#plotting">Plotting</a></li>
+      </ul>
+</li>
+      <li>
+<a href="#from-the-coding-results-to-table-of-events">From the coding results to table of events</a><ul class="nav nav-pills nav-stacked">
+<li><a href="#conversion-1">Conversion</a></li>
       <li><a href="#plotting-a-table-of-events">Plotting a table of events</a></li>
+      </ul>
+</li>
       </ul>
 </div>
       </div>
