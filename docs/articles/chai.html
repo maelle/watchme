@@ -66,11 +66,335 @@
     
     
 <div class="contents">
-<p>In this vignette we’ll describe the process used to prepare and check data in the CHAI project where</p>
+<p>In this vignette we’ll describe the process used to prepare and check data in the <a href="http://www.chaiproject.org/">CHAI project</a> where 207 participant-daus were annotated for 5 passes (cooking, indoors/outdoors, travel, occupation, presence of other combustion) amounting to 1035 coding results files. Moreover, 46 participant-days were coded a second time by a coder different from the first one for computing inter-rater agreement. For each participant-day, participants were instructed to wear the autographer at all times, except of course when they didn’t feel at ease recording their environment, e.g. during personal care or if someone was breastfeeding (in that case they could use the cache of the camera) and except at night during which the device had to be turned off to preserve the battery.</p>
+<div id="annotation" class="section level1">
+<h1 class="hasAnchor">
+<html><body><a href="#annotation" class="anchor"> </a></body></html>Annotation</h1>
+<div id="annotation-ontology-in-the-chai-project" class="section level2">
+<h2 class="hasAnchor">
+<html><body><a href="#annotation-ontology-in-the-chai-project" class="anchor"> </a></body></html>Annotation ontology in the CHAI project</h2>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">path_dico &lt;-<span class="st">  </span><span class="kw">system.file</span>(<span class="st">"extdata"</span>, <span class="st">"dico_coding_2016_01.csv"</span>, <span class="dt">package =</span> <span class="st">"watchme"</span>)
+dico &lt;-<span class="st"> </span>readr::<span class="kw">read_csv2</span>(path_dico)</code></pre></div>
+<pre><code>## Parsed with column specification:
+## cols(
+##   Code = col_character(),
+##   Meaning = col_character(),
+##   Group = col_character()
+## )</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">knitr::<span class="kw">kable</span>(dico)</code></pre></div>
+<table class="table">
+<thead><tr class="header">
+<th align="left">Code</th>
+<th align="left">Meaning</th>
+<th align="left">Group</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">Biomass cooking unit</td>
+<td align="left">Biomass cooking unit</td>
+<td align="left">Cooking</td>
+</tr>
+<tr class="even">
+<td align="left">LPG stove</td>
+<td align="left">LPG stove</td>
+<td align="left">Cooking</td>
+</tr>
+<tr class="odd">
+<td align="left">Other cooking unit</td>
+<td align="left">Other cooking unit</td>
+<td align="left">Cooking</td>
+</tr>
+<tr class="even">
+<td align="left">Food preparation</td>
+<td align="left">Food preparation</td>
+<td align="left">Cooking</td>
+</tr>
+<tr class="odd">
+<td align="left">Eating</td>
+<td align="left">Eating</td>
+<td align="left">Cooking</td>
+</tr>
+<tr class="even">
+<td align="left">Presence in the kitchen</td>
+<td align="left">Presence in the kitchen</td>
+<td align="left">Cooking</td>
+</tr>
+<tr class="odd">
+<td align="left">Travel by bus</td>
+<td align="left">Travel by bus</td>
+<td align="left">Travel</td>
+</tr>
+<tr class="even">
+<td align="left">Travel by bicycle</td>
+<td align="left">Travel by bicycle</td>
+<td align="left">Travel</td>
+</tr>
+<tr class="odd">
+<td align="left">Travel by auto</td>
+<td align="left">Travel by auto</td>
+<td align="left">Travel</td>
+</tr>
+<tr class="even">
+<td align="left">Travel by motorcycle</td>
+<td align="left">Travel by motorcycle</td>
+<td align="left">Travel</td>
+</tr>
+<tr class="odd">
+<td align="left">Participant presence on road</td>
+<td align="left">Participant presence on road</td>
+<td align="left">Travel</td>
+</tr>
+<tr class="even">
+<td align="left">Presence at Office or Shop</td>
+<td align="left">Presence at Office or Shop</td>
+<td align="left">Occupation</td>
+</tr>
+<tr class="odd">
+<td align="left">Presence at Work Field</td>
+<td align="left">Presence at Work Field</td>
+<td align="left">Occupation</td>
+</tr>
+<tr class="even">
+<td align="left">Presence in Industry</td>
+<td align="left">Presence in Industry</td>
+<td align="left">Occupation</td>
+</tr>
+<tr class="odd">
+<td align="left">Presence in Informal Work</td>
+<td align="left">Presence in Informal Work</td>
+<td align="left">Occupation</td>
+</tr>
+<tr class="even">
+<td align="left">Diesel Generator</td>
+<td align="left">Diesel Generator</td>
+<td align="left">Presence of other combustion</td>
+</tr>
+<tr class="odd">
+<td align="left">Smoking</td>
+<td align="left">Smoking</td>
+<td align="left">Presence of other combustion</td>
+</tr>
+<tr class="even">
+<td align="left">Visible Flame or Smoke</td>
+<td align="left">Visible Flame or Smoke</td>
+<td align="left">Presence of other combustion</td>
+</tr>
+<tr class="odd">
+<td align="left">Indoors</td>
+<td align="left">Indoors</td>
+<td align="left">Indoor Outdoor</td>
+</tr>
+<tr class="even">
+<td align="left">Outdoors</td>
+<td align="left">Outdoors</td>
+<td align="left">Indoor Outdoor</td>
+</tr>
+<tr class="odd">
+<td align="left">In Vehicle</td>
+<td align="left">In Vehicle</td>
+<td align="left">Indoor Outdoor</td>
+</tr>
+<tr class="even">
+<td align="left">Mixed</td>
+<td align="left">Mixed</td>
+<td align="left">Indoor Outdoor</td>
+</tr>
+<tr class="odd">
+<td align="left">Non codable</td>
+<td align="left">Non codable</td>
+<td align="left">Non codable</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="software-used-for-annotation" class="section level2">
+<h2 class="hasAnchor">
+<html><body><a href="#software-used-for-annotation" class="anchor"> </a></body></html>Software used for annotation</h2>
+<p>We chose to use the XnView MP software after getting some issues with the Doherty browser. The guidelines for using the software are included in this package, you’ll find where exactly by typing <code>system.file("extdata", "annotating_pictures_with_xnviewMP.pdf", package = "watchme")</code> in the R console after installing the package.</p>
+</div>
+<div id="coder-training" class="section level2">
+<h2 class="hasAnchor">
+<html><body><a href="#coder-training" class="anchor"> </a></body></html>Coder training</h2>
+<p>All coders underwent training before being taken on for the coding. An useful function for assessing training success was to output differences from coding results of two coders, so that they might be able to discuss the problems.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(<span class="st">"watchme"</span>)
+<span class="kw">data</span>(<span class="st">'coding1'</span>)
+<span class="kw">data</span>(<span class="st">'coding2'</span>)
+<span class="co"># With two coders</span>
+results_list &lt;-<span class="st"> </span><span class="kw">list</span>(coding1, coding2)
+names_list &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">'Cain'</span>, <span class="st">'Abel'</span>)
+<span class="kw"><a href="../reference/watchme_output_differences.html">watchme_output_differences</a></span>(<span class="dt">results_list =</span> results_list,
+ <span class="dt">names_list =</span> names_list)</code></pre></div>
+<pre><code>## # A tibble: 33 × 3
+##                Cain             Abel          image_time
+##               &lt;chr&gt;            &lt;chr&gt;              &lt;dttm&gt;
+## 1   indoors, , , ,  , outdoors, , ,  2015-06-12 12:23:40
+## 2     , , , mixed,  , outdoors, , ,  2015-06-12 12:24:59
+## 3     , , , mixed,  , outdoors, , ,  2015-06-12 12:25:34
+## 4     , , , mixed,  , outdoors, , ,  2015-06-12 13:08:17
+## 5  , outdoors, , ,   indoors, , , ,  2015-06-12 13:10:01
+## 6          , , , ,   indoors, , , ,  2015-06-12 15:19:45
+## 7     , , , mixed,  , outdoors, , ,  2015-06-12 15:23:47
+## 8     , , , mixed,  , outdoors, , ,  2015-06-12 15:24:23
+## 9     , , , mixed,  , outdoors, , ,  2015-06-12 15:24:55
+## 10  indoors, , , ,  , outdoors, , ,  2015-06-12 16:06:08
+## # ... with 23 more rows</code></pre>
+</div>
+</div>
+<div id="data-preparation" class="section level1">
+<h1 class="hasAnchor">
+<html><body><a href="#data-preparation" class="anchor"> </a></body></html>Data preparation</h1>
+<div id="parsing-of-filenames" class="section level2">
+<h2 class="hasAnchor">
+<html><body><a href="#parsing-of-filenames" class="anchor"> </a></body></html>Parsing of filenames</h2>
+<p>In the CHAI project, filenames contain the village ID, the participant ID, the date, the number of the session for the participant, the pass (or group of codes). They were parsed using a function from an internal package that produced a data.frame with all the variables from the filenames including the original filenames. The same function also allowed checking that all filenames were correct, i.e. containing existing participant IDs.</p>
+</div>
+<div id="conversion-of-all-files" class="section level2">
+<h2 class="hasAnchor">
+<html><body><a href="#conversion-of-all-files" class="anchor"> </a></body></html>Conversion of all files</h2>
+<p>We wrote this function</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">prepare_data_from_df &lt;-<span class="st"> </span>function(df, path){
+  <span class="kw">print</span>(df$filename)
+  path_results &lt;-<span class="st"> </span><span class="kw">paste0</span>(<span class="kw">getwd</span>(), path, df$filename)
+  sep_results &lt;-<span class="st"> "</span><span class="ch">\t</span><span class="st">"</span>
+  path_dico &lt;-<span class="st">  </span><span class="kw">paste0</span>(<span class="kw">getwd</span>(), <span class="st">"/raw_data/dicos/dico_coding_2016_01_"</span>, df$pass, <span class="st">".csv"</span>)
+  sep_dico &lt;-<span class="st"> ';'</span>
+  
+  results &lt;-<span class="st"> </span><span class="kw"><a href="../reference/watchme_prepare_data.html">watchme_prepare_data</a></span>(<span class="dt">path_results =</span> path_results,
+                                  <span class="dt">sep_results =</span> sep_results,
+                                  <span class="dt">path_dico =</span> path_dico,
+                                  <span class="dt">sep_dico =</span> sep_dico,
+                                  <span class="dt">tz =</span> <span class="st">"Asia/Kolkata"</span>,
+                                  <span class="dt">robust_reading =</span> <span class="ot">TRUE</span>,
+                                  <span class="dt">participant_id =</span> <span class="kw">toString</span>(<span class="kw">c</span>(df[,<span class="kw">c</span>(<span class="st">"villageID"</span>,
+                                                                    <span class="st">"participantID"</span>,
+                                                                    <span class="st">"session"</span>,
+                                                                    <span class="st">"repeated"</span>)],
+                                                              <span class="kw">as.character</span>(df$<span class="st">"date"</span>),
+                                                              df[,<span class="kw">c</span>(<span class="st">"deviceType"</span>,
+                                                                    <span class="st">"deviceID"</span>)])))
+  results$image_path &lt;-<span class="st"> </span><span class="kw">gsub</span>(<span class="st">'</span><span class="ch">\"</span><span class="st">'</span>, <span class="st">""</span>, results$image_path)
+  results &lt;-<span class="st"> </span><span class="kw">filter_</span>(results, lazyeval::<span class="kw">interp</span>(~image_path !=<span class="st"> ""</span>))
+  results
+}</code></pre></div>
+<p>for transforming each file and we mapped it to the <code>files</code> data.frame prepared from filenames.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">results_list &lt;-<span class="st"> </span>files %&gt;%<span class="st"> </span>purrr::<span class="kw">by_row</span>(prepare_data_from_df,
+                                        <span class="dt">path =</span> <span class="st">"/raw_data/AutographerCodes_NewProtocol/"</span>)</code></pre></div>
+<p>In the resulting <code>results_list</code> there is one line per pass with the coding results in one list column. We transformed it to have a data.frame with one line per participant-day.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">tables_participantdays &lt;-<span class="st"> </span>results_list %&gt;%
+<span class="st">  </span><span class="kw">group_by</span>(participantID, date) %&gt;%
+<span class="st">  </span><span class="kw">select</span>(participantID, date, .out) 
+tables_participantdays &lt;-<span class="st"> </span>tables_participantdays %&gt;%
+<span class="st">  </span><span class="kw">summarize</span>(<span class="dt">table =</span> <span class="kw">list</span>(.out)) 
+tables_participantdays &lt;-<span class="st"> </span>tables_participantdays %&gt;%<span class="st"> </span>
+<span class="st">  </span><span class="kw">group_by</span>(participantID, date)</code></pre></div>
+</div>
+<div id="binding-of-the-5-passes-of-each-day" class="section level2">
+<h2 class="hasAnchor">
+<html><body><a href="#binding-of-the-5-passes-of-each-day" class="anchor"> </a></body></html>Binding of the 5 passes of each day</h2>
+<p>Now there is a list in each line that contains all 5 coding results data.frames from that participant-day. They are then combined after identifying problematic participant-days where e.g. one of the passes had less pictures than the others. Such problematic files were corrected until there was no formatting issues at all.</p>
+<p>We admit it’s a quite ugly code but it did its job.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">
+problem &lt;-<span class="st"> </span><span class="kw">tibble</span>()
+notgood &lt;-<span class="st"> </span><span class="ot">NULL</span>
+participant_days &lt;-<span class="st"> </span><span class="kw">unique</span>(<span class="kw">select</span>(tables_participantdays, participantID, date))
+for(i in <span class="dv">1</span>:<span class="kw">nrow</span>(participant_days)){
+  lala &lt;-<span class="st"> </span><span class="kw">try</span>(<span class="kw">left_join</span>(participant_days[i,], tables_participantdays, <span class="dt">by =</span> <span class="kw">c</span>(<span class="st">"participantID"</span>, <span class="st">"date"</span>)) %&gt;%
+<span class="st">                </span><span class="kw">mutate</span>(<span class="dt">table =</span> <span class="kw">list</span>(<span class="kw">watchme_combine_results2</span>(table[[<span class="dv">1</span>]],
+                                                             <span class="dt">common_codes =</span> <span class="kw">c</span>(<span class="st">"non_codable"</span>)))),
+              <span class="dt">silent =</span> <span class="ot">TRUE</span>)
+  if(<span class="kw">class</span>(lala) ==<span class="st"> "try-error"</span>){
+    numbers &lt;-<span class="st"> </span><span class="kw">toString</span>(<span class="kw">unique</span>(<span class="kw">unlist</span>( tables_participantdays[i,]$table[[<span class="dv">1</span>]] %&gt;%<span class="st"> </span><span class="kw">lapply</span>(nrow))))
+    
+    now &lt;-<span class="st"> </span><span class="kw">bind_cols</span>(<span class="kw">ungroup</span>(tables_participantdays[i,<span class="dv">1</span>:<span class="dv">2</span>]), <span class="kw">data.frame</span>(<span class="dt">numbers =</span> numbers))
+    problem &lt;-<span class="st"> </span><span class="kw">bind_rows</span>(problem, now)
+    notgood &lt;-<span class="st"> </span><span class="kw">c</span>(notgood, i)
+  }
+  
+}
+
+if(<span class="kw">nrow</span>(problem) &gt;<span class="st"> </span><span class="dv">0</span>){
+  <span class="kw">print</span>(<span class="st">"hey there are some formatting issues for a few participant-days!"</span>)
+  probs &lt;-<span class="st"> </span><span class="ot">NULL</span>
+  for(i in notgood){
+    times &lt;-<span class="st"> </span><span class="kw">do.call</span>(<span class="st">"cbind"</span>, <span class="kw">lapply</span>(tables_participantdays[i,]$table[[<span class="dv">1</span>]],
+                                     <span class="st">"[["</span>, <span class="st">"image_time"</span>))
+    times &lt;-<span class="st"> </span><span class="kw">as.data.frame</span>(times)
+    
+    times &lt;-<span class="st"> </span><span class="kw">mutate_all</span>(times, posixing)
+    posixing &lt;-<span class="st"> </span>function(x){
+      <span class="kw">as.POSIXct</span>(x, <span class="dt">origin =</span> <span class="st">"1970-01-01"</span>)
+    }
+    
+    prob &lt;-<span class="st"> </span><span class="kw">which</span>(<span class="kw">vapply</span>(<span class="kw">apply</span>(times,<span class="dv">1</span>, unique), length, <span class="dt">FUN.VALUE =</span> <span class="dv">1</span>) &gt;<span class="st"> </span><span class="dv">1</span>)
+    prob &lt;-<span class="st"> </span>times[<span class="kw">c</span>(<span class="kw">min</span>(prob) -<span class="st"> </span><span class="dv">1</span>, prob),]
+    <span class="kw">names</span>(prob) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">"CK"</span>, <span class="st">"IO"</span>, <span class="st">"OP"</span>, <span class="st">"PM"</span>, <span class="st">"TP"</span>)
+    prob &lt;-<span class="st"> </span><span class="kw">mutate</span>(prob, <span class="dt">participantID =</span> tables_participantdays[i,]$participantID)
+    probs &lt;-<span class="st"> </span><span class="kw">bind_rows</span>(probs, prob)
+  }
+  
+  <span class="kw">write_csv</span>(problem, <span class="dt">path =</span> <span class="st">"raw_data/problems.csv"</span>)
+  <span class="kw">write_csv</span>(probs, <span class="dt">path =</span> <span class="st">"raw_data/problems_help.csv"</span>)
+  
+  tables_participantdays &lt;-<span class="st"> </span>tables_participantdays[-<span class="st"> </span>notgood,] %&gt;%
+<span class="st">    </span><span class="kw">mutate</span>(<span class="dt">table =</span> <span class="kw">list</span>(<span class="kw">watchme_combine_results2</span>(table[[<span class="dv">1</span>]],
+                                                 <span class="dt">common_codes =</span> <span class="kw">c</span>(<span class="st">"non_codable"</span>))))</code></pre></div>
+</div>
+</div>
+<div id="data-checks" class="section level1">
+<h1 class="hasAnchor">
+<html><body><a href="#data-checks" class="anchor"> </a></body></html>Data checks</h1>
+<div id="number-of-images" class="section level2">
+<h2 class="hasAnchor">
+<html><body><a href="#number-of-images" class="anchor"> </a></body></html>Number of images</h2>
+<p>After each session, the autographer camera produces a file which is a table of all images times and paths. We checked that the number of annotated pictures was equal to the number of pictures according to this file. In the cases where it was not, it was checked whether the pictures had been deleted for a good reason, e.g. privacy issue or their belonging to another participant-day whose pictures had not been removed from the camera yet.</p>
+</div>
+<div id="checks-based-on-code" class="section level2">
+<h2 class="hasAnchor">
+<html><body><a href="#checks-based-on-code" class="anchor"> </a></body></html>Checks based on code</h2>
+<div id="compulsory-codes" class="section level3">
+<h3 class="hasAnchor">
+<html><body><a href="#compulsory-codes" class="anchor"> </a></body></html>Compulsory codes</h3>
+</div>
+<div id="codes-incompatibility" class="section level3">
+<h3 class="hasAnchor">
+<html><body><a href="#codes-incompatibility" class="anchor"> </a></body></html>Codes incompatibility</h3>
+</div>
+</div>
+<div id="comparisons-between-coders" class="section level2">
+<h2 class="hasAnchor">
+<html><body><a href="#comparisons-between-coders" class="anchor"> </a></body></html>Comparisons between coders</h2>
+</div>
+</div>
 </div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
+        <div id="tocnav">
+      <h2>Contents</h2>
+      <ul class="nav nav-pills nav-stacked">
+<li>
+<a href="#annotation">Annotation</a><ul class="nav nav-pills nav-stacked">
+<li><a href="#annotation-ontology-in-the-chai-project">Annotation ontology in the CHAI project</a></li>
+      <li><a href="#software-used-for-annotation">Software used for annotation</a></li>
+      <li><a href="#coder-training">Coder training</a></li>
+      </ul>
+</li>
+      <li>
+<a href="#data-preparation">Data preparation</a><ul class="nav nav-pills nav-stacked">
+<li><a href="#parsing-of-filenames">Parsing of filenames</a></li>
+      <li><a href="#conversion-of-all-files">Conversion of all files</a></li>
+      <li><a href="#binding-of-the-5-passes-of-each-day">Binding of the 5 passes of each day</a></li>
+      </ul>
+</li>
+      <li>
+<a href="#data-checks">Data checks</a><ul class="nav nav-pills nav-stacked">
+<li><a href="#number-of-images">Number of images</a></li>
+      <li><a href="#checks-based-on-code">Checks based on code</a></li>
+      <li><a href="#comparisons-between-coders">Comparisons between coders</a></li>
+      </ul>
+</li>
+      </ul>
+</div>
       </div>
 
 </div>

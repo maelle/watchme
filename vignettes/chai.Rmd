@@ -10,4 +10,163 @@ vignette: >
 
 ---
 
-In this vignette we'll describe the process used to prepare and check data in the CHAI project where 
+In this vignette we'll describe the process used to prepare and check data in the [CHAI project](http://www.chaiproject.org/) where 207 participant-daus were annotated for 5 passes (cooking, indoors/outdoors, travel, occupation, presence of other combustion) amounting to 1035 coding results files. Moreover, 46 participant-days were coded a second time by a coder different from the first one for computing inter-rater agreement. For each participant-day, participants were instructed to wear the autographer at all times, except of course when they didn't feel at ease recording their environment, e.g. during personal care or if someone was breastfeeding (in that case they could use the cache of the camera) and except at night during which the device had to be turned off to preserve the battery.
+
+# Annotation
+
+## Annotation ontology in the CHAI project
+
+```{r}
+path_dico <-  system.file("extdata", "dico_coding_2016_01.csv", package = "watchme")
+dico <- readr::read_csv2(path_dico)
+knitr::kable(dico)
+```
+
+## Software used for annotation
+
+We chose to use the XnView MP software after getting some issues with the Doherty browser. The guidelines for using the software are included in this package, you'll find where exactly by typing `system.file("extdata", "annotating_pictures_with_xnviewMP.pdf", package = "watchme")` in the R console after installing the package.
+
+## Coder training
+
+All coders underwent training before being taken on for the coding. An useful function for assessing training success was to output differences from coding results of two coders, so that they might be able to discuss the problems.
+
+```{r, warning = FALSE, message = FALSE}
+library("watchme")
+data('coding1')
+data('coding2')
+# With two coders
+results_list <- list(coding1, coding2)
+names_list <- c('Cain', 'Abel')
+watchme_output_differences(results_list = results_list,
+ names_list = names_list)
+```
+
+# Data preparation
+
+## Parsing of filenames
+
+In the CHAI project, filenames contain the village ID, the participant ID, the date, the number of the session for the participant, the pass (or group of codes). They were parsed using a function from an internal package that produced a data.frame with all the variables from the filenames including the original filenames. The same function also allowed checking that all filenames were correct, i.e. containing existing participant IDs.
+
+## Conversion of all files
+
+We wrote this function
+
+```r
+prepare_data_from_df <- function(df, path){
+  print(df$filename)
+  path_results <- paste0(getwd(), path, df$filename)
+  sep_results <- "\t"
+  path_dico <-  paste0(getwd(), "/raw_data/dicos/dico_coding_2016_01_", df$pass, ".csv")
+  sep_dico <- ';'
+  
+  results <- watchme_prepare_data(path_results = path_results,
+                                  sep_results = sep_results,
+                                  path_dico = path_dico,
+                                  sep_dico = sep_dico,
+                                  tz = "Asia/Kolkata",
+                                  robust_reading = TRUE,
+                                  participant_id = toString(c(df[,c("villageID",
+                                                                    "participantID",
+                                                                    "session",
+                                                                    "repeated")],
+                                                              as.character(df$"date"),
+                                                              df[,c("deviceType",
+                                                                    "deviceID")])))
+  results$image_path <- gsub('\"', "", results$image_path)
+  results <- filter_(results, lazyeval::interp(~image_path != ""))
+  results
+}
+
+``` 
+
+for transforming each file and we mapped it to the `files` data.frame prepared from filenames.
+
+
+
+```r
+results_list <- files %>% purrr::by_row(prepare_data_from_df,
+                                        path = "/raw_data/AutographerCodes_NewProtocol/")
+
+```
+
+In the resulting `results_list` there is one line per pass with the coding results in one list column. We transformed it to have a data.frame with one line per participant-day.
+
+```r
+tables_participantdays <- results_list %>%
+  group_by(participantID, date) %>%
+  select(participantID, date, .out) 
+tables_participantdays <- tables_participantdays %>%
+  summarize(table = list(.out)) 
+tables_participantdays <- tables_participantdays %>% 
+  group_by(participantID, date)
+```
+
+## Binding of the 5 passes of each day
+
+Now there is a list in each line that contains all 5 coding results data.frames from that participant-day. They are then combined after identifying problematic participant-days where e.g. one of the passes had less pictures than the others. Such problematic files were corrected until there was no formatting issues at all.
+
+We admit it's a quite ugly code but it did its job.
+
+```r
+
+problem <- tibble()
+notgood <- NULL
+participant_days <- unique(select(tables_participantdays, participantID, date))
+for(i in 1:nrow(participant_days)){
+  lala <- try(left_join(participant_days[i,], tables_participantdays, by = c("participantID", "date")) %>%
+                mutate(table = list(watchme_combine_results2(table[[1]],
+                                                             common_codes = c("non_codable")))),
+              silent = TRUE)
+  if(class(lala) == "try-error"){
+    numbers <- toString(unique(unlist( tables_participantdays[i,]$table[[1]] %>% lapply(nrow))))
+    
+    now <- bind_cols(ungroup(tables_participantdays[i,1:2]), data.frame(numbers = numbers))
+    problem <- bind_rows(problem, now)
+    notgood <- c(notgood, i)
+  }
+  
+}
+
+if(nrow(problem) > 0){
+  print("hey there are some formatting issues for a few participant-days!")
+  probs <- NULL
+  for(i in notgood){
+    times <- do.call("cbind", lapply(tables_participantdays[i,]$table[[1]],
+                                     "[[", "image_time"))
+    times <- as.data.frame(times)
+    
+    times <- mutate_all(times, posixing)
+    posixing <- function(x){
+      as.POSIXct(x, origin = "1970-01-01")
+    }
+    
+    prob <- which(vapply(apply(times,1, unique), length, FUN.VALUE = 1) > 1)
+    prob <- times[c(min(prob) - 1, prob),]
+    names(prob) <- c("CK", "IO", "OP", "PM", "TP")
+    prob <- mutate(prob, participantID = tables_participantdays[i,]$participantID)
+    probs <- bind_rows(probs, prob)
+  }
+  
+  write_csv(problem, path = "raw_data/problems.csv")
+  write_csv(probs, path = "raw_data/problems_help.csv")
+  
+  tables_participantdays <- tables_participantdays[- notgood,] %>%
+    mutate(table = list(watchme_combine_results2(table[[1]],
+                                                 common_codes = c("non_codable"))))
+```
+
+
+
+# Data checks
+
+## Number of images
+
+After each session, the autographer camera produces a file which is a table of all images times and paths. We checked that the number of annotated pictures was equal to the number of pictures according to this file. In the cases where it was not, it was checked whether the pictures had been deleted for a good reason, e.g. privacy issue or their belonging to another participant-day whose pictures had not been removed from the camera yet.
+
+## Checks based on code
+
+### Compulsory codes
+
+### Codes incompatibility
+
+## Comparisons between coders
