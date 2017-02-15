@@ -54,7 +54,7 @@ create_pass_results <- function(pass){
   results
 }
 
-results_list <- passes \%>\% purrr::map(create_pass_results)
+results_list <- purrr::map(passes, create_pass_results)
 oneday_results <- watchme_combine_results(results_list,
 common_codes = "non_codable")
 oneday_results
