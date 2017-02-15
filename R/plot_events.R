@@ -40,7 +40,8 @@ dataPlot <- mutate_(dataPlot, falsetime = lazyeval::interp(~ update(image_time,
     theme(axis.text.x = element_text(angle = 45, hjust = 1))+
     facet_grid(Group ~ ., scales = "free_y") +
     geom_point(aes_string("falsetime", "Meaning", col = "Group"),
-               size = 2)
+               size = 2) +
+    theme(legend.position = "top")
 
   return(p)
 }
