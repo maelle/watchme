@@ -23,7 +23,8 @@ watchme_plot_raw <- function(df){
 
 dataPlot <- suppressWarnings(left_join(dataPlot,
                                        dico, by = c("code" = "Code")))
-
+dataPlot <- mutate_(dataPlot, falsetime = lazyeval::interp(~ update(image_time,
+                                                                    year = lubridate::year(image_time) + 100)))
   values_col <-  viridis_pal()(length(unique(dico$Group)))
   names(values_col) <- unique(dico$Group)
   p <- ggplot(dataPlot) +
@@ -32,11 +33,14 @@ dataPlot <- suppressWarnings(left_join(dataPlot,
     scale_color_manual(values = values_col) +
     scale_x_datetime(date_breaks = "1 hour",
                      labels = scales::date_format(format = "%Y-%b-%d %H:%M:%S",
-                                                  tz = lubridate::tz(dataPlot$image_time))) +
+                                                  tz = lubridate::tz(dataPlot$image_time)),
+                     limits = c(min(dataPlot$image_time), max(dataPlot$image_time))) +
     xlab("Time") +
     ylab("") +
     theme(axis.text.x = element_text(angle = 45, hjust = 1))+
-    facet_grid(Group ~ ., scales = "free_y")
+    facet_grid(Group ~ ., scales = "free_y") +
+    geom_point(aes_string("falsetime", "Meaning", col = "Group"),
+               size = 2)
 
   return(p)
 }
