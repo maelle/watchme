@@ -29,11 +29,11 @@ This R package supports the last step. This vignette covers the questions "How t
 
 # Data structure
 
-The structure of data in the package is adapted to data produced using the Doherty Sensecam Browser for annotation (see https://sensecambrowser.codeplex.com/) or with data produced using the XnView MP software. However, you can probably re-format your raw data to use the converting function.
+The structure of data in the package is adapted to data produced using the [Doherty Sensecam Browser for annotation](https://sensecambrowser.codeplex.com/) or with data produced using the [XnView MP software](http://www.xnview.com/en/xnviewmp/). However, you can probably re-format your raw data to use the converting function.
 
 The data needed for using the package are:
 
-* A table of possible annotations, called `dico`. It contains three columns Code, Meaning, Group. The Code is the unique X-digit identifier of an activity. The Meaning, preferably in a single word such as washingYourTeeth, explains the code. The Group allows to group activities into meaningful categories, i.e. washingYourTeeth and washingYourHands could be in the hygiene Group whereas eatingRealFood and snackingOnCheapChocolate could be in the eating Group. If you do not use abbreviations, Code and Meaning can be equal.
+* A table of possible annotations, called `dico`. It contains three columns Code, Meaning, Group. The Code is the unique X-digit identifier of an activity. The Meaning, preferably in a single word such as washingYourTeeth, explains the code. The Group allows to group activities into meaningful categories, i.e. washingYourTeeth and washingYourHands could be in the hygiene Group whereas eatingRealFood and snackingOnCheapChocolate could be in the eating Group. If you do not use abbreviations, Code and Meaning can be equal but in any case they both need to be present.
 
 ```{r}
 path_dico <-  system.file("extdata", "dicoCoding_pinocchio.csv", package = "watchme")
@@ -43,7 +43,13 @@ dico
 ```
 
 
-* A table of coding results. The columns are name/nothing,	image_path/X.Filename.With.Ext,	image_time/EXIF.Date.Taken..Y.m.d_H.M.S.,	annotation/IPTC.Keywords, as provided by a SQL query of the Doherty database. In this case the column name is a repetition of the participant name. The column image_path indicates the path to the picture, or its name. It only needs to be unique for each picture. The column image_time gives the date and time at which the picture was taken, in the format "YMD HMS". The column annotation gives the code(s) associated with the picture. They can be pasted one after another, since we will use grepl() for finding the unique X-digit identifiers, or they can be on separate lines, since all codes for one picture identified by one picture_name will be merged.
+* A table of coding results. The columns are either:
+
+    * name,image_path,image_time,annotation (SQL query of the Doherty browser database, in this case the column name is a repetition of the participant name)
+    
+    * Filename, EXIF:Date Taken [Y-m-d_H-M-S],	IPTC:Keywords	(XnView MP)
+
+The column image_path/Filename indicates the path to the picture, or its name. It only needs to be unique for each picture. The column image_time/EXIF:Date Taken [Y-m-d_H-M-S] gives the date and time at which the picture was taken, in the format "YMD HMS". The column annotation/IPTC:Keywords gives the code(s) associated with the picture. They can be pasted one after another, since we will use grepl() for finding the unique X-digit identifiers, or they can be on separate lines, since all codes for one picture identified by one picture_name will be merged.
 
 These are the two formats the package were created for:
 

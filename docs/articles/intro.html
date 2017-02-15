@@ -60,7 +60,7 @@
       <h1>Data conversion, summarizing and plotting</h1>
                         <h4 class="author">M. Salmon and other CHAI project members</h4>
             
-            <h4 class="date">2017-02-07</h4>
+            <h4 class="date">2017-02-15</h4>
           </div>
 
     
@@ -80,10 +80,10 @@
 <div id="data-structure" class="section level1">
 <h1 class="hasAnchor">
 <html><body><a href="#data-structure" class="anchor"> </a></body></html>Data structure</h1>
-<p>The structure of data in the package is adapted to data produced using the Doherty Sensecam Browser for annotation (see <a href="https://sensecambrowser.codeplex.com/" class="uri">https://sensecambrowser.codeplex.com/</a>) or with data produced using the XnView MP software. However, you can probably re-format your raw data to use the converting function.</p>
+<p>The structure of data in the package is adapted to data produced using the <a href="https://sensecambrowser.codeplex.com/">Doherty Sensecam Browser for annotation</a> or with data produced using the <a href="http://www.xnview.com/en/xnviewmp/">XnView MP software</a>. However, you can probably re-format your raw data to use the converting function.</p>
 <p>The data needed for using the package are:</p>
 <ul>
-<li>A table of possible annotations, called <code>dico</code>. It contains three columns Code, Meaning, Group. The Code is the unique X-digit identifier of an activity. The Meaning, preferably in a single word such as washingYourTeeth, explains the code. The Group allows to group activities into meaningful categories, i.e. washingYourTeeth and washingYourHands could be in the hygiene Group whereas eatingRealFood and snackingOnCheapChocolate could be in the eating Group. If you do not use abbreviations, Code and Meaning can be equal.</li>
+<li>A table of possible annotations, called <code>dico</code>. It contains three columns Code, Meaning, Group. The Code is the unique X-digit identifier of an activity. The Meaning, preferably in a single word such as washingYourTeeth, explains the code. The Group allows to group activities into meaningful categories, i.e. washingYourTeeth and washingYourHands could be in the hygiene Group whereas eatingRealFood and snackingOnCheapChocolate could be in the eating Group. If you do not use abbreviations, Code and Meaning can be equal but in any case they both need to be present.</li>
 </ul>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">path_dico &lt;-<span class="st">  </span><span class="kw">system.file</span>(<span class="st">"extdata"</span>, <span class="st">"dicoCoding_pinocchio.csv"</span>, <span class="dt">package =</span> <span class="st">"watchme"</span>)
 sep_dico &lt;-<span class="st"> ";"</span>
@@ -98,8 +98,15 @@ dico</code></pre></div>
 ## 6  03A             Eating     1
 ## 7  01.            Cooking    99</code></pre>
 <ul>
-<li>A table of coding results. The columns are name/nothing, image_path/X.Filename.With.Ext, image_time/EXIF.Date.Taken..Y.m.d_H.M.S., annotation/IPTC.Keywords, as provided by a SQL query of the Doherty database. In this case the column name is a repetition of the participant name. The column image_path indicates the path to the picture, or its name. It only needs to be unique for each picture. The column image_time gives the date and time at which the picture was taken, in the format “YMD HMS”. The column annotation gives the code(s) associated with the picture. They can be pasted one after another, since we will use grepl() for finding the unique X-digit identifiers, or they can be on separate lines, since all codes for one picture identified by one picture_name will be merged.</li>
+<li>
+<p>A table of coding results. The columns are either:</p>
+<ul>
+<li><p>name,image_path,image_time,annotation (SQL query of the Doherty browser database, in this case the column name is a repetition of the participant name)</p></li>
+<li><p>Filename, EXIF:Date Taken [Y-m-d_H-M-S], IPTC:Keywords (XnView MP)</p></li>
 </ul>
+</li>
+</ul>
+<p>The column image_path/Filename indicates the path to the picture, or its name. It only needs to be unique for each picture. The column image_time/EXIF:Date Taken [Y-m-d_H-M-S] gives the date and time at which the picture was taken, in the format “YMD HMS”. The column annotation/IPTC:Keywords gives the code(s) associated with the picture. They can be pasted one after another, since we will use grepl() for finding the unique X-digit identifiers, or they can be on separate lines, since all codes for one picture identified by one picture_name will be merged.</p>
 <p>These are the two formats the package were created for:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">path_results &lt;-<span class="st"> </span><span class="kw">system.file</span>(<span class="st">"extdata"</span>, <span class="st">"image_level_pinocchio.csv"</span>, <span class="dt">package =</span> <span class="st">"watchme"</span>)
 sep_results &lt;-<span class="st"> ","</span>
