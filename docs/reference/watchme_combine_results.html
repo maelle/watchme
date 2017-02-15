@@ -141,7 +141,7 @@ The code does not look for conflicts.</p>
   <span class='no'>results</span>
 }
 
-<span class='no'>results_list</span> <span class='kw'>&lt;-</span> <span class='no'>passes</span> <span class='kw'>%&gt;%</span> <span class='kw'>purrr</span><span class='kw'>::</span><span class='fu'>map</span>(<span class='no'>create_pass_results</span>)</div><div class='output co'>#&gt; <span class='message'>Parsed with column specification:</span>
+<span class='no'>results_list</span> <span class='kw'>&lt;-</span> <span class='kw'>purrr</span><span class='kw'>::</span><span class='fu'>map</span>(<span class='no'>passes</span>, <span class='no'>create_pass_results</span>)</div><div class='output co'>#&gt; <span class='message'>Parsed with column specification:</span>
 #&gt; <span class='message'>cols(</span>
 #&gt; <span class='message'>  Filename = col_character(),</span>
 #&gt; <span class='message'>  `EXIF:Date Taken [Y-m-d_H-M-S]` = col_character(),</span>
@@ -213,7 +213,7 @@ The code does not look for conflicts.</p>
 
       <footer>
       <div class="copyright">
-  <p>Developed by Maëlle Salmon.</p>
+  <p>Developed by Maëlle Salmon,  ERC Grant Agreement number 336167 - the CHAI Project.</p>
 </div>
 
 <div class="pkgdown">
