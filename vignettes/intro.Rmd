@@ -71,7 +71,7 @@ coding_results %>% head() %>% knitr::kable()
 
 # From input data to `tibble` data.frames
 
-## Conversion
+## Conversion from one coding file to one data.frame
 
 Using both these inputs, we create a `tibble` on which operations will be performed.
 
@@ -105,6 +105,45 @@ results_table %>% head() %>% knitr::kable()
 ```
 
 In the case of the CHAI project, we had many coding results files from XnView MP and some of them had annotations spread over several columns. Because of this we added the `robust_reading` option which is FALSE by default. When TRUE each results file is read twice, once for finding image_path and image_time (which need to be the first and second column, respectively), once for finding annotation by considering each line as a single variable. This way we didn't need to care too much about the number of columns of annotations, even if in theory it should have been one column only.
+
+
+## Conversion from several coding files to one data.frame
+
+In the CHAI project, annotation of pictures was performed in several passes: in a first pass, coders looked at the set of pictures and assigned indoor/outdoor location for instance, in a second one they assigned code from the cooking group, etc. Each pass led to one file. So all results from one participant-day were contained in 5 coding files. Because of this, we wrote a function for being able to combine them. The steps were the following:
+
+1. For each pass, generate a coding tibble with a dico as attribute via the use of `watchme_prepare_data()`. For this we used one dico per pass where only the codes of that group (e.g. only cooking codes) were described.
+
+2. Use the `watchme_combine_results` function on the list of these 5 tibbles. `common_codes` in this case was only the "uncodable" picture code, all other columns had to present in only one of the tibble. For the merging to work, all 5 tibbles need to have the exact same image_time.
+
+Here is one example.
+
+```{r, warning = FALSE, message = FALSE}
+passes <- c("CK", "IO", "OP", "PM", "TP")
+
+create_pass_results <- function(pass){
+  path_results <- system.file('extdata', paste0("oneday_", pass, ".csv"),
+  package = 'watchme')
+  sep_results <- "\t"
+  path_dico <-  system.file('extdata', paste0("dico_coding_2016_01_", pass, ".csv"),
+   package = 'watchme')
+  sep_dico <- ';'
+
+  results <- watchme_prepare_data(path_results = path_results,
+                                  sep_results = sep_results,
+                                  path_dico = path_dico,
+                                  sep_dico = sep_dico,
+                                  tz = "Asia/Kolkata")
+  results$image_path <- gsub('\"', "", results$image_path)
+  results
+}
+
+results_list <- passes %>% purrr::map(create_pass_results)
+results_list[[1]]
+oneday_results <- watchme_combine_results(results_list,
+common_codes = "non_codable")
+oneday_results
+
+```
 
 ## Plotting
 

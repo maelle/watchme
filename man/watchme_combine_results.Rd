@@ -35,7 +35,6 @@ and not in the other, the code is assigned to the image in the resulting object.
 The code does not look for conflicts.
 }
 \examples{
-library("dplyr")
 passes <- c("CK", "IO", "OP", "PM", "TP")
 
 create_pass_results <- function(pass){

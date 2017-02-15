@@ -215,9 +215,9 @@ coding_results %&gt;%<span class="st"> </span><span class="kw">head</span>() %&g
 <div id="from-input-data-to-tibble-data-frames" class="section level1">
 <h1 class="hasAnchor">
 <html><body><a href="#from-input-data-to-tibble-data-frames" class="anchor"> </a></body></html>From input data to <code>tibble</code> data.frames</h1>
-<div id="conversion" class="section level2">
+<div id="conversion-from-one-coding-file-to-one-data-frame" class="section level2">
 <h2 class="hasAnchor">
-<html><body><a href="#conversion" class="anchor"> </a></body></html>Conversion</h2>
+<html><body><a href="#conversion-from-one-coding-file-to-one-data-frame" class="anchor"> </a></body></html>Conversion from one coding file to one data.frame</h2>
 <p>Using both these inputs, we create a <code>tibble</code> on which operations will be performed.</p>
 <p>The <code>tibble</code> has the following variables:</p>
 <ul>
@@ -440,21 +440,95 @@ results_table %&gt;%<span class="st"> </span><span class="kw">head</span>() %&gt
 </table>
 <p>In the case of the CHAI project, we had many coding results files from XnView MP and some of them had annotations spread over several columns. Because of this we added the <code>robust_reading</code> option which is FALSE by default. When TRUE each results file is read twice, once for finding image_path and image_time (which need to be the first and second column, respectively), once for finding annotation by considering each line as a single variable. This way we didn’t need to care too much about the number of columns of annotations, even if in theory it should have been one column only.</p>
 </div>
+<div id="conversion-from-several-coding-files-to-one-data-frame" class="section level2">
+<h2 class="hasAnchor">
+<html><body><a href="#conversion-from-several-coding-files-to-one-data-frame" class="anchor"> </a></body></html>Conversion from several coding files to one data.frame</h2>
+<p>In the CHAI project, annotation of pictures was performed in several passes: in a first pass, coders looked at the set of pictures and assigned indoor/outdoor location for instance, in a second one they assigned code from the cooking group, etc. Each pass led to one file. So all results from one participant-day were contained in 5 coding files. Because of this, we wrote a function for being able to combine them. The steps were the following:</p>
+<ol style="list-style-type: decimal">
+<li><p>For each pass, generate a coding tibble with a dico as attribute via the use of <code><a href="../reference/watchme_prepare_data.html">watchme_prepare_data()</a></code>. For this we used one dico per pass where only the codes of that group (e.g. only cooking codes) were described.</p></li>
+<li><p>Use the <code>watchme_combine_results</code> function on the list of these 5 tibbles. <code>common_codes</code> in this case was only the “uncodable” picture code, all other columns had to present in only one of the tibble. For the merging to work, all 5 tibbles need to have the exact same image_time.</p></li>
+</ol>
+<p>Here is one example.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">passes &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">"CK"</span>, <span class="st">"IO"</span>, <span class="st">"OP"</span>, <span class="st">"PM"</span>, <span class="st">"TP"</span>)
+
+create_pass_results &lt;-<span class="st"> </span>function(pass){
+  path_results &lt;-<span class="st"> </span><span class="kw">system.file</span>(<span class="st">'extdata'</span>, <span class="kw">paste0</span>(<span class="st">"oneday_"</span>, pass, <span class="st">".csv"</span>),
+  <span class="dt">package =</span> <span class="st">'watchme'</span>)
+  sep_results &lt;-<span class="st"> "</span><span class="ch">\t</span><span class="st">"</span>
+  path_dico &lt;-<span class="st">  </span><span class="kw">system.file</span>(<span class="st">'extdata'</span>, <span class="kw">paste0</span>(<span class="st">"dico_coding_2016_01_"</span>, pass, <span class="st">".csv"</span>),
+   <span class="dt">package =</span> <span class="st">'watchme'</span>)
+  sep_dico &lt;-<span class="st"> ';'</span>
+
+  results &lt;-<span class="st"> </span><span class="kw"><a href="../reference/watchme_prepare_data.html">watchme_prepare_data</a></span>(<span class="dt">path_results =</span> path_results,
+                                  <span class="dt">sep_results =</span> sep_results,
+                                  <span class="dt">path_dico =</span> path_dico,
+                                  <span class="dt">sep_dico =</span> sep_dico,
+                                  <span class="dt">tz =</span> <span class="st">"Asia/Kolkata"</span>)
+  results$image_path &lt;-<span class="st"> </span><span class="kw">gsub</span>(<span class="st">'</span><span class="ch">\"</span><span class="st">'</span>, <span class="st">""</span>, results$image_path)
+  results
+}
+
+results_list &lt;-<span class="st"> </span>passes %&gt;%<span class="st"> </span>purrr::<span class="kw">map</span>(create_pass_results)
+results_list[[<span class="dv">1</span>]]</code></pre></div>
+<pre><code>## # A tibble: 1,665 × 10
+##                           image_path          image_time participant_id
+##                                &lt;chr&gt;              &lt;dttm&gt;          &lt;chr&gt;
+## 1  B00000000_21I6LU_20150527_073822E 2015-05-27 07:38:01          no_id
+## 2  B00000001_21I6LU_20150527_073823E 2015-05-27 07:38:04          no_id
+## 3  B00000002_21I6LU_20150527_073824E 2015-05-27 07:38:06          no_id
+## 4  B00000003_21I6LU_20150527_073825E 2015-05-27 07:38:09          no_id
+## 5  B00000004_21I6LU_20150527_073826E 2015-05-27 07:38:12          no_id
+## 6  B00000005_21I6LU_20150527_073826E 2015-05-27 07:38:14          no_id
+## 7  B00000006_21I6LU_20150527_073826E 2015-05-27 07:38:17          no_id
+## 8  B00000007_21I6LU_20150527_073827E 2015-05-27 07:38:19          no_id
+## 9  B00000008_21I6LU_20150527_073828E 2015-05-27 07:38:22          no_id
+## 10 B00000009_21I6LU_20150527_080738E 2015-05-27 08:07:37          no_id
+## # ... with 1,655 more rows, and 7 more variables:
+## #   biomass_cooking_unit &lt;lgl&gt;, lpg_stove &lt;lgl&gt;, other_cooking_unit &lt;lgl&gt;,
+## #   food_preparation &lt;lgl&gt;, eating &lt;lgl&gt;, presence_in_the_kitchen &lt;lgl&gt;,
+## #   non_codable &lt;lgl&gt;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">oneday_results &lt;-<span class="st"> </span><span class="kw"><a href="../reference/watchme_combine_results.html">watchme_combine_results</a></span>(results_list,
+<span class="dt">common_codes =</span> <span class="st">"non_codable"</span>)
+oneday_results</code></pre></div>
+<pre><code>## # A tibble: 1,665 × 26
+##                           image_path          image_time participant_id
+##                                &lt;chr&gt;              &lt;dttm&gt;          &lt;chr&gt;
+## 1  B00000000_21I6LU_20150527_073822E 2015-05-27 07:38:01          no_id
+## 2  B00000001_21I6LU_20150527_073823E 2015-05-27 07:38:04          no_id
+## 3  B00000002_21I6LU_20150527_073824E 2015-05-27 07:38:06          no_id
+## 4  B00000003_21I6LU_20150527_073825E 2015-05-27 07:38:09          no_id
+## 5  B00000004_21I6LU_20150527_073826E 2015-05-27 07:38:12          no_id
+## 6  B00000005_21I6LU_20150527_073826E 2015-05-27 07:38:14          no_id
+## 7  B00000006_21I6LU_20150527_073826E 2015-05-27 07:38:17          no_id
+## 8  B00000007_21I6LU_20150527_073827E 2015-05-27 07:38:19          no_id
+## 9  B00000008_21I6LU_20150527_073828E 2015-05-27 07:38:22          no_id
+## 10 B00000009_21I6LU_20150527_080738E 2015-05-27 08:07:37          no_id
+## # ... with 1,655 more rows, and 23 more variables:
+## #   biomass_cooking_unit &lt;lgl&gt;, lpg_stove &lt;lgl&gt;, other_cooking_unit &lt;lgl&gt;,
+## #   food_preparation &lt;lgl&gt;, eating &lt;lgl&gt;, presence_in_the_kitchen &lt;lgl&gt;,
+## #   indoors &lt;lgl&gt;, outdoors &lt;lgl&gt;, in_vehicle &lt;lgl&gt;, mixed &lt;lgl&gt;,
+## #   presence_at_office_or_shop &lt;lgl&gt;, presence_at_work_field &lt;lgl&gt;,
+## #   presence_in_industry &lt;lgl&gt;, presence_in_informal_work &lt;lgl&gt;,
+## #   diesel_generator &lt;lgl&gt;, smoking &lt;lgl&gt;, visible_flame_or_smoke &lt;lgl&gt;,
+## #   travel_by_bus &lt;lgl&gt;, travel_by_bicycle &lt;lgl&gt;, travel_by_auto &lt;lgl&gt;,
+## #   travel_by_motorcycle &lt;lgl&gt;, participant_presence_on_road &lt;lgl&gt;,
+## #   non_codable &lt;lgl&gt;</code></pre>
+</div>
 <div id="plotting" class="section level2">
 <h2 class="hasAnchor">
 <html><body><a href="#plotting" class="anchor"> </a></body></html>Plotting</h2>
 <p>There is a default function based on <code>ggplot2</code></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/watchme_plot_raw.html">watchme_plot_raw</a></span>(results_table)</code></pre></div>
 <pre><code>## Warning: Removed 1606 rows containing missing values (geom_point).</code></pre>
-<p><img src="intro_files/figure-html/unnamed-chunk-5-1.png" width="672"></p>
+<p><img src="intro_files/figure-html/unnamed-chunk-6-1.png" width="672"></p>
 </div>
 </div>
 <div id="from-the-coding-results-to-table-of-events" class="section level1">
 <h1 class="hasAnchor">
 <html><body><a href="#from-the-coding-results-to-table-of-events" class="anchor"> </a></body></html>From the coding results to table of events</h1>
-<div id="conversion-1" class="section level2">
+<div id="conversion" class="section level2">
 <h2 class="hasAnchor">
-<html><body><a href="#conversion-1" class="anchor"> </a></body></html>Conversion</h2>
+<html><body><a href="#conversion" class="anchor"> </a></body></html>Conversion</h2>
 <p>Using the annotations from the images, when can easily deduce a sequence of events. For instance having two subsequent pictures of washingYourTeeth taken at respectively t1 and t2 could be interpreted as having a washingYourTeeth event from t1 to t2. The <code>watchme_aggregate</code> allows the conversion from a <code>wearableCamImages</code> object to a table (<code>dplyr</code> class <code>tbl_df</code>) with</p>
 <ul>
 <li><p>event_code, group, meaning</p></li>
@@ -642,12 +716,12 @@ knitr::<span class="kw">kable</span>(<span class="kw">head</span>(eventTable2))<
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">data</span>(<span class="st">"coding1"</span>)
 event_table &lt;-<span class="st"> </span><span class="kw"><a href="../reference/watchme_aggregate.html">watchme_aggregate</a></span>(<span class="dt">df =</span> coding1)
 <span class="kw"><a href="../reference/watchme_plot_sequence.html">watchme_plot_sequence</a></span>(event_table)</code></pre></div>
-<p><img src="intro_files/figure-html/unnamed-chunk-7-1.png" width="960"></p>
+<p><img src="intro_files/figure-html/unnamed-chunk-8-1.png" width="960"></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/watchme_plot_sequence.html">watchme_plot_sequence</a></span>(event_table, <span class="dt">x_axis =</span> <span class="st">"picture"</span>)</code></pre></div>
-<p><img src="intro_files/figure-html/unnamed-chunk-7-2.png" width="960"></p>
+<p><img src="intro_files/figure-html/unnamed-chunk-8-2.png" width="960"></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/watchme_plot_sequence.html">watchme_plot_sequence</a></span>(event_table, <span class="dt">x_axis =</span> <span class="st">"picture"</span>) +
 <span class="st">  </span><span class="kw">facet_grid</span>(group ~<span class="st"> </span>.)</code></pre></div>
-<p><img src="intro_files/figure-html/unnamed-chunk-7-3.png" width="960"></p>
+<p><img src="intro_files/figure-html/unnamed-chunk-8-3.png" width="960"></p>
 <p>For plotting results from more than one coder, one could do this:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">data</span>(<span class="st">"coding1"</span>)
 <span class="kw">data</span>(<span class="st">"coding2"</span>)
@@ -663,7 +737,7 @@ event_table &lt;-<span class="st"> </span>dplyr::<span class="kw">bind_rows</spa
 <span class="kw">attr</span>(event_table, <span class="st">"dico"</span>) &lt;-<span class="st"> </span>dico
 <span class="kw"><a href="../reference/watchme_plot_sequence.html">watchme_plot_sequence</a></span>(event_table) +
 <span class="st">  </span><span class="kw">facet_grid</span>(coder ~<span class="st"> </span>.)</code></pre></div>
-<p><img src="intro_files/figure-html/unnamed-chunk-8-1.png" width="960"></p>
+<p><img src="intro_files/figure-html/unnamed-chunk-9-1.png" width="960"></p>
 </div>
 </div>
 </div>
@@ -677,13 +751,14 @@ event_table &lt;-<span class="st"> </span>dplyr::<span class="kw">bind_rows</spa
       <li><a href="#data-structure">Data structure</a></li>
       <li>
 <a href="#from-input-data-to-tibble-data.frames">From input data to <code>tibble</code> data.frames</a><ul class="nav nav-pills nav-stacked">
-<li><a href="#conversion">Conversion</a></li>
+<li><a href="#conversion-from-one-coding-file-to-one-data.frame">Conversion from one coding file to one data.frame</a></li>
+      <li><a href="#conversion-from-several-coding-files-to-one-data.frame">Conversion from several coding files to one data.frame</a></li>
       <li><a href="#plotting">Plotting</a></li>
       </ul>
 </li>
       <li>
 <a href="#from-the-coding-results-to-table-of-events">From the coding results to table of events</a><ul class="nav nav-pills nav-stacked">
-<li><a href="#conversion-1">Conversion</a></li>
+<li><a href="#conversion">Conversion</a></li>
       <li><a href="#plotting-a-table-of-events">Plotting a table of events</a></li>
       </ul>
 </li>
