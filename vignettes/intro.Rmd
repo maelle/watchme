@@ -17,19 +17,27 @@ library("dplyr")
 
 # Introduction
 
-This package aims at supporting the analysis of annotation results of wearable camera images. The workflow is as follows: 
+This package aims at supporting the analysis of annotation of images, e.g. pics of wearable camera. The workflow is as follows: 
 
-* participants of a study wear a camera that automatically produces pictures;
+* pictures are produced, e.g. participants of a study wear a camera that automatically produces pictures;
 
-* these pictures are then annotated by coders using a list of annotations;
+* these pictures are then annotated by algorithms/ coders using a list of annotations;
 
 * the results of these annotations are then used to e.g. reconstruct the sequence of activities of a person during the day, or link it to pollution exposure.
 
-This R package supports the last step. This vignette covers the questions "How to convert raw files? How to summarize the data? How to plot the data?". There's another vignette dedicated to interrater agreement.
+This R package supports the following tasks:
+
+* How to convert data to a format easier to deal with in R?
+
+* How to summarize annotations?
+
+* How to plot annotations?
+
+* How to calculate interrater agreement? 
 
 # Data structure
 
-The structure of data in the package is adapted to data produced using the [Doherty Sensecam Browser for annotation](https://sensecambrowser.codeplex.com/) or with data produced using the [XnView MP software](http://www.xnview.com/en/xnviewmp/). However, you can probably re-format your raw data to use the converting function.
+The structure of data in the package is adapted to data produced for instance using the [Doherty Sensecam Browser for annotation](https://sensecambrowser.codeplex.com/) or with data produced using the [XnView MP software](http://www.xnview.com/en/xnviewmp/). However, you can probably re-format your raw data to use the converting function.
 
 The data needed for using the package are:
 

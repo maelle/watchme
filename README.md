@@ -16,17 +16,17 @@ install_github("masalmon/watchme", build_vignettes=TRUE)
 
 # Introduction
 
-This package aims at supporting the analysis of annotation results of wearable camera images. The workflow is as follows: 
+This package aims at supporting the analysis of annotation of images, e.g. pics of wearable camera. The workflow is as follows: 
 
-* participants of a study wear a camera that automatically produces pictures;
+* pictures are produced, e.g. participants of a study wear a camera that automatically produces pictures;
 
-* these pictures are then annotated by coders using a list of annotations;
+* these pictures are then annotated by algorithms/ coders using a list of annotations;
 
 * the results of these annotations are then used to e.g. reconstruct the sequence of activities of a person during the day, or link it to pollution exposure.
 
-This R package supports the following taks:
+This R package supports the following tasks:
 
-* How to convert data?
+* How to convert data to a format easier to deal with in R?
 
 * How to summarize annotations?
 

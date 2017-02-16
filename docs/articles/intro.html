@@ -60,7 +60,7 @@
       <h1>Data conversion, summarizing and plotting</h1>
                         <h4 class="author">M. Salmon and other CHAI project members</h4>
             
-            <h4 class="date">2017-02-15</h4>
+            <h4 class="date">2017-02-16</h4>
           </div>
 
     
@@ -69,18 +69,24 @@
 <div id="introduction" class="section level1">
 <h1 class="hasAnchor">
 <html><body><a href="#introduction" class="anchor"> </a></body></html>Introduction</h1>
-<p>This package aims at supporting the analysis of annotation results of wearable camera images. The workflow is as follows:</p>
+<p>This package aims at supporting the analysis of annotation of images, e.g. pics of wearable camera. The workflow is as follows:</p>
 <ul>
-<li><p>participants of a study wear a camera that automatically produces pictures;</p></li>
-<li><p>these pictures are then annotated by coders using a list of annotations;</p></li>
+<li><p>pictures are produced, e.g. participants of a study wear a camera that automatically produces pictures;</p></li>
+<li><p>these pictures are then annotated by algorithms/ coders using a list of annotations;</p></li>
 <li><p>the results of these annotations are then used to e.g. reconstruct the sequence of activities of a person during the day, or link it to pollution exposure.</p></li>
 </ul>
-<p>This R package supports the last step. This vignette covers the questions “How to convert raw files? How to summarize the data? How to plot the data?”. There’s another vignette dedicated to interrater agreement.</p>
+<p>This R package supports the following tasks:</p>
+<ul>
+<li><p>How to convert data to a format easier to deal with in R?</p></li>
+<li><p>How to summarize annotations?</p></li>
+<li><p>How to plot annotations?</p></li>
+<li><p>How to calculate interrater agreement?</p></li>
+</ul>
 </div>
 <div id="data-structure" class="section level1">
 <h1 class="hasAnchor">
 <html><body><a href="#data-structure" class="anchor"> </a></body></html>Data structure</h1>
-<p>The structure of data in the package is adapted to data produced using the <a href="https://sensecambrowser.codeplex.com/">Doherty Sensecam Browser for annotation</a> or with data produced using the <a href="http://www.xnview.com/en/xnviewmp/">XnView MP software</a>. However, you can probably re-format your raw data to use the converting function.</p>
+<p>The structure of data in the package is adapted to data produced for instance using the <a href="https://sensecambrowser.codeplex.com/">Doherty Sensecam Browser for annotation</a> or with data produced using the <a href="http://www.xnview.com/en/xnviewmp/">XnView MP software</a>. However, you can probably re-format your raw data to use the converting function.</p>
 <p>The data needed for using the package are:</p>
 <ul>
 <li>A table of possible annotations, called <code>dico</code>. It contains three columns Code, Meaning, Group. The Code is the unique X-digit identifier of an activity. The Meaning, preferably in a single word such as washingYourTeeth, explains the code. The Group allows to group activities into meaningful categories, i.e. washingYourTeeth and washingYourHands could be in the hygiene Group whereas eatingRealFood and snackingOnCheapChocolate could be in the eating Group. If you do not use abbreviations, Code and Meaning can be equal but in any case they both need to be present.</li>
