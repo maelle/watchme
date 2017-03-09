@@ -19,4 +19,3 @@ Plot
 data("coding_example")
 watchme_plot_raw(coding_example)
 }
-

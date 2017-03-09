@@ -56,4 +56,3 @@ data_pictures <- watchme_prepare_data(path_results=path_results, sep_results=sep
 data_pictures
 attr(data_pictures, "dico")
 }
-

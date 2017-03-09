@@ -25,4 +25,3 @@ event_table <- watchme_aggregate(df = coding1)
 watchme_plot_sequence(event_table)
 watchme_plot_sequence(event_table, x_axis = "picture")
 }
-

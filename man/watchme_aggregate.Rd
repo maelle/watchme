@@ -36,4 +36,3 @@ event_table
 event_table2 <- watchme_aggregate(df = coding_example, min_no_pictures = 2)
 event_table2
 }
-

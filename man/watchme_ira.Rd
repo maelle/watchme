@@ -43,4 +43,3 @@ watchme_ira(results_list2, names_list = names_list2, one_to_one = TRUE)
 watchme_ira(results_list2, names_list = names_list2, one_to_one = FALSE, by_code = TRUE)
 watchme_ira(results_list2, names_list = names_list2, one_to_one = TRUE, by_code = TRUE)
 }
-

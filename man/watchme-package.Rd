@@ -13,4 +13,23 @@ including the list of annotations used for coding.
 The aim of the package is to have robust and reproducible code for performing the analysis
 of such data, from calculating interrater reliability to using the activity data as covariate.
 }
+\seealso{
+Useful links:
+\itemize{
+  \item \url{http://github.com/masalmon/watchme}
+  \item Report bugs at \url{http://github.com/masalmon/watchme/issues}
+}
 
+}
+\author{
+\strong{Maintainer}: Maëlle Salmon \email{maelle.salmon@yahoo.se}
+
+Other contributors:
+\itemize{
+  \item  ERC Grant Agreement number 336167 - the CHAI Project [funder]
+  \item Santhi Bhogadi [contributor]
+  \item Carles Milà [contributor]
+  \item Cathryn Tonne [contributor]
+}
+
+}

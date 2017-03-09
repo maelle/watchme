@@ -12,4 +12,3 @@ A dummy WearableCamImages object for one coder.
 data(coding2)
 }
 \keyword{data}
-

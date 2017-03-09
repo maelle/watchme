@@ -29,4 +29,3 @@ watchme_output_differences(results_list = results_list,
  names_list = names_list)
 }
 }
-

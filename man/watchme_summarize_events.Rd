@@ -20,4 +20,3 @@ data('coding_example')
 eventTable <- watchme_aggregate(df = coding_example)
 watchme_summarize_events(eventTable)
 }
-
