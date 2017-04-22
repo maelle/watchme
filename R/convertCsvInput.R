@@ -94,9 +94,6 @@ watchme_prepare_data <- function(path_results, sep_results,
         ungroup()
     }
 
-    resultsCoding <- dplyr::mutate_(resultsCoding,
-                             participant_id = ~participant_id)
-
     # replace spaces by "_"
     resultsCoding <- dplyr::mutate_(resultsCoding,
                                     annotation = lazyeval::interp(~gsub(" ", "_", annotation)))
