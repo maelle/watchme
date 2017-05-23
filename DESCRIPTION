@@ -23,7 +23,8 @@ Imports: dplyr,
     purrr,
     tibble,
     scales,
-    readr
+    readr,
+    purrrlyr
 Suggests: knitr,
     rmarkdown,
     testthat,

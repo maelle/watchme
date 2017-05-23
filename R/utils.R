@@ -65,7 +65,7 @@ compare_dicos <- function(df, dico_ref){
 create_string_for_comparison <- function(df, dico_ref){
 
   df[, dico_ref$Code] %>%
-    purrr::by_row(toString, .to = "codes",
+    purrrlyr::by_row(toString, .to = "codes",
                   .collate = "cols") %>%
     select_(quote(codes))
 }
