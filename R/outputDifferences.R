@@ -48,7 +48,7 @@ watchme_output_differences <- function(results_list, names_list = NULL){
   bigTable <- dplyr::bind_cols(codes,
                          imageTime)
 
-  codes <- purrr::by_row(codes, count_unique_elements2,
+  codes <- purrrlyr::by_row(codes, count_unique_elements2,
                          .collate = "cols", .to = "unique_elements") %>%
     dplyr::select_(~ unique_elements)
 

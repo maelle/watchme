@@ -88,7 +88,7 @@ for transforming each file and we mapped it to the `files` data.frame prepared f
 
 
 ```r
-results_list <- files %>% purrr::by_row(prepare_data_from_df,
+results_list <- files %>% purrrlyr::by_row(prepare_data_from_df,
                                         path = "/raw_data/AutographerCodes_NewProtocol/")
 
 ```
@@ -207,7 +207,7 @@ names(calibration) <- c("filename", "startlabel")
 calibration <- mutate(calibration, startlabel = gsub("\\\t", "", startlabel))
 calibration <- mutate(calibration, filename = paste0(filename, ".csv"))
 calibration <- mutate(calibration, filename = gsub("-", "_", filename))
-calibration <- by_row(calibration, function(df){
+calibration <- purrrlyr::by_row(calibration, function(df){
   output <- parse_filename(df$filename)
   select_(output, quote(- filename))
 }) %>%
@@ -276,7 +276,7 @@ find_count <- function(df){
 
 # now add columns with count
 files <- files %>% 
-  by_row(find_count, .to = "no_of_pics", .collate = "col")
+  purrrlyr::by_row(find_count, .to = "no_of_pics", .collate = "col")
 
 write_csv(files, path = "raw_data/imageDAT.csv")
 ```
@@ -288,7 +288,7 @@ write_csv(files, path = "raw_data/imageDAT.csv")
 For each pic, it was compulsory to have exactly one of the following codes: non_codable, indoors, outdoors, in_vehicle, mixed (neither indoors nor outdoors, e.g. on a doorstep). This is how we identified problematic pics, whose annotations were corrected by the same coder who had coded the pass (except one coder who had by then left the study) until there was no issue.
 
 ```r
-autographer <- purrr::by_row(autographer,
+autographer <- purrrlyr::by_row(autographer,
               function(df){
                 sum(df$non_codable + df$indoors + df$outdoors + df$mixed + df$in_vehicle)
               }, .to = "loc_info", .collate = "cols")
@@ -315,7 +315,7 @@ autographer <- filter(autographer, !non_codable)
 # Travel by auto;Travel by auto;Travel
 # Travel by motorcycle;Travel by motorcycle;Travel
 # Participant presence on road;Participant presence on road;Travel
-autographer <- purrr::by_row(autographer,
+autographer <- purrrlyr::by_row(autographer,
                              function(df){
                                sum(df$travel_by_bus + df$travel_by_bicycle + df$travel_by_auto + df$travel_by_motorcycle +
                                      df$participant_presence_on_road)
@@ -335,7 +335,7 @@ filter(autographer, travel_info == 2) %>%
 # Presence at Work Field;Presence at Work Field;Occupation
 # Presence in Industry;Presence in Industry;Occupation
 # Presence in Informal Work;Presence in Informal Work;Occupation
-autographer <- purrr::by_row(autographer,
+autographer <- purrrlyr::by_row(autographer,
                              function(df){
                                sum(df$presence_at_office_or_shop + df$presence_in_industry + 
                                      df$presence_in_informal_work  +
